@@ -3,13 +3,13 @@ package com.alexbezhan.instagram
 import android.os.Bundle
 import android.util.Log
 
-class HomeActivity : BaseActivity(0) {
-    private val TAG = "HomeActivity"
+class ProfileActivity : BaseActivity(4) {
+    private val TAG = "ProfileActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        Log.d(TAG, "onCreate")
         setupBottomNavigation()
+        Log.d(TAG, "onCreate")
     }
 }
