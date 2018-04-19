@@ -33,4 +33,5 @@ dependencies {
 
     implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     implementation "com.android.support:design:27.1.1"
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
