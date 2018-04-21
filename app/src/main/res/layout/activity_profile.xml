@@ -9,32 +9,24 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/whiteish"
-        android:elevation="4dp">
+        style="@style/toolbar">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                style="@style/toolbar_title"
                 android:text="alex.bezhan"
-                android:textColor="@color/black"
-                android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="10dp"
+                style="@style/toolbar_image"
                 android:src="@drawable/ic_more"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
@@ -125,13 +117,6 @@
         app:layout_constraintHorizontal_weight="5"
         app:layout_constraintStart_toEndOf="@id/profile_image" />
 
-    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-        android:id="@+id/bottom_navigation_view"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/whiteish"
-        android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+    <include layout="@layout/bottom_navigation_view" />
 
 </android.support.constraint.ConstraintLayout>

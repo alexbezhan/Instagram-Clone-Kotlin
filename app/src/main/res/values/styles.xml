@@ -24,4 +24,26 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <dimen name="toolbar_height">50dp</dimen>
+
+    <style name="toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/toolbar_height</item>
+        <item name="android:background">@color/whiteish</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="toolbar_image">
+        <item name="android:layout_width">@dimen/toolbar_height</item>
+        <item name="android:layout_height">@dimen/toolbar_height</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="toolbar_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
 </resources>
