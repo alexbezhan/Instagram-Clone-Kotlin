@@ -34,4 +34,9 @@ dependencies {
     implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     implementation "com.android.support:design:27.1.1"
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'com.google.firebase:firebase-core:12.0.1'
+    implementation 'com.google.firebase:firebase-auth:12.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'
