@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/instagram_image"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/instagram"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/email_input"
+        style="@style/login_input"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@id/instagram_image" />
+
+    <EditText
+        android:id="@+id/password_input"
+        style="@style/login_input"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/email_input" />
+
+    <Button
+        android:id="@+id/login_btn"
+        app:layout_constraintTop_toBottomOf="@id/password_input"
+        android:text="Log In"
+        style="@style/login_btn"
+        />
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/create_account"
+        android:gravity="center"
+        android:background="@drawable/top_border_grey"/>
+
+</android.support.constraint.ConstraintLayout>
