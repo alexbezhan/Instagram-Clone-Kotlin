@@ -1,10 +1,11 @@
-package com.alexbezhan.instagram
+package com.alexbezhan.instagram.activities
 
 import android.os.Bundle
 import android.util.Log
+import com.alexbezhan.instagram.R
 
-class SearchActivity : BaseActivity(1) {
-    private val TAG = "SearchActivity"
+class ShareActivity : BaseActivity(2) {
+    private val TAG = "ShareActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
