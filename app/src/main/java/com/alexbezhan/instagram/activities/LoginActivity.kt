@@ -28,22 +28,30 @@ class LoginActivity : AppCompatActivity(), KeyboardVisibilityEventListener, Text
         email_input.addTextChangedListener(this)
         password_input.addTextChangedListener(this)
         login_btn.setOnClickListener(this)
+        create_account_text.setOnClickListener(this)
 
         mAuth = FirebaseAuth.getInstance()
     }
 
     override fun onClick(view: View) {
-        val email = email_input.text.toString()
-        val password = password_input.text.toString()
-        if (validate(email, password)) {
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
-                if (it.isSuccessful) {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    finish()
+        when(view.id) {
+            R.id.login_btn -> {
+                val email = email_input.text.toString()
+                val password = password_input.text.toString()
+                if (validate(email, password)) {
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
+                        if (it.isSuccessful) {
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            finish()
+                        }
+                    }
+                } else {
+                    showToast("Please enter email and password")
                 }
             }
-        } else {
-            showToast("Please enter email and password")
+            R.id.create_account_text -> {
+                startActivity(Intent(this, RegisterActivity::class.java))
+            }
         }
     }
 
