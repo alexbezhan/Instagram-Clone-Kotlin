@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.alexbezhan.instagram.views.KeyboardAwareScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frame_layout"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.RegisterActivity">
+    android:layout_height="match_parent">
 
-</FrameLayout>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.RegisterActivity">
+    </FrameLayout>
+
+</com.alexbezhan.instagram.views.KeyboardAwareScrollView>
