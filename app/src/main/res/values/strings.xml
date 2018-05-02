@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Instagram</string>
     <string name="create_account">Don\'t have an account? <b>Sign up.</b></string>
+    <string name="please_enter_password">Please enter your password</string>
 </resources>
