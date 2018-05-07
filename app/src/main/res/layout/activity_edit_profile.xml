@@ -52,7 +52,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/android_picture"
+            android:src="@drawable/person"
             app:civ_border_color="@color/grey"
             app:civ_border_width="1dp"
             app:layout_constraintEnd_toEndOf="parent"
