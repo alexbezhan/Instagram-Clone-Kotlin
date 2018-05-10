@@ -4,10 +4,9 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.CameraPictureTaker
+import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 import com.alexbezhan.instagram.views.PasswordDialog
@@ -19,18 +18,18 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
     private lateinit var mFirebaseHelper: FirebaseHelper
-    private lateinit var cameraPictureTaker: CameraPictureTaker
+    private lateinit var cameraHelper: CameraHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
         Log.d(TAG, "onCreate")
 
-        cameraPictureTaker = CameraPictureTaker(this)
+        cameraHelper = CameraHelper(this)
 
         close_image.setOnClickListener { finish() }
         save_image.setOnClickListener { updateProfile() }
-        change_photo_text.setOnClickListener { cameraPictureTaker.takeCameraPicture() }
+        change_photo_text.setOnClickListener { cameraHelper.takeCameraPicture() }
 
         mFirebaseHelper = FirebaseHelper(this)
 
@@ -48,8 +47,8 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == cameraPictureTaker.REQUEST_CODE && resultCode == RESULT_OK) {
-            mFirebaseHelper.uploadUserPhoto(cameraPictureTaker.imageUri!!) {
+        if (requestCode == cameraHelper.REQUEST_CODE && resultCode == RESULT_OK) {
+            mFirebaseHelper.uploadUserPhoto(cameraHelper.imageUri!!) {
                 val photoUrl = it.downloadUrl.toString()
                 mFirebaseHelper.updateUserPhoto(photoUrl) {
                     mUser = mUser.copy(photo = photoUrl)

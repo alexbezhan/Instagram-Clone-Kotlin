@@ -46,6 +46,14 @@
         <item name="android:textSize">19sp</item>
     </style>
 
+    <style name="toolbar_text" parent="toolbar_title">
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:layout_height">@dimen/toolbar_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
     <style name="edit_profile_input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

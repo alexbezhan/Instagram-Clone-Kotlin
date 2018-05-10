@@ -10,7 +10,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CameraPictureTaker(private val activity: Activity) {
+class CameraHelper(private val activity: Activity) {
     var imageUri: Uri? = null
     val REQUEST_CODE = 1
     private val simpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
