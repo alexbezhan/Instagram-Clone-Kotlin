@@ -18,7 +18,7 @@ class HomeActivity : BaseActivity(0) {
         setupBottomNavigation()
 
         mAuth = FirebaseAuth.getInstance()
-//        mAuth.signInWithEmailAndPassword("alex@alexbezhan.com", "password")
+//        auth.signInWithEmailAndPassword("alex@alexbezhan.com", "password")
 //                .addOnCompleteListener{
 //                    if (it.isSuccessful) {
 //                        Log.d(TAG, "signIn: success")

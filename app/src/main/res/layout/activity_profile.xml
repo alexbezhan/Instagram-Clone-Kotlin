@@ -117,6 +117,17 @@
         app:layout_constraintHorizontal_weight="5"
         app:layout_constraintStart_toEndOf="@id/profile_image" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/images_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/top_border_grey"
+        app:layout_constraintTop_toBottomOf="@id/edit_profile_btn"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view">
+
+    </android.support.v7.widget.RecyclerView>
+
     <include layout="@layout/bottom_navigation_view" />
 
 </android.support.constraint.ConstraintLayout>
