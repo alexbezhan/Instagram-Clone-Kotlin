@@ -23,7 +23,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                style="@style/toolbar_image"
+                style="@style/icon"
                 android:src="@drawable/ic_more"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
