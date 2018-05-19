@@ -43,7 +43,7 @@
         android:id="@+id/like_image"
         app:layout_constraintTop_toBottomOf="@id/post_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/likes_text"
+        app:layout_constraintBottom_toTopOf="@id/likes_text"
         android:layout_height="45dp"
         android:layout_width="45dp"
         android:padding="10dp"
@@ -85,8 +85,10 @@
         android:id="@+id/caption_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/likes_text"
-        app:layout_constraintStart_toStartOf="@id/likes_text"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="willsmith This is a caption for the post. It's actually a very long caption."/>
 
