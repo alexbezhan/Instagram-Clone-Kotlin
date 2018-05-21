@@ -23,7 +23,7 @@
 
         <EditText
             android:id="@+id/email_input"
-            style="@style/login_input"
+            style="@style/big_input"
             android:layout_marginTop="40dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -31,14 +31,14 @@
 
         <EditText
             android:id="@+id/password_input"
-            style="@style/login_input"
+            style="@style/big_input"
             android:hint="Password"
             android:inputType="textPassword"
             app:layout_constraintTop_toBottomOf="@id/email_input" />
 
         <Button
             android:id="@+id/login_btn"
-            style="@style/login_btn"
+            style="@style/big_btn"
             android:text="Log In"
             app:layout_constraintTop_toBottomOf="@id/password_input" />
 

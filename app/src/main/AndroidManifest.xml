@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alexbezhan.instagram">
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
 
     <application
@@ -30,6 +31,8 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+        <activity android:name=".activities.ProfileSettingsActivity" />
+        <activity android:name=".activities.AddFriendsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

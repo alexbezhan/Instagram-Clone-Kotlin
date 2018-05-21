@@ -69,21 +69,28 @@
         <item name="android:textColor">@color/grey</item>
     </style>
 
-    <style name="login_input">
+    <style name="big_input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">20dp</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name="android:background">@drawable/login_input_bg</item>
+        <item name="android:background">@drawable/big_input_bg</item>
         <item name="android:padding">10dp</item>
     </style>
 
-    <style name="login_btn" parent="login_input">
-        <item name="android:background">@drawable/login_btn_bg</item>
-        <item name="android:textColor">@color/login_btn_color</item>
+    <style name="big_btn" parent="big_input">
+        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:textColor">@color/btn_color</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:stateListAnimator">@animator/login_btn_animator</item>
+        <item name="android:stateListAnimator">@animator/btn_animator</item>
+    </style>
+
+    <style name="small_btn">
+        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:textColor">@color/btn_color</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@animator/btn_animator</item>
     </style>
 
 </resources>

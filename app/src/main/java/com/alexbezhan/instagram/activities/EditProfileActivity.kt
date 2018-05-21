@@ -27,7 +27,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
         mCamera = CameraHelper(this)
 
-        close_image.setOnClickListener { finish() }
+        back_image.setOnClickListener { finish() }
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
