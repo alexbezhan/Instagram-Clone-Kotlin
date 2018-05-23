@@ -87,10 +87,21 @@
     </style>
 
     <style name="small_btn">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
         <item name="android:background">@drawable/btn_bg</item>
         <item name="android:textColor">@color/btn_color</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:stateListAnimator">@animator/btn_animator</item>
+    </style>
+
+    <style name="secondary_small_btn" parent="small_btn">
+        <item name="android:background">@drawable/grey_btn_bg</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>
