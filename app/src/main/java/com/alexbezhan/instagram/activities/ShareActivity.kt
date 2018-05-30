@@ -33,7 +33,7 @@ class ShareActivity : BaseActivity(2) {
         share_text.setOnClickListener { share() }
 
         mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
-            mUser = it.getValue(User::class.java)!!
+            mUser = it.asUser()!!
         })
     }
 

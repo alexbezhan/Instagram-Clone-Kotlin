@@ -35,7 +35,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
         mFirebase.currentUserReference()
                 .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-                    mUser = it.getValue(User::class.java)!!
+                    mUser = it.asUser()!!
                     name_input.setText(mUser.name)
                     username_input.setText(mUser.username)
                     website_input.setText(mUser.website)
