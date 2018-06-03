@@ -4,14 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.GlideApp
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
-import com.google.firebase.database.ServerValue
 import kotlinx.android.synthetic.main.activity_share.*
-import java.util.*
 
 class ShareActivity : BaseActivity(2) {
     private val TAG = "ShareActivity"
@@ -50,7 +49,7 @@ class ShareActivity : BaseActivity(2) {
     private fun share() {
         val imageUri = mCamera.imageUri
         if (imageUri != null) {
-            val uid = mFirebase.auth.currentUser!!.uid
+            val uid = mFirebase.currentUid()!!
             mFirebase.storage.child("users").child(uid).child("images")
                     .child(imageUri.lastPathSegment).putFile(imageUri).addOnCompleteListener {
                         if (it.isSuccessful) {
@@ -90,12 +89,3 @@ class ShareActivity : BaseActivity(2) {
         )
     }
 }
-
-data class FeedPost(val uid: String = "", val username: String = "",
-                    val image: String = "", val likesCount: Int = 0, val commentsCount: Int = 0,
-                    val caption: String = "", val comments: List<Comment> = emptyList(),
-                    val timestamp: Any = ServerValue.TIMESTAMP, val photo: String? = null) {
-    fun timestampDate(): Date = Date(timestamp as Long)
-}
-
-data class Comment(val uid: String, val username: String, val text: String)
