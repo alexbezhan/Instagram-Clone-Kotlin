@@ -2,9 +2,6 @@ package com.alexbezhan.instagram.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import com.alexbezhan.instagram.R
@@ -13,7 +10,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
-class LoginActivity : AppCompatActivity(), KeyboardVisibilityEventListener, View.OnClickListener {
+class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityEventListener,
+        View.OnClickListener {
 
     private val TAG = "LoginActivity"
     private lateinit var mAuth: FirebaseAuth

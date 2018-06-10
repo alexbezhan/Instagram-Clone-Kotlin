@@ -39,39 +39,25 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
         setupBottomNavigation()
 
         mFirebase = FirebaseHelper(this)
-        mFirebase.auth.addAuthStateListener {
-            if (it.currentUser == null) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            }
-        }
     }
 
     override fun onStart() {
         super.onStart()
-        val currentUser = mFirebase.auth.currentUser
-        if (currentUser == null) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        } else {
-            mFirebase.database.child("feed-posts").child(currentUser.uid)
-                    .addValueEventListener(ValueEventListenerAdapter {
-                        val posts = it.children.map { it.asFeedPost()!! }
-                                .sortedByDescending { it.timestampDate() }
-                        mAdapter = FeedAdapter(this, posts)
-                        feed_recycler.adapter = mAdapter
-                        feed_recycler.layoutManager = LinearLayoutManager(this)
-                    })
-        }
+        mFirebase.database.child("feed-posts").child(mFirebase.currentUid())
+                .addValueEventListener(ValueEventListenerAdapter {
+                    val posts = it.children.map { it.asFeedPost()!! }
+                            .sortedByDescending { it.timestampDate() }
+                    mAdapter = FeedAdapter(this, posts)
+                    feed_recycler.adapter = mAdapter
+                    feed_recycler.layoutManager = LinearLayoutManager(this)
+                })
     }
 
     override fun toggleLike(postId: String) {
-        Log.d(TAG, "toggleLike: $postId")
         val reference = mFirebase.database.child("likes").child(postId).child(mFirebase.currentUid())
-        reference
-                .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-                    reference.setValueTrueOrRemove(!it.exists())
-                })
+        reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {
+            reference.setValueTrueOrRemove(!it.exists())
+        })
     }
 
     override fun loadLikes(postId: String, position: Int) {

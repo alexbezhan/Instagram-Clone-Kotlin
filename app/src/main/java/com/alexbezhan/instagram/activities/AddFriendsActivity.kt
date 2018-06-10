@@ -1,7 +1,6 @@
 package com.alexbezhan.instagram.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,12 +12,10 @@ import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.add_friends_item.view.*
 
-class AddFriendsActivity : AppCompatActivity(), FriendsAdapter.Listener {
+class AddFriendsActivity : BaseActivity(), FriendsAdapter.Listener {
     private lateinit var mFirebase: FirebaseHelper
     private lateinit var mUser: User
     private lateinit var mUsers: List<User>
