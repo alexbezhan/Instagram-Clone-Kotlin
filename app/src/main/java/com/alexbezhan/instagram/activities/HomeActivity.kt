@@ -1,9 +1,10 @@
 package com.alexbezhan.instagram.activities
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.arch.lifecycle.*
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
@@ -21,16 +22,50 @@ import android.widget.TextView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.utils.FirebaseHelper
+import com.alexbezhan.instagram.utils.FirebaseLiveData
+import com.alexbezhan.instagram.utils.SimpleCallback
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.feed_item.view.*
+
+class HomeViewModel : ViewModel() {
+    private val uid = FirebaseAuth.getInstance().currentUser?.uid
+    private val database = FirebaseDatabase.getInstance().reference
+    private val _feedPosts = FirebaseLiveData(database.child("feed-posts").child(uid))
+    private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()
+
+    val feedPosts: LiveData<List<FeedPost>> = Transformations.map(_feedPosts,
+            { it.children.map { it.asFeedPost()!! } })
+
+    fun toggleLike(postId: String) {
+        val reference = database.child("likes").child(postId).child(uid)
+        reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {
+            reference.setValueTrueOrRemove(!it.exists())
+        })
+    }
+
+    fun observeLikes(postId: String, owner: LifecycleOwner, observer: Observer<FeedPostLikes>) {
+        val createNewObserver = postLikes[postId] == null
+        if (createNewObserver) {
+            val data = Transformations.map(FirebaseLiveData(database.child("likes").child(postId)), {
+                val userLikes = it.children.map { it.key }.toSet()
+                FeedPostLikes(
+                        userLikes.size,
+                        userLikes.contains(uid))
+            })
+            data.observe(owner, observer)
+            postLikes += (postId to data)
+        }
+    }
+}
 
 class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
     private val TAG = "HomeActivity"
     private lateinit var mFirebase: FirebaseHelper
     private lateinit var mAdapter: FeedAdapter
-    private var mLikesListeners: Map<String, ValueEventListener> = emptyMap()
+    private lateinit var mModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,54 +74,36 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
         setupBottomNavigation()
 
         mFirebase = FirebaseHelper(this)
+        mAdapter = FeedAdapter(this)
+        feed_recycler.adapter = mAdapter
+        feed_recycler.layoutManager = LinearLayoutManager(this)
     }
+
 
     override fun onStart() {
         super.onStart()
-        mFirebase.database.child("feed-posts").child(mFirebase.currentUid())
-                .addValueEventListener(ValueEventListenerAdapter {
-                    val posts = it.children.map { it.asFeedPost()!! }
-                            .sortedByDescending { it.timestampDate() }
-                    mAdapter = FeedAdapter(this, posts)
-                    feed_recycler.adapter = mAdapter
-                    feed_recycler.layoutManager = LinearLayoutManager(this)
-                })
-    }
-
-    override fun toggleLike(postId: String) {
-        val reference = mFirebase.database.child("likes").child(postId).child(mFirebase.currentUid())
-        reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {
-            reference.setValueTrueOrRemove(!it.exists())
+        mModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        mModel.feedPosts.observe(this, Observer {
+            it?.let { mAdapter.setPosts(it) }
         })
     }
 
-    override fun loadLikes(postId: String, position: Int) {
-        fun createListener() =
-                mFirebase.database.child("likes").child(postId).addValueEventListener(
-                        ValueEventListenerAdapter {
-                            val userLikes = it.children.map { it.key }.toSet()
-                            val postLikes = FeedPostLikes(
-                                    userLikes.size,
-                                    userLikes.contains(mFirebase.currentUid()))
-                            mAdapter.updatePostLikes(position, postLikes)
-                        })
-
-        val createNewListener = mLikesListeners[postId] == null
-        Log.d(TAG, "loadLikes: $position $createNewListener")
-        if (createNewListener) {
-            mLikesListeners += (postId to createListener())
-        }
+    override fun toggleLike(postId: String) {
+        mModel.toggleLike(postId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mLikesListeners.values.forEach { mFirebase.database.removeEventListener(it) }
+    override fun loadLikes(postId: String, position: Int) {
+        mModel.observeLikes(postId, this, Observer {
+            it?.let {
+                mAdapter.updatePostLikes(position, it)
+            }
+        })
     }
 }
 
 data class FeedPostLikes(val likesCount: Int, val likedByUser: Boolean)
 
-class FeedAdapter(private val listener: Listener, private val posts: List<FeedPost>)
+class FeedAdapter(private val listener: Listener)
     : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
 
     interface Listener {
@@ -96,6 +113,7 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
+    private var posts: List<FeedPost> = emptyList()
     private var postLikes: Map<Int, FeedPostLikes> = emptyMap()
     private val defaultPostLikes = FeedPostLikes(0, false)
 
@@ -103,6 +121,12 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.feed_item, parent, false)
         return ViewHolder(view)
+    }
+
+    fun setPosts(posts: List<FeedPost>) {
+        val result = DiffUtil.calculateDiff(SimpleCallback(this.posts, posts, { it.id }))
+        this.posts = posts
+        result.dispatchUpdatesTo(this)
     }
 
     fun updatePostLikes(position: Int, likes: FeedPostLikes) {
