@@ -9,13 +9,12 @@ import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.FirebaseLiveData
 
 class ProfileViewModel : ViewModel() {
-    private val _user = FirebaseLiveData(FirebaseHelper.currentUserReference())
-    private val _images = FirebaseLiveData(FirebaseHelper.database.child("images")
-            .child(FirebaseHelper.currentUid()!!))
+    val user: LiveData<User> = Transformations.map(
+            FirebaseLiveData(FirebaseHelper.currentUserReference()), { it.asUser()!! })
 
-    val user: LiveData<User> = Transformations.map(_user, { it.asUser()!! })
-
-    val images: LiveData<List<String>> = Transformations.map(_images, {
+    val images: LiveData<List<String>> = Transformations.map(
+            FirebaseLiveData(FirebaseHelper.database.child("images")
+                    .child(FirebaseHelper.currentUid()!!)), {
         it.children.map { it.getValue(String::class.java)!! }
     })
 }
