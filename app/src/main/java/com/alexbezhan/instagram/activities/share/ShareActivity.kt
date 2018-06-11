@@ -1,9 +1,13 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.share
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.profile.ProfileActivity
+import com.alexbezhan.instagram.activities.asUser
+import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper

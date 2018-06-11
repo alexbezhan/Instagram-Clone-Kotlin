@@ -1,10 +1,15 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.login
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.register.RegisterActivity
+import com.alexbezhan.instagram.activities.coordinateBtnAndInputs
+import com.alexbezhan.instagram.activities.home.HomeActivity
+import com.alexbezhan.instagram.activities.showToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent

@@ -1,7 +1,8 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.profile.settings
 
 import android.os.Bundle
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_profile_settings.*
 

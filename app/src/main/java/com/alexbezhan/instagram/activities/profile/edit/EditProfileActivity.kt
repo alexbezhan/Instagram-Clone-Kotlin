@@ -1,9 +1,10 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.profile.edit
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.FirebaseHelper

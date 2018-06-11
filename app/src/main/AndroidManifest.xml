@@ -13,26 +13,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.HomeActivity">
+        <activity android:name=".activities.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SearchActivity" />
-        <activity android:name=".activities.ShareActivity" />
-        <activity android:name=".activities.LikesActivity" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.EditProfileActivity" />
+        <activity android:name=".activities.search.SearchActivity" />
+        <activity android:name=".activities.share.ShareActivity" />
+        <activity android:name=".activities.likes.LikesActivity" />
+        <activity android:name=".activities.profile.ProfileActivity" />
+        <activity android:name=".activities.profile.edit.EditProfileActivity" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".activities.login.LoginActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".activities.register.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
-        <activity android:name=".activities.ProfileSettingsActivity" />
-        <activity android:name=".activities.AddFriendsActivity" />
+        <activity android:name=".activities.profile.settings.ProfileSettingsActivity" />
+        <activity android:name=".activities.profile.friends.AddFriendsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

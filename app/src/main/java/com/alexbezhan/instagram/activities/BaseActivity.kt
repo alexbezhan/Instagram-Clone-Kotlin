@@ -5,6 +5,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.home.HomeActivity
+import com.alexbezhan.instagram.activities.likes.LikesActivity
+import com.alexbezhan.instagram.activities.login.LoginActivity
+import com.alexbezhan.instagram.activities.profile.ProfileActivity
+import com.alexbezhan.instagram.activities.search.SearchActivity
+import com.alexbezhan.instagram.activities.share.ShareActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
