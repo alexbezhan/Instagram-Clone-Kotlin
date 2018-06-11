@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.loadImage
+import com.alexbezhan.instagram.utils.DiffBasedAdapter
 
-class ProfileImagesAdapter(private val images: List<String>) :
-        RecyclerView.Adapter<ProfileImagesAdapter.ViewHolder>() {
+class ProfileImagesAdapter :
+        DiffBasedAdapter<String, ProfileImagesAdapter.ViewHolder>({ it }) {
 
     class ViewHolder(val image: ImageView) : RecyclerView.ViewHolder(image)
 
@@ -19,8 +20,8 @@ class ProfileImagesAdapter(private val images: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.image.loadImage(images[position])
+        holder.image.loadImage(items[position])
     }
 
-    override fun getItemCount(): Int = images.size
+    override fun getItemCount(): Int = items.size
 }

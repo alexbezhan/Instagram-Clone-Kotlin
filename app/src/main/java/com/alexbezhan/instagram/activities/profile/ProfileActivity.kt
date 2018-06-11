@@ -1,5 +1,7 @@
 package com.alexbezhan.instagram.activities.profile
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -10,13 +12,12 @@ import com.alexbezhan.instagram.activities.profile.edit.EditProfileActivity
 import com.alexbezhan.instagram.activities.profile.friends.AddFriendsActivity
 import com.alexbezhan.instagram.activities.profile.settings.ProfileSettingsActivity
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity(4) {
     private val TAG = "ProfileActivity"
     private lateinit var mUser: User
+    private lateinit var mAdapter: ProfileImagesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,29 +26,32 @@ class ProfileActivity : BaseActivity(4) {
         Log.d(TAG, "onCreate")
 
         edit_profile_btn.setOnClickListener {
-            val intent = Intent(this, EditProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, EditProfileActivity::class.java))
         }
         settings_image.setOnClickListener {
-            val intent = Intent(this, ProfileSettingsActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ProfileSettingsActivity::class.java))
         }
-        add_friends_image.setOnClickListener{
-            val intent = Intent(this, AddFriendsActivity::class.java)
-            startActivity(intent)
+        add_friends_image.setOnClickListener {
+            startActivity(Intent(this, AddFriendsActivity::class.java))
         }
 
-        FirebaseHelper.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
-            mUser = it.asUser()!!
-            profile_image.loadUserPhoto(mUser.photo)
-            username_text.text = mUser.username
-        })
-
+        mAdapter = ProfileImagesAdapter()
         images_recycler.layoutManager = GridLayoutManager(this, 3)
-        FirebaseHelper.database.child("images").child(FirebaseHelper.currentUid()!!)
-                .addValueEventListener(ValueEventListenerAdapter {
-                    val images = it.children.map { it.getValue(String::class.java)!! }
-                    images_recycler.adapter = ProfileImagesAdapter(images + images + images + images)
-                })
+        images_recycler.adapter = mAdapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val model = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        model.images.observe(this, Observer {
+            it?.let { mAdapter.items = it }
+        })
+        model.user.observe(this, Observer {
+            it?.let {
+                mUser = it
+                profile_image.loadUserPhoto(mUser.photo)
+                username_text.text = mUser.username
+            }
+        })
     }
 }

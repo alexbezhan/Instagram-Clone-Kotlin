@@ -2,7 +2,6 @@ package com.alexbezhan.instagram.activities.home
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
@@ -20,11 +19,11 @@ import com.alexbezhan.instagram.activities.loadImage
 import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.utils.SimpleCallback
+import com.alexbezhan.instagram.utils.DiffBasedAdapter
 import kotlinx.android.synthetic.main.feed_item.view.*
 
 class FeedAdapter(private val listener: Listener)
-    : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
+    : DiffBasedAdapter<FeedPost, FeedAdapter.ViewHolder>({ it.id }) {
 
     interface Listener {
         fun toggleLike(postId: String)
@@ -33,7 +32,6 @@ class FeedAdapter(private val listener: Listener)
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-    private var posts: List<FeedPost> = emptyList()
     private var postLikes: Map<Int, FeedPostLikes> = emptyMap()
     private val defaultPostLikes = FeedPostLikes(0, false)
 
@@ -43,12 +41,6 @@ class FeedAdapter(private val listener: Listener)
         return ViewHolder(view)
     }
 
-    fun setPosts(posts: List<FeedPost>) {
-        val result = DiffUtil.calculateDiff(SimpleCallback(this.posts, posts, { it.id }))
-        this.posts = posts
-        result.dispatchUpdatesTo(this)
-    }
-
     fun updatePostLikes(position: Int, likes: FeedPostLikes) {
         postLikes += (position to likes)
         notifyItemChanged(position)
@@ -56,7 +48,7 @@ class FeedAdapter(private val listener: Listener)
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val post = posts[position]
+        val post = items[position]
         val likes = postLikes[position] ?: defaultPostLikes
         with(holder.view) {
             user_photo_image.loadUserPhoto(post.photo)
@@ -95,5 +87,5 @@ class FeedAdapter(private val listener: Listener)
         movementMethod = LinkMovementMethod.getInstance()
     }
 
-    override fun getItemCount() = posts.size
+    override fun getItemCount() = items.size
 }

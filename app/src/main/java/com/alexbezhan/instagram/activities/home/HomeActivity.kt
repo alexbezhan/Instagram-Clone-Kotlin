@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.*
-import com.alexbezhan.instagram.utils.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
@@ -30,7 +29,7 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
         super.onStart()
         mModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         mModel.feedPosts.observe(this, Observer {
-            it?.let { mAdapter.setPosts(it) }
+            it?.let { mAdapter.items = it }
         })
     }
 
