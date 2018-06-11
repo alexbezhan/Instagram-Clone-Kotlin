@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity(4) {
     private val TAG = "ProfileActivity"
-    private lateinit var mFirebase: FirebaseHelper
     private lateinit var mUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +37,14 @@ class ProfileActivity : BaseActivity(4) {
             startActivity(intent)
         }
 
-        mFirebase = FirebaseHelper(this)
-        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
+        FirebaseHelper.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
             mUser = it.asUser()!!
             profile_image.loadUserPhoto(mUser.photo)
             username_text.text = mUser.username
         })
 
         images_recycler.layoutManager = GridLayoutManager(this, 3)
-        mFirebase.database.child("images").child(mFirebase.currentUid()!!)
+        FirebaseHelper.database.child("images").child(FirebaseHelper.currentUid()!!)
                 .addValueEventListener(ValueEventListenerAdapter {
                     val images = it.children.map { it.getValue(String::class.java)!! }
                     images_recycler.adapter = ProfileImagesAdapter(images + images + images + images)

@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.activities.profile.edit
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
@@ -10,14 +11,15 @@ import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 import com.alexbezhan.instagram.views.PasswordDialog
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private val TAG = "EditProfileActivity"
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
-    private lateinit var mFirebase: FirebaseHelper
     private lateinit var mCamera: CameraHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +33,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mFirebase = FirebaseHelper(this)
-
-        mFirebase.currentUserReference()
+        FirebaseHelper.currentUserReference()
                 .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                     mUser = it.asUser()!!
                     name_input.setText(mUser.name)
@@ -48,9 +48,9 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mFirebase.uploadUserPhoto(mCamera.imageUri!!) {
+            uploadUserPhoto(mCamera.imageUri!!) {
                 val photoUrl = it.downloadUrl.toString()
-                mFirebase.updateUserPhoto(photoUrl) {
+                updateUserPhoto(photoUrl) {
                     mUser = mUser.copy(photo = photoUrl)
                     profile_image.loadUserPhoto(mUser.photo)
                 }
@@ -86,8 +86,8 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     override fun onPasswordConfirm(password: String) {
         if (password.isNotEmpty()) {
             val credential = EmailAuthProvider.getCredential(mUser.email, password)
-            mFirebase.reauthenticate(credential) {
-                mFirebase.updateEmail(mPendingUser.email) {
+            reauthenticate(credential) {
+                updateEmail(mPendingUser.email) {
                     updateUser(mPendingUser)
                 }
             }
@@ -105,7 +105,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         if (user.email != mUser.email) updatesMap["email"] = user.email
         if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
 
-        mFirebase.updateUser(updatesMap) {
+        updateUser(updatesMap) {
             showToast("Profile saved")
             finish()
         }
@@ -119,4 +119,56 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 else -> null
             }
 
+    private fun uploadUserPhoto(photo: Uri, onSuccess: (UploadTask.TaskSnapshot) -> Unit) {
+        FirebaseHelper.storage.child("users/${FirebaseHelper.currentUid()!!}/photo").putFile(photo)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        onSuccess(it.result)
+                    } else {
+                        showToast(it.exception!!.message!!)
+                    }
+                }
+    }
+
+    private fun updateUserPhoto(photoUrl: String, onSuccess: () -> Unit) {
+        FirebaseHelper.database.child("users/${FirebaseHelper.currentUid()!!}/photo").setValue(photoUrl)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        showToast(it.exception!!.message!!)
+                    }
+                }
+    }
+
+    private fun updateUser(updates: Map<String, Any?>, onSuccess: () -> Unit) {
+        FirebaseHelper.database.child("users").child(FirebaseHelper.currentUid()!!).updateChildren(updates)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        showToast(it.exception!!.message!!)
+                    }
+                }
+    }
+
+    private fun updateEmail(email: String, onSuccess: () -> Unit) {
+        FirebaseHelper.auth.currentUser!!.updateEmail(email).addOnCompleteListener {
+            if (it.isSuccessful) {
+                onSuccess()
+            } else {
+                showToast(it.exception!!.message!!)
+            }
+        }
+    }
+
+    private fun reauthenticate(credential: AuthCredential, onSuccess: () -> Unit) {
+        FirebaseHelper.auth.currentUser!!.reauthenticate(credential).addOnCompleteListener {
+            if (it.isSuccessful) {
+                onSuccess()
+            } else {
+                showToast(it.exception!!.message!!)
+            }
+        }
+    }
 }

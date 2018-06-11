@@ -12,7 +12,6 @@ import com.google.android.gms.tasks.Tasks
 import kotlinx.android.synthetic.main.activity_add_friends.*
 
 class AddFriendsActivity : BaseActivity(), AddFriendsAdapter.Listener {
-    private lateinit var mFirebase: FirebaseHelper
     private lateinit var mUser: User
     private lateinit var mUsers: List<User>
     private lateinit var mAdapter: AddFriendsAdapter
@@ -21,17 +20,16 @@ class AddFriendsActivity : BaseActivity(), AddFriendsAdapter.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
 
-        mFirebase = FirebaseHelper(this)
         mAdapter = AddFriendsAdapter(this)
 
-        val uid = mFirebase.currentUid()!!
+        val uid = FirebaseHelper.currentUid()!!
 
         back_image.setOnClickListener { finish() }
 
         add_friends_recycler.adapter = mAdapter
         add_friends_recycler.layoutManager = LinearLayoutManager(this)
 
-        mFirebase.database.child("users").addValueEventListener(ValueEventListenerAdapter {
+        FirebaseHelper.database.child("users").addValueEventListener(ValueEventListenerAdapter {
             val allUsers = it.children.map { it.asUser()!! }
             val (userList, otherUsersList) = allUsers.partition { it.uid == uid }
             mUser = userList.first()
@@ -54,20 +52,20 @@ class AddFriendsActivity : BaseActivity(), AddFriendsAdapter.Listener {
     }
 
     private fun setFollow(uid: String, follow: Boolean, onSuccess: () -> Unit) {
-        val followsTask = mFirebase.database.child("users").child(mUser.uid).child("follows")
+        val followsTask = FirebaseHelper.database.child("users").child(mUser.uid).child("follows")
                 .child(uid).setValueTrueOrRemove(follow)
-        val followersTask = mFirebase.database.child("users").child(uid).child("followers")
+        val followersTask = FirebaseHelper.database.child("users").child(uid).child("followers")
                 .child(mUser.uid).setValueTrueOrRemove(follow)
 
         val feedPostsTask = task<Void> { taskSource ->
-            mFirebase.database.child("feed-posts").child(uid)
+            FirebaseHelper.database.child("feed-posts").child(uid)
                     .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                         val postsMap = if (follow) {
                             it.children.map { it.key to it.value }.toMap()
                         } else {
                             it.children.map { it.key to null }.toMap()
                         }
-                        mFirebase.database.child("feed-posts").child(mUser.uid).updateChildren(postsMap)
+                        FirebaseHelper.database.child("feed-posts").child(mUser.uid).updateChildren(postsMap)
                                 .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                     })
         }

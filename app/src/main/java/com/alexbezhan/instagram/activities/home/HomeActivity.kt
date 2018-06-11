@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
     private val TAG = "HomeActivity"
-    private lateinit var mFirebase: FirebaseHelper
     private lateinit var mAdapter: FeedAdapter
     private lateinit var mModel: HomeViewModel
 
@@ -21,7 +20,6 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
         Log.d(TAG, "onCreate")
         setupBottomNavigation()
 
-        mFirebase = FirebaseHelper(this)
         mAdapter = FeedAdapter(this)
         feed_recycler.adapter = mAdapter
         feed_recycler.layoutManager = LinearLayoutManager(this)
