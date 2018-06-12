@@ -11,8 +11,7 @@ import com.alexbezhan.instagram.activities.login.LoginActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.activities.search.SearchActivity
 import com.alexbezhan.instagram.activities.share.ShareActivity
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.google.firebase.auth.FirebaseAuth
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
 abstract class BaseActivity(val navNumber: Int? = null, val isAuthProtected: Boolean = true)

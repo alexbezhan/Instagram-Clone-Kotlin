@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.utils
+package com.alexbezhan.instagram.utils.diff
 
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView

@@ -53,7 +53,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 }
             }
         })
-        mModel.errorMessage.observe(this, ShowToastObserver(this))
+        mModel.error.observe(this, ShowToastObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

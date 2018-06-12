@@ -19,7 +19,7 @@ import com.alexbezhan.instagram.activities.loadImage
 import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.utils.DiffBasedAdapter
+import com.alexbezhan.instagram.utils.diff.DiffBasedAdapter
 import kotlinx.android.synthetic.main.feed_item.view.*
 
 class FeedAdapter(private val listener: Listener)

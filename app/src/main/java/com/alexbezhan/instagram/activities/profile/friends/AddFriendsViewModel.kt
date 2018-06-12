@@ -8,10 +8,10 @@ import com.alexbezhan.instagram.activities.asUser
 import com.alexbezhan.instagram.activities.setValueTrueOrRemove
 import com.alexbezhan.instagram.activities.task
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.alexbezhan.instagram.utils.FirebaseLiveData
-import com.alexbezhan.instagram.utils.TaskSourceOnCompleteListener
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
+import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
+import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
 import com.google.android.gms.tasks.Tasks
 
 class AddFriendsViewModel : ViewModel() {

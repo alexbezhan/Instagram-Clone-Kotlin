@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.utils
+package com.alexbezhan.instagram.utils.firebase
 
 import android.util.Log
 import com.google.firebase.database.DataSnapshot

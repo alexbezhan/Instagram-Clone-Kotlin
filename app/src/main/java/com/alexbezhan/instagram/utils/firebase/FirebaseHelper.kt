@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.utils
+package com.alexbezhan.instagram.utils.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

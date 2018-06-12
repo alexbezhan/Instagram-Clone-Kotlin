@@ -8,7 +8,6 @@ import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
-import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.GlideApp
@@ -37,7 +36,7 @@ class ShareActivity : BaseActivity(2) {
         super.onStart()
         mModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
         mModel.user.observe(this, Observer { it?.let { mUser = it } })
-        mModel.errorMessage.observe(this, ShowToastObserver(this))
+        mModel.error.observe(this, ShowToastObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

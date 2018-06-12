@@ -3,7 +3,7 @@ package com.alexbezhan.instagram.activities.profile.settings
 import android.os.Bundle
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
-import com.alexbezhan.instagram.utils.FirebaseHelper
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_profile_settings.*
 
 class ProfileSettingsActivity : BaseActivity() {

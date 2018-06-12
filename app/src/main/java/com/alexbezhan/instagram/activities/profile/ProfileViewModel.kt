@@ -5,8 +5,8 @@ import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.activities.asUser
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.alexbezhan.instagram.utils.FirebaseLiveData
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
 class ProfileViewModel : ViewModel() {
     val user: LiveData<User> = Transformations.map(

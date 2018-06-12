@@ -4,18 +4,16 @@ import android.arch.lifecycle.*
 import com.alexbezhan.instagram.activities.asFeedPost
 import com.alexbezhan.instagram.activities.setValueTrueOrRemove
 import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.alexbezhan.instagram.utils.FirebaseLiveData
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
+import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
 
 class HomeViewModel : ViewModel() {
     private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()
 
-    init {
-        FirebaseHelper.database
-    }
     val feedPosts: LiveData<List<FeedPost>> = Transformations.map(
-            FirebaseLiveData(FirebaseHelper.database.child("feed-posts").child(FirebaseHelper.currentUid())),
+            FirebaseLiveData(database.child("feed-posts").child(FirebaseHelper.currentUid())),
             {
                 it.children
                         .map { it.asFeedPost()!! }
@@ -23,7 +21,7 @@ class HomeViewModel : ViewModel() {
             })
 
     fun toggleLike(postId: String) {
-        val reference = FirebaseHelper.database.child("likes").child(postId).child(FirebaseHelper.currentUid())
+        val reference = database.child("likes").child(postId).child(FirebaseHelper.currentUid())
         reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {
             reference.setValueTrueOrRemove(!it.exists())
         })
@@ -33,7 +31,7 @@ class HomeViewModel : ViewModel() {
         val createNewObserver = postLikes[postId] == null
         if (createNewObserver) {
             val data = Transformations.map(FirebaseLiveData(
-                    FirebaseHelper.database.child("likes").child(postId)), {
+                    database.child("likes").child(postId)), {
                 val userLikes = it.children.map { it.key }.toSet()
                 FeedPostLikes(
                         userLikes.size,

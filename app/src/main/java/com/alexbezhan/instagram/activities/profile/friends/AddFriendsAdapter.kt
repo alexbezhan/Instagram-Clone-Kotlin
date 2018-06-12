@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.SimpleCallback
+import com.alexbezhan.instagram.utils.diff.SimpleCallback
 import kotlinx.android.synthetic.main.add_friends_item.view.*
 
 class AddFriendsAdapter(private val listener: Listener)

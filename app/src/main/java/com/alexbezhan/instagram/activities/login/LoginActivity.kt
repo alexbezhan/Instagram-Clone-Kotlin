@@ -10,8 +10,7 @@ import com.alexbezhan.instagram.activities.register.RegisterActivity
 import com.alexbezhan.instagram.activities.coordinateBtnAndInputs
 import com.alexbezhan.instagram.activities.home.HomeActivity
 import com.alexbezhan.instagram.activities.showToast
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.google.firebase.auth.FirebaseAuth
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
