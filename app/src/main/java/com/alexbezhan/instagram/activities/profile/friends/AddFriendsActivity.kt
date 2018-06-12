@@ -22,10 +22,7 @@ class AddFriendsActivity : BaseActivity(), AddFriendsAdapter.Listener {
 
         add_friends_recycler.adapter = mAdapter
         add_friends_recycler.layoutManager = LinearLayoutManager(this)
-    }
 
-    override fun onStart() {
-        super.onStart()
         mModel = ViewModelProviders.of(this).get(AddFriendsViewModel::class.java)
         mModel.userAndFriends.observe(this, Observer {
             it?.let { (user, friends) ->

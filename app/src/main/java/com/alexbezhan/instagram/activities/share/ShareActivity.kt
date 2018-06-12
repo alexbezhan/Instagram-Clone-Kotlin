@@ -30,10 +30,7 @@ class ShareActivity : BaseActivity(2) {
 
         back_image.setOnClickListener { finish() }
         share_text.setOnClickListener { share() }
-    }
 
-    override fun onStart() {
-        super.onStart()
         mModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
         mModel.user.observe(this, Observer { it?.let { mUser = it } })
         mModel.error.observe(this, ShowToastObserver(this))

@@ -34,10 +34,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         back_image.setOnClickListener { finish() }
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
-    }
 
-    override fun onStart() {
-        super.onStart()
         mModel = ViewModelProviders.of(this).get(EditProfileViewModel::class.java)
         mModel.user.observe(this, Observer {
             it?.let {

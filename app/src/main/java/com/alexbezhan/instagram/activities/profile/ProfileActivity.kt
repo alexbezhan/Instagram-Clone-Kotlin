@@ -38,10 +38,7 @@ class ProfileActivity : BaseActivity(4) {
         mAdapter = ProfileImagesAdapter()
         images_recycler.layoutManager = GridLayoutManager(this, 3)
         images_recycler.adapter = mAdapter
-    }
 
-    override fun onStart() {
-        super.onStart()
         val model = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         model.images.observe(this, Observer {
             it?.let { mAdapter.items = it }
