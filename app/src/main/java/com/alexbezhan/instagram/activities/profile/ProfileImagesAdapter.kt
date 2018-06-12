@@ -22,6 +22,4 @@ class ProfileImagesAdapter :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.image.loadImage(items[position])
     }
-
-    override fun getItemCount(): Int = items.size
 }

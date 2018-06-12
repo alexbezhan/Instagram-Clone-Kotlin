@@ -2,13 +2,13 @@ package com.alexbezhan.instagram.activities
 
 import android.app.Activity
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
+import android.graphics.Typeface
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
@@ -52,6 +52,24 @@ fun ImageView.loadImage(image: String?) =
             GlideApp.with(this).load(image).centerCrop().into(this)
         }
 
+fun TextView.setCommentText(username: String, comment: String) {
+    val usernameSpannable = SpannableString(username)
+    usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    usernameSpannable.setSpan(object : ClickableSpan() {
+        override fun onClick(widget: View) {
+            widget.context.showToast("Username is clicked")
+        }
+
+        override fun updateDrawState(ds: TextPaint?) {}
+    }, 0, usernameSpannable.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+    text = SpannableStringBuilder().append(usernameSpannable).append(" ")
+            .append(comment)
+    movementMethod = LinkMovementMethod.getInstance()
+}
+
 private fun View.ifNotDestroyed(block: () -> Unit) {
     if (!(context as Activity).isDestroyed) {
         block()
@@ -70,5 +88,5 @@ fun DataSnapshot.asUser(): User? =
 fun DataSnapshot.asFeedPost(): FeedPost? =
         getValue(FeedPost::class.java)?.copy(id = key)
 
-fun DatabaseReference.setValueTrueOrRemove(value: Boolean) =
+fun DatabaseReference.setValueTrueOrRemove(value: Boolean): Task<Void> =
         if (value) setValue(true) else removeValue()

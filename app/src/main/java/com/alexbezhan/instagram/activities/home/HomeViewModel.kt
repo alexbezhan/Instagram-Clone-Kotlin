@@ -6,8 +6,8 @@ import com.alexbezhan.instagram.activities.setValueTrueOrRemove
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
 class HomeViewModel : ViewModel() {
     private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()

@@ -1,23 +1,14 @@
 package com.alexbezhan.instagram.activities.home
 
 import android.annotation.SuppressLint
-import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.loadImage
 import com.alexbezhan.instagram.activities.loadUserPhoto
-import com.alexbezhan.instagram.activities.showToast
+import com.alexbezhan.instagram.activities.setCommentText
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.utils.diff.DiffBasedAdapter
 import kotlinx.android.synthetic.main.feed_item.view.*
@@ -28,6 +19,7 @@ class FeedAdapter(private val listener: Listener)
     interface Listener {
         fun toggleLike(postId: String)
         fun loadLikes(postId: String, position: Int)
+        fun comment(postId: String)
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -60,32 +52,13 @@ class FeedAdapter(private val listener: Listener)
                 likes_text.visibility = View.VISIBLE
                 likes_text.text = "${likes.likesCount} likes"
             }
-            caption_text.setCaptionText(post.username, post.caption)
+            caption_text.setCommentText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post.id) }
+            comment_image.setOnClickListener{ listener.comment(post.id) }
             like_image.setImageResource(
                     if (likes.likedByUser) R.drawable.ic_likes_active
                     else R.drawable.ic_likes_border)
             listener.loadLikes(post.id, position)
         }
     }
-
-    private fun TextView.setCaptionText(username: String, caption: String) {
-        val usernameSpannable = SpannableString(username)
-        usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        usernameSpannable.setSpan(object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                widget.context.showToast("Username is clicked")
-            }
-
-            override fun updateDrawState(ds: TextPaint?) {}
-        }, 0, usernameSpannable.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        text = SpannableStringBuilder().append(usernameSpannable).append(" ")
-                .append(caption)
-        movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    override fun getItemCount() = items.size
 }

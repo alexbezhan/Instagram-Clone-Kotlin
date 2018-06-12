@@ -12,4 +12,6 @@ abstract class DiffBasedAdapter<Item, VH : RecyclerView.ViewHolder>(
             field = newItems
             result.dispatchUpdatesTo(this)
         }
+
+    override fun getItemCount() = items.size
 }
