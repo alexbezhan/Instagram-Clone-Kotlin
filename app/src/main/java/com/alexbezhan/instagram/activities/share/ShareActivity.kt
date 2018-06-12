@@ -1,25 +1,25 @@
 package com.alexbezhan.instagram.activities.share
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
-import com.alexbezhan.instagram.activities.asUser
 import com.alexbezhan.instagram.activities.showToast
-import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
-import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.GlideApp
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.utils.ShowToastObserver
 import kotlinx.android.synthetic.main.activity_share.*
 
 class ShareActivity : BaseActivity(2) {
     private val TAG = "ShareActivity"
     private lateinit var mCamera: CameraHelper
     private lateinit var mUser: User
+    private lateinit var mModel: ShareViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +31,13 @@ class ShareActivity : BaseActivity(2) {
 
         back_image.setOnClickListener { finish() }
         share_text.setOnClickListener { share() }
+    }
 
-        FirebaseHelper.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
-            mUser = it.asUser()!!
-        })
+    override fun onStart() {
+        super.onStart()
+        mModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
+        mModel.user.observe(this, Observer { it?.let { mUser = it } })
+        mModel.errorMessage.observe(this, ShowToastObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -49,44 +52,12 @@ class ShareActivity : BaseActivity(2) {
 
     private fun share() {
         val imageUri = mCamera.imageUri
-        if (imageUri != null) {
-            val uid = FirebaseHelper.currentUid()!!
-            FirebaseHelper.storage.child("users").child(uid).child("images")
-                    .child(imageUri.lastPathSegment).putFile(imageUri).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val imageDownloadUrl = it.result.downloadUrl!!.toString()
-                            FirebaseHelper.database.child("images").child(uid).push()
-                                    .setValue(imageDownloadUrl)
-                                    .addOnCompleteListener {
-                                        if (it.isSuccessful) {
-                                            FirebaseHelper.database.child("feed-posts").child(uid)
-                                                    .push()
-                                                    .setValue(mkFeedPost(uid, imageDownloadUrl))
-                                                    .addOnCompleteListener {
-                                                        if (it.isSuccessful) {
-                                                            startActivity(Intent(this,
-                                                                    ProfileActivity::class.java))
-                                                            finish()
-                                                        }
-                                                    }
-                                        } else {
-                                            showToast(it.exception!!.message!!)
-                                        }
-                                    }
-                        } else {
-                            showToast(it.exception!!.message!!)
-                        }
-                    }
+        val caption = caption_input.text.toString()
+        if (imageUri != null && caption.isNotEmpty()) {
+            mModel.share(imageUri, caption, mUser).addOnSuccessListener {
+                startActivity(Intent(this, ProfileActivity::class.java))
+                finish()
+            }
         }
-    }
-
-    private fun mkFeedPost(uid: String, imageDownloadUrl: String): FeedPost {
-        return FeedPost(
-                uid = uid,
-                username = mUser.username,
-                image = imageDownloadUrl,
-                caption = caption_input.text.toString(),
-                photo = mUser.photo
-        )
     }
 }

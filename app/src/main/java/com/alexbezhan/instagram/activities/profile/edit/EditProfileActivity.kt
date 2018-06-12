@@ -1,13 +1,18 @@
 package com.alexbezhan.instagram.activities.profile.edit
 
-import android.arch.lifecycle.*
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.activities.*
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.loadUserPhoto
+import com.alexbezhan.instagram.activities.showToast
+import com.alexbezhan.instagram.activities.toStringOrNull
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
+import com.alexbezhan.instagram.utils.ShowToastObserver
 import com.alexbezhan.instagram.views.PasswordDialog
 import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -48,7 +53,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 }
             }
         })
-        mModel.errorMessage.observe(this, Observer { it?.let { showToast(it) } })
+        mModel.errorMessage.observe(this, ShowToastObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
