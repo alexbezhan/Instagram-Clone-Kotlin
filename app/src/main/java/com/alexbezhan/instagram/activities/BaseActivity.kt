@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.home.HomeActivity
-import com.alexbezhan.instagram.activities.likes.LikesActivity
+import com.alexbezhan.instagram.activities.notifications.NotificationsActivity
 import com.alexbezhan.instagram.activities.login.LoginActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.activities.search.SearchActivity
@@ -33,7 +33,7 @@ abstract class BaseActivity(val navNumber: Int? = null, val isAuthProtected: Boo
                         R.id.nav_item_home -> HomeActivity::class.java
                         R.id.nav_item_search -> SearchActivity::class.java
                         R.id.nav_item_share -> ShareActivity::class.java
-                        R.id.nav_item_likes -> LikesActivity::class.java
+                        R.id.nav_item_likes -> NotificationsActivity::class.java
                         R.id.nav_item_profile -> ProfileActivity::class.java
                         else -> {
                             Log.e(TAG, "unknown nav item clicked $it")

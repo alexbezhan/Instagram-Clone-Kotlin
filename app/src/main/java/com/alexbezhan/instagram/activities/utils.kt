@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.*
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
+import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.GlideApp
 import com.google.android.gms.tasks.Task
@@ -87,6 +88,9 @@ fun DataSnapshot.asUser(): User? =
 
 fun DataSnapshot.asFeedPost(): FeedPost? =
         getValue(FeedPost::class.java)?.copy(id = key)
+
+fun DataSnapshot.asNotification(): Notification? =
+        getValue(Notification::class.java)?.copy(id = key)
 
 fun DatabaseReference.setValueTrueOrRemove(value: Boolean): Task<Void> =
         if (value) setValue(true) else removeValue()

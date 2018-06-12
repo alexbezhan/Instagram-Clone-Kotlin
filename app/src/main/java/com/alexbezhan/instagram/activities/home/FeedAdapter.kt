@@ -17,7 +17,7 @@ class FeedAdapter(private val listener: Listener)
     : DiffBasedAdapter<FeedPost, FeedAdapter.ViewHolder>({ it.id }) {
 
     interface Listener {
-        fun toggleLike(postId: String)
+        fun toggleLike(post: FeedPost)
         fun loadLikes(postId: String, position: Int)
         fun comment(postId: String)
     }
@@ -53,7 +53,7 @@ class FeedAdapter(private val listener: Listener)
                 likes_text.text = "${likes.likesCount} likes"
             }
             caption_text.setCommentText(post.username, post.caption)
-            like_image.setOnClickListener { listener.toggleLike(post.id) }
+            like_image.setOnClickListener { listener.toggleLike(post) }
             comment_image.setOnClickListener{ listener.comment(post.id) }
             like_image.setImageResource(
                     if (likes.likedByUser) R.drawable.ic_likes_active

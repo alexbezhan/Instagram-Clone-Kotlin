@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".activities.search.SearchActivity" />
         <activity android:name=".activities.share.ShareActivity" />
-        <activity android:name=".activities.likes.LikesActivity" />
+        <activity android:name=".activities.notifications.NotificationsActivity" />
         <activity android:name=".activities.profile.ProfileActivity" />
         <activity android:name=".activities.profile.edit.EditProfileActivity" />
         <activity

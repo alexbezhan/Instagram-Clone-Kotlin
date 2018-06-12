@@ -9,6 +9,7 @@ import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.activities.setCommentText
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.utils.diff.DiffBasedAdapter
+import kotlinx.android.synthetic.main.comments_item.view.*
 
 class CommentsAdapter : DiffBasedAdapter<Comment, CommentsAdapter.ViewHolder>({ it.id }) {
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)

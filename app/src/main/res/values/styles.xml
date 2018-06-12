@@ -39,6 +39,12 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="big_icon">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
     <style name="toolbar_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>

@@ -12,7 +12,7 @@ import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.activities.toStringOrNull
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
-import com.alexbezhan.instagram.utils.ShowToastObserver
+import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import com.alexbezhan.instagram.views.PasswordDialog
 import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -50,7 +50,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 }
             }
         })
-        mModel.error.observe(this, ShowToastObserver(this))
+        mModel.error.observe(this, ShowToastErrorObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

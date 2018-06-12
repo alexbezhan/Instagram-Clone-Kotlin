@@ -11,7 +11,7 @@ import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.GlideApp
-import com.alexbezhan.instagram.utils.ShowToastObserver
+import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import kotlinx.android.synthetic.main.activity_share.*
 
 class ShareActivity : BaseActivity(2) {
@@ -33,7 +33,7 @@ class ShareActivity : BaseActivity(2) {
 
         mModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
         mModel.user.observe(this, Observer { it?.let { mUser = it } })
-        mModel.error.observe(this, ShowToastObserver(this))
+        mModel.error.observe(this, ShowToastErrorObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
