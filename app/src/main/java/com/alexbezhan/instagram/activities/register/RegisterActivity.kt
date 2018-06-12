@@ -8,6 +8,7 @@ import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.home.HomeActivity
 import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -20,14 +21,9 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
 
     private var mEmail: String? = null
 
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDatabase: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-
-        mAuth = FirebaseAuth.getInstance()
-        mDatabase = FirebaseDatabase.getInstance().reference
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.frame_layout, EmailFragment())
@@ -38,7 +34,7 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
     override fun onNext(email: String) {
         if (email.isNotEmpty()) {
             mEmail = email
-            mAuth.fetchSignInMethodsForEmail(email) { signInMethods ->
+            FirebaseHelper.auth.fetchSignInMethodsForEmail(email) { signInMethods ->
                 if (signInMethods.isEmpty()) {
                     supportFragmentManager.beginTransaction().replace(R.id.frame_layout, NamePassFragment())
                             .addToBackStack(null)
@@ -56,8 +52,8 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
         if (fullName.isNotEmpty() && password.isNotEmpty()) {
             val email = mEmail
             if (email != null) {
-                mAuth.createUserWithEmailAndPassword(email, password) {
-                    mDatabase.createUser(it.user.uid, mkUser(fullName, email)) {
+                FirebaseHelper.auth.createUserWithEmailAndPassword(email, password) {
+                    FirebaseHelper.database.createUser(it.user.uid, mkUser(fullName, email)) {
                         startHomeActivity()
                     }
                 }

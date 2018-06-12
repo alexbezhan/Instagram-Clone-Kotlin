@@ -8,8 +8,14 @@ import com.google.firebase.storage.StorageReference
 
 object FirebaseHelper {
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    val database: DatabaseReference = FirebaseDatabase.getInstance().reference
+    val database: DatabaseReference
     val storage: StorageReference = FirebaseStorage.getInstance().reference
+
+    init {
+        val db = FirebaseDatabase.getInstance()
+        db.setPersistenceEnabled(true)
+        database = db.reference
+    }
 
     fun currentUserReference(): DatabaseReference =
             database.child("users").child(currentUid()!!)

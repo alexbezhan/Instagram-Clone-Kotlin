@@ -11,6 +11,9 @@ import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 class HomeViewModel : ViewModel() {
     private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()
 
+    init {
+        FirebaseHelper.database
+    }
     val feedPosts: LiveData<List<FeedPost>> = Transformations.map(
             FirebaseLiveData(FirebaseHelper.database.child("feed-posts").child(FirebaseHelper.currentUid())),
             {

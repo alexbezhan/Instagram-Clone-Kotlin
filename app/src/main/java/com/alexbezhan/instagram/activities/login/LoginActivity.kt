@@ -10,6 +10,7 @@ import com.alexbezhan.instagram.activities.register.RegisterActivity
 import com.alexbezhan.instagram.activities.coordinateBtnAndInputs
 import com.alexbezhan.instagram.activities.home.HomeActivity
 import com.alexbezhan.instagram.activities.showToast
+import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
@@ -19,7 +20,6 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
         View.OnClickListener {
 
     private val TAG = "LoginActivity"
-    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +30,6 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
         coordinateBtnAndInputs(login_btn, email_input, password_input)
         login_btn.setOnClickListener(this)
         create_account_text.setOnClickListener(this)
-
-        mAuth = FirebaseAuth.getInstance()
     }
 
     override fun onClick(view: View) {
@@ -40,7 +38,7 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
                 val email = email_input.text.toString()
                 val password = password_input.text.toString()
                 if (validate(email, password)) {
-                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
+                    FirebaseHelper.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
                         if (it.isSuccessful) {
                             startActivity(Intent(this, HomeActivity::class.java))
                             finish()

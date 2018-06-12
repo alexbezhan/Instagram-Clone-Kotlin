@@ -87,7 +87,7 @@
     <TextView
         android:id="@+id/followers_text"
         style="@style/profile_text"
-        android:text="followersTask"
+        android:text="followers"
         app:layout_constraintBaseline_toBaselineOf="@id/posts_text"
         app:layout_constraintEnd_toStartOf="@id/following_text"
         app:layout_constraintStart_toEndOf="@id/posts_text" />

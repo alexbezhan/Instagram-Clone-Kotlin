@@ -11,6 +11,7 @@ import com.alexbezhan.instagram.activities.login.LoginActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.activities.search.SearchActivity
 import com.alexbezhan.instagram.activities.share.ShareActivity
+import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
@@ -65,10 +66,10 @@ abstract class BaseActivity(val navNumber: Int? = null, val isAuthProtected: Boo
             finish()
         }
 
-        if (FirebaseAuth.getInstance().currentUser == null) {
+        if (FirebaseHelper.auth.currentUser == null) {
             goToLogin()
         }
-        FirebaseAuth.getInstance().addAuthStateListener {
+        FirebaseHelper.auth.addAuthStateListener {
             if (it.currentUser == null) {
                 goToLogin()
             }
