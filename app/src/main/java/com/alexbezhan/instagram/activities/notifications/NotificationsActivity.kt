@@ -81,8 +81,9 @@ class NotificationsAdapter(private val listener: Listener) :
 
         with(holder.view) {
             user_photo.loadUserPhoto(notification.photo)
-            notification_text.setCommentText(notification.username, notificationText)
-            post_image.loadImage(notification.postImage)
+            notification_text.setCommentText(notification.username, notificationText,
+                    notification.timestampDate())
+            post_image.loadImage(notification.postImage, hideOnNull = true)
             setOnClickListener { listener.openNotification(notification) }
         }
     }

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.loadUserPhoto
+import com.alexbezhan.instagram.models.NotificationId
+import com.alexbezhan.instagram.models.Uid
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.diff.SimpleCallback
 import kotlinx.android.synthetic.main.add_friends_item.view.*
@@ -17,13 +19,12 @@ class AddFriendsAdapter(private val listener: Listener)
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     interface Listener {
-        fun follow(uid: String)
-        fun unfollow(uid: String)
+        fun toggleFollow(uid: String)
     }
 
     private var mUsers = listOf<User>()
     private var mPositions = mapOf<String, Int>()
-    private var mFollows = mapOf<String, Boolean>()
+    private var mFollows = mapOf<Uid, NotificationId>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -37,10 +38,13 @@ class AddFriendsAdapter(private val listener: Listener)
             photo_image.loadUserPhoto(user.photo)
             username_text.text = user.username
             name_text.text = user.name
-            follow_btn.setOnClickListener { listener.follow(user.uid) }
-            unfollow_btn.setOnClickListener { listener.unfollow(user.uid) }
 
-            val follows = mFollows[user.uid] ?: false
+            View.OnClickListener { listener.toggleFollow(user.uid) }.apply {
+                follow_btn.setOnClickListener(this)
+                unfollow_btn.setOnClickListener(this)
+            }
+
+            val follows = mFollows[user.uid] != null
             if (follows) {
                 follow_btn.visibility = View.GONE
                 unfollow_btn.visibility = View.VISIBLE
@@ -53,7 +57,7 @@ class AddFriendsAdapter(private val listener: Listener)
 
     override fun getItemCount() = mUsers.size
 
-    fun update(users: List<User>, follows: Map<String, Boolean>) {
+    fun update(users: List<User>, follows: Map<Uid, NotificationId>) {
         val result = DiffUtil.calculateDiff(SimpleCallback(this.mUsers, users, { it.uid }))
         mUsers = users
         mPositions = users.withIndex().map { (idx, user) -> user.uid to idx }.toMap()

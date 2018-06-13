@@ -2,10 +2,13 @@ package com.alexbezhan.instagram.activities
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.*
+import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.*
@@ -18,6 +21,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
+import java.util.*
 
 fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, text, duration).show()
@@ -48,12 +52,20 @@ fun ImageView.loadUserPhoto(photoUrl: String?) =
             GlideApp.with(this).load(photoUrl).fallback(R.drawable.person).into(this)
         }
 
-fun ImageView.loadImage(image: String?) =
+fun ImageView.loadImage(image: String?, hideOnNull: Boolean = false) =
         ifNotDestroyed {
-            GlideApp.with(this).load(image).centerCrop().into(this)
+            if (hideOnNull) {
+                visibility =
+                        if (image == null) View.GONE
+                        else View.VISIBLE
+
+                GlideApp.with(this).load(image).centerCrop().into(this)
+            } else {
+                GlideApp.with(this).load(image).centerCrop().into(this)
+            }
         }
 
-fun TextView.setCommentText(username: String, comment: String) {
+fun TextView.setCommentText(username: String, comment: String, timestamp: Date? = null) {
     val usernameSpannable = SpannableString(username)
     usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -66,8 +78,25 @@ fun TextView.setCommentText(username: String, comment: String) {
     }, 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-    text = SpannableStringBuilder().append(usernameSpannable).append(" ")
-            .append(comment)
+
+    text = SpannableStringBuilder().apply {
+        append(usernameSpannable).append(" ").append(comment)
+        if (timestamp != null) {
+            val relativeDateTime = DateUtils.getRelativeTimeSpanString(
+                    timestamp.time,
+                    System.currentTimeMillis() + 60 * 1000 * 40,
+                    DateUtils.MINUTE_IN_MILLIS,
+                    DateUtils.FORMAT_ABBREV_RELATIVE)
+                    .replace(Regex(" ago$"), "")
+            val dateTimeSpannable = SpannableString(relativeDateTime)
+            dateTimeSpannable.setSpan(ForegroundColorSpan(
+                    resources.getColor(R.color.grey)),
+                    0,
+                    dateTimeSpannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            append(" ").append(dateTimeSpannable)
+        }
+    }
     movementMethod = LinkMovementMethod.getInstance()
 }
 

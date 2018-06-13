@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_photo"
@@ -17,7 +17,7 @@
         android:id="@+id/notification_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="This is a test notification text, that should be multiline."
+        android:text="This is a test notification text, that should be multiline. 1hr"
         android:textColor="@color/black"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@id/user_photo"

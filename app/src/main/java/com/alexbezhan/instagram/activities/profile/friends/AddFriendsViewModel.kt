@@ -5,16 +5,24 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.activities.asUser
-import com.alexbezhan.instagram.activities.setValueTrueOrRemove
 import com.alexbezhan.instagram.activities.task
+import com.alexbezhan.instagram.domain.Notifications
+import com.alexbezhan.instagram.domain.ToggleType
+import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
+import com.alexbezhan.instagram.utils.livedata.ErrorLiveDataComponent
+import com.alexbezhan.instagram.utils.livedata.HasErrorLiveData
 import com.google.android.gms.tasks.Tasks
 
-class AddFriendsViewModel : ViewModel() {
+private val errorComp = ErrorLiveDataComponent()
+
+class AddFriendsViewModel : ViewModel(), HasErrorLiveData by errorComp {
     val userAndFriends: LiveData<Pair<User, List<User>>> = Transformations.map(
             FirebaseLiveData(FirebaseHelper.database.child("users")), {
         val uid = FirebaseHelper.currentUid()
@@ -23,41 +31,40 @@ class AddFriendsViewModel : ViewModel() {
         userList.first() to otherUsersList
     })
 
-    private val _followError = MutableLiveData<String>()
+    fun toggleFollow(currentUser: User, uid: String) {
+        fun feedPostsTask(follow: Boolean) =
+                task<Void> { taskSource ->
+                    database.child("feed-posts").child(uid)
+                            .addListenerForSingleValueEvent(ValueEventListenerAdapter {
+                                val postsMap = if (follow) {
+                                    it.children.map { it.key to it.value }.toMap()
+                                } else {
+                                    it.children.map { it.key to null }.toMap()
+                                }
+                                database.child("feed-posts")
+                                        .child(currentUid()).updateChildren(postsMap)
+                                        .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
+                            })
+                }
 
-    val followError: LiveData<String> = _followError
+        val followsRef = database.child("users").child(currentUid()).child("follows").child(uid)
+        val followersRef = database.child("users").child(uid).child("followers").child(currentUid())
 
-    fun follow(uid: String) {
-        setFollow(uid, true)
-    }
-
-    fun unfollow(uid: String) {
-        setFollow(uid, false)
-    }
-
-    private fun setFollow(uid: String, follow: Boolean) {
-        val followsTask = FirebaseHelper.database.child("users").child(FirebaseHelper.currentUid())
-                .child("follows").child(uid).setValueTrueOrRemove(follow)
-        val followersTask = FirebaseHelper.database.child("users").child(uid).child("followers")
-                .child(FirebaseHelper.currentUid()).setValueTrueOrRemove(follow)
-
-        val feedPostsTask = task<Void> { taskSource ->
-            FirebaseHelper.database.child("feed-posts").child(uid)
-                    .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-                        val postsMap = if (follow) {
-                            it.children.map { it.key to it.value }.toMap()
-                        } else {
-                            it.children.map { it.key to null }.toMap()
-                        }
-                        FirebaseHelper.database.child("feed-posts")
-                                .child(FirebaseHelper.currentUid()).updateChildren(postsMap)
-                                .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
-                    })
-        }
-
-        Tasks.whenAll(followsTask, followersTask, feedPostsTask).addOnFailureListener {
-            it.message?.let { _followError.value = it }
-        }
+        Notifications.toggleNotification(currentUser, uid, NotificationType.FOLLOW, null, followsRef)
+                .onSuccessTask { result ->
+                    when (result!!.toggleType) {
+                        ToggleType.ADDED ->
+                            Tasks.whenAll(
+                                    feedPostsTask(true),
+                                    followsRef.setValue(result.notificationId),
+                                    followersRef.setValue(result.notificationId))
+                        ToggleType.REMOVED ->
+                            Tasks.whenAll(
+                                    feedPostsTask(false),
+                                    followsRef.removeValue(),
+                                    followersRef.removeValue())
+                    }
+                }.addOnFailureListener(errorComp.onFailureListener)
     }
 
 }
