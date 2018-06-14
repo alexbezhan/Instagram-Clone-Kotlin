@@ -42,7 +42,13 @@ class NotificationsAdapter(private val listener: Listener) :
             notification_text.setCommentText(notification.username, notificationText,
                     notification.timestampDate())
             post_image.loadImage(notification.postImage, hideOnNull = true)
-            setOnClickListener { listener.openNotification(notification) }
+            with(View.OnClickListener { listener.openNotification(notification) }) {
+                post_image.setOnClickListener(this)
+                notification_text.setOnClickListener(this)
+            }
+            user_photo.setOnClickListener {
+                // open another user profile
+            }
         }
     }
 }

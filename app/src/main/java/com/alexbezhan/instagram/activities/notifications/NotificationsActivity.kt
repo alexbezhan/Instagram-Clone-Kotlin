@@ -1,13 +1,16 @@
 package com.alexbezhan.instagram.activities.notifications
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.BottomNavBar
+import com.alexbezhan.instagram.activities.postdetails.PostDetailsActivity
 import com.alexbezhan.instagram.models.Notification
+import com.alexbezhan.instagram.models.NotificationType
 import kotlinx.android.synthetic.main.activity_notifications.*
 
 class NotificationsActivity : BaseActivity(),
@@ -36,6 +39,13 @@ class NotificationsActivity : BaseActivity(),
     }
 
     override fun openNotification(notification: Notification) {
-
+        when (notification.type) {
+            NotificationType.LIKE, NotificationType.COMMENT -> {
+                val intent = Intent(this, PostDetailsActivity::class.java)
+                intent.putExtra(PostDetailsActivity.EXTRA_POST_ID, notification.postId)
+                startActivity(intent)
+            }
+            NotificationType.FOLLOW -> 1 // ...
+        }
     }
 }

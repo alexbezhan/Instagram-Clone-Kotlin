@@ -17,7 +17,8 @@ class CommentsViewModel : BaseViewModel() {
 
     fun start(postId: String) {
         this.postId = postId
-        comments = Transformations.map(FirebaseLiveData(FirebaseHelper.database.child("comments").child(postId)),
+        comments = Transformations.map(
+                FirebaseLiveData(FirebaseHelper.database.child("comments").child(postId)),
                 {
                     it.children.map { it.getValue(Comment::class.java)!! }
                 })

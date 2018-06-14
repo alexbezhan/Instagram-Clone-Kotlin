@@ -36,6 +36,7 @@
         <activity
             android:name=".activities.home.comments.CommentsActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name=".activities.postdetails.PostDetailsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

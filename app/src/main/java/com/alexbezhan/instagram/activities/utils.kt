@@ -70,9 +70,7 @@ fun TextView.setCommentText(username: String, comment: String, timestamp: Date? 
     usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     usernameSpannable.setSpan(object : ClickableSpan() {
-        override fun onClick(widget: View) {
-            widget.context.showToast("Username is clicked")
-        }
+        override fun onClick(widget: View) { /* open another user profile ... */}
 
         override fun updateDrawState(ds: TextPaint?) {}
     }, 0, usernameSpannable.length,
@@ -120,6 +118,3 @@ fun DataSnapshot.asFeedPost(): FeedPost? =
 
 fun DataSnapshot.asNotification(): Notification? =
         getValue(Notification::class.java)?.copy(id = key)
-
-fun DatabaseReference.setValueTrueOrRemove(value: Boolean): Task<Void> =
-        if (value) setValue(true) else removeValue()
