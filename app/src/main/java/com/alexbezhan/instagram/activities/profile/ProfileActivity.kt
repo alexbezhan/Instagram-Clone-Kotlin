@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
+import android.view.View
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.BottomNavBar
@@ -13,18 +14,22 @@ import com.alexbezhan.instagram.activities.profile.edit.EditProfileActivity
 import com.alexbezhan.instagram.activities.profile.friends.AddFriendsActivity
 import com.alexbezhan.instagram.activities.profile.settings.ProfileSettingsActivity
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mUser: User
     private lateinit var mAdapter: ProfileImagesAdapter
+    private lateinit var mUid: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
         Log.d(TAG, "onCreate")
+
+        mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
 
         edit_profile_btn.setOnClickListener {
             startActivity(Intent(this, EditProfileActivity::class.java))
@@ -56,5 +61,14 @@ class ProfileActivity : BaseActivity() {
                 following_count_text.text = mUser.follows.size.toString()
             }
         })
+
+        val isAnotherUser = mUid != currentUid()!!
+        val privateControlsVisibility = if (isAnotherUser) View.GONE else View.VISIBLE
+        add_friends_image.visibility = privateControlsVisibility
+        settings_image.visibility = privateControlsVisibility
+    }
+
+    companion object {
+        const val EXTRA_UID = "uid"
     }
 }

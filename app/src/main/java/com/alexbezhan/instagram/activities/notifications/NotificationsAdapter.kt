@@ -19,6 +19,7 @@ class NotificationsAdapter(private val listener: Listener) :
 
     interface Listener {
         fun openNotification(notification: Notification)
+        fun openProfile(uid: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,9 +47,7 @@ class NotificationsAdapter(private val listener: Listener) :
                 post_image.setOnClickListener(this)
                 notification_text.setOnClickListener(this)
             }
-            user_photo.setOnClickListener {
-                // open another user profile
-            }
+            user_photo.setOnClickListener { listener.openProfile(notification.uid) }
         }
     }
 }

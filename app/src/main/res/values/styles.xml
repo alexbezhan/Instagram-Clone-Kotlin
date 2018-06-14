@@ -93,6 +93,28 @@
         <item name="android:textColor">@color/grey</item>
     </style>
 
+    <style name="profile_action_btn" parent="secondary_small_btn">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>…
+        <item name="layout_constraintHorizontal_weight">5</item>
+    </style>
+
+    <style name="edit_profile_btn" parent="profile_action_btn">
+        <item name="android:text">Edit Profile</item>
+    </style>
+
+    <style name="follow_profile_btn" parent="profile_action_btn">
+        <item name="android:background">@drawable/statefull_btn_bg</item>
+        <item name="android:text">Edit Profile</item>
+    </style>
+
     <style name="big_input">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -104,7 +126,7 @@
     </style>
 
     <style name="big_btn" parent="big_input">
-        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:background">@drawable/statefull_btn_bg</item>
         <item name="android:textColor">@color/btn_color</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:stateListAnimator">@animator/btn_animator</item>
@@ -117,7 +139,7 @@
         <item name="android:paddingBottom">3dp</item>
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">10dp</item>
-        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:background">@drawable/statefull_btn_bg</item>
         <item name="android:textColor">@color/btn_color</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:stateListAnimator">@animator/btn_animator</item>
