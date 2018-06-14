@@ -42,13 +42,18 @@ class ProfileActivity : BaseActivity() {
 
         val model = initModel<ProfileViewModel>()
         model.images.observe(this, Observer {
-            it?.let { mAdapter.items = it }
+            it?.let { images ->
+                mAdapter.items = images
+                posts_count_text.text = images.size.toString()
+            }
         })
         model.user.observe(this, Observer {
             it?.let {
                 mUser = it
                 profile_image.loadUserPhoto(mUser.photo)
                 username_text.text = mUser.username
+                followers_count_text.text = mUser.followers.size.toString()
+                following_count_text.text = mUser.follows.size.toString()
             }
         })
     }
