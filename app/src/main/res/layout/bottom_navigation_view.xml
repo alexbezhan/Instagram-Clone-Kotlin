@@ -11,4 +11,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 
+    <com.nhaarman.supertooltips.ToolTipRelativeLayout
+        android:id="@+id/tooltip_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="30dp"/>
+
 </merge>

@@ -1,20 +1,21 @@
 package com.alexbezhan.instagram.activities.profile
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.activities.*
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.BottomNavBar
+import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.activities.profile.edit.EditProfileActivity
 import com.alexbezhan.instagram.activities.profile.friends.AddFriendsActivity
 import com.alexbezhan.instagram.activities.profile.settings.ProfileSettingsActivity
 import com.alexbezhan.instagram.models.User
 import kotlinx.android.synthetic.main.activity_profile.*
 
-class ProfileActivity : BaseActivity(4) {
+class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mUser: User
     private lateinit var mAdapter: ProfileImagesAdapter
@@ -22,7 +23,7 @@ class ProfileActivity : BaseActivity(4) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        setupBottomNavigation()
+        setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
         Log.d(TAG, "onCreate")
 
         edit_profile_btn.setOnClickListener {
@@ -39,7 +40,7 @@ class ProfileActivity : BaseActivity(4) {
         images_recycler.layoutManager = GridLayoutManager(this, 3)
         images_recycler.adapter = mAdapter
 
-        val model = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        val model = initModel<ProfileViewModel>()
         model.images.observe(this, Observer {
             it?.let { mAdapter.items = it }
         })

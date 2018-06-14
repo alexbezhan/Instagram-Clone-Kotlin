@@ -1,7 +1,6 @@
 package com.alexbezhan.instagram.activities.home.comments
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
@@ -32,8 +31,8 @@ class CommentsActivity : BaseActivity() {
         comments_recycler.adapter = mAdapter
         back_image.setOnClickListener { finish() }
 
-        mModel = ViewModelProviders.of(this).get(CommentsViewModel::class.java)
-        mModel.init(intent.getStringExtra(EXTRA_POST_ID))
+        mModel = initModel()
+        mModel.start(intent.getStringExtra(EXTRA_POST_ID))
         mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it

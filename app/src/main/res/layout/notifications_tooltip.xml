@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/likes_image"
+        style="@style/notification_icon"
+        android:src="@drawable/ic_likes" />
+
+    <TextView
+        android:id="@+id/likes_count_text"
+        style="@style/notification_text"
+        tools:text="12" />
+
+    <ImageView
+        android:id="@+id/followers_image"
+        style="@style/notification_icon"
+        android:src="@drawable/ic_profile" />
+
+    <TextView
+        android:id="@+id/followers_count_text"
+        style="@style/notification_text"
+        tools:text="7" />
+
+    <ImageView
+        android:id="@+id/comments_image"
+        style="@style/notification_icon"
+        android:src="@drawable/ic_comments_border" />
+
+    <TextView
+        android:id="@+id/comments_count_text"
+        style="@style/notification_text"
+        tools:text="3" />
+
+</LinearLayout>

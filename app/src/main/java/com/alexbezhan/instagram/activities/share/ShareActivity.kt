@@ -1,7 +1,6 @@
 package com.alexbezhan.instagram.activities.share
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +10,9 @@ import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.utils.GlideApp
-import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import kotlinx.android.synthetic.main.activity_share.*
 
-class ShareActivity : BaseActivity(2) {
+class ShareActivity : BaseActivity() {
     private val TAG = "ShareActivity"
     private lateinit var mCamera: CameraHelper
     private lateinit var mUser: User
@@ -31,9 +29,8 @@ class ShareActivity : BaseActivity(2) {
         back_image.setOnClickListener { finish() }
         share_text.setOnClickListener { share() }
 
-        mModel = ViewModelProviders.of(this).get(ShareViewModel::class.java)
+        mModel = initModel()
         mModel.user.observe(this, Observer { it?.let { mUser = it } })
-        mModel.error.observe(this, ShowToastErrorObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

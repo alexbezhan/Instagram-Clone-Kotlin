@@ -39,6 +39,24 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="notification_element">
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+    </style>
+
+    <style name="notification_icon" parent="notification_element">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="notification_text" parent="notification_element">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
     <style name="big_icon">
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>

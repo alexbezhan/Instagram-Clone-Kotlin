@@ -1,7 +1,6 @@
 package com.alexbezhan.instagram.activities.profile.edit
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +11,6 @@ import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.activities.toStringOrNull
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
-import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import com.alexbezhan.instagram.views.PasswordDialog
 import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -35,7 +33,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mModel = ViewModelProviders.of(this).get(EditProfileViewModel::class.java)
+        mModel = initModel()
         mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it
@@ -50,7 +48,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 }
             }
         })
-        mModel.error.observe(this, ShowToastErrorObserver(this))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

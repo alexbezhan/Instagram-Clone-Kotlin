@@ -1,6 +1,10 @@
 package com.alexbezhan.instagram.activities.home
 
-import android.arch.lifecycle.*
+import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.Transformations
+import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.asFeedPost
 import com.alexbezhan.instagram.domain.Notifications
 import com.alexbezhan.instagram.domain.ToggleType
@@ -9,12 +13,9 @@ import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.utils.livedata.*
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
-private val errorComp = ErrorLiveDataComponent()
-
-class HomeViewModel : ViewModel(), HasUserLiveData by UserLiveDataComponent(),
-        HasErrorLiveData by errorComp {
+class HomeViewModel : BaseViewModel() {
 
     private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()
 
@@ -35,7 +36,7 @@ class HomeViewModel : ViewModel(), HasUserLiveData by UserLiveDataComponent(),
                         ToggleType.ADDED -> likeRef.setValue(result.notificationId)
                         ToggleType.REMOVED -> likeRef.removeValue()
                     }
-                }.addOnFailureListener(errorComp.onFailureListener)
+                }.addOnFailureListener(onFailureListener)
     }
 
     fun observeLikes(postId: String, owner: LifecycleOwner, observer: Observer<FeedPostLikes>) {

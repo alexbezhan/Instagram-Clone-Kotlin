@@ -1,9 +1,8 @@
 package com.alexbezhan.instagram.activities.profile.friends
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
-import android.arch.lifecycle.ViewModel
+import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.asUser
 import com.alexbezhan.instagram.activities.task
 import com.alexbezhan.instagram.domain.Notifications
@@ -13,16 +12,12 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
-import com.alexbezhan.instagram.utils.livedata.ErrorLiveDataComponent
-import com.alexbezhan.instagram.utils.livedata.HasErrorLiveData
+import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.Tasks
 
-private val errorComp = ErrorLiveDataComponent()
-
-class AddFriendsViewModel : ViewModel(), HasErrorLiveData by errorComp {
+class AddFriendsViewModel : BaseViewModel() {
     val userAndFriends: LiveData<Pair<User, List<User>>> = Transformations.map(
             FirebaseLiveData(FirebaseHelper.database.child("users")), {
         val uid = FirebaseHelper.currentUid()
@@ -64,7 +59,7 @@ class AddFriendsViewModel : ViewModel(), HasErrorLiveData by errorComp {
                                     followsRef.removeValue(),
                                     followersRef.removeValue())
                     }
-                }.addOnFailureListener(errorComp.onFailureListener)
+                }.addOnFailureListener(onFailureListener)
     }
 
 }
