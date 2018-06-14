@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.home.HomeActivity
 import com.alexbezhan.instagram.activities.notifications.NotificationsActivity
@@ -80,16 +81,30 @@ class BottomNavBar(private val activity: Activity,
     }
 
     fun showNotificationPopover(toolTipLayout: ToolTipRelativeLayout) {
+        fun setCount(text: TextView, icon: ImageView, count: Int) {
+            if (count > 0) {
+                text.visibility = View.VISIBLE
+                icon.visibility = View.VISIBLE
+                text.text = count.toString()
+            } else {
+                text.visibility = View.GONE
+                icon.visibility = View.GONE
+            }
+        }
+
         navBarNotification.apply {
             if (commentsCount > 0 || followersCount > 0 || likesCount > 0) {
-                if (notificationsContentView.parent != null) {
-                    (notificationsContentView.parent as ViewGroup).removeView(notificationsContentView)
+                val parent = notificationsContentView.parent
+                if (parent != null && parent is ViewGroup) {
+                    parent.removeView(notificationsContentView)
                     lastToolTipView?.remove()
                 }
 
-                notificationsContentView.likes_count_text.text = likesCount.toString()
-                notificationsContentView.followers_count_text.text = followersCount.toString()
-                notificationsContentView.comments_count_text.text = commentsCount.toString()
+                notificationsContentView.apply {
+                    setCount(likes_count_text, likes_image, likesCount)
+                    setCount(followers_count_text, followers_image, followersCount)
+                    setCount(comments_count_text, comments_image, commentsCount)
+                }
 
                 val toolTip = ToolTip()
                         .withColor(activity.resources.getColor(R.color.red))
@@ -103,7 +118,7 @@ class BottomNavBar(private val activity: Activity,
 
     fun setNotifications(notifications: List<Notification>) {
         val notificationsByType = notifications
-                .filter { !it.isRead }
+                .filter { !it.read }
                 .groupBy { it.type }
                 .mapValues { (_, values) -> values.size }
         navBarNotification = NavBarNotification(

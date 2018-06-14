@@ -28,7 +28,10 @@ class NotificationsActivity : BaseActivity(),
 
         val model = initModel<NotificationsViewModel>()
         model.notifications.observe(this, Observer {
-            it?.let { mAdapter.items = it }
+            it?.let { notifications ->
+                model.checkUnreadNotifications(notifications)
+                mAdapter.items = notifications
+            }
         })
     }
 
