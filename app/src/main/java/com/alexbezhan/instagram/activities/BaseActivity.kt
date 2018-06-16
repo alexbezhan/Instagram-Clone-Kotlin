@@ -6,9 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.alexbezhan.instagram.activities.login.LoginActivity
-import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.auth
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
@@ -25,7 +25,7 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
 
         if (isAuthProtected) {
             mAuthListener = FirebaseAuth.AuthStateListener {
-                if (it.currentUser == null) {
+                if (!isAuthenticated()) {
                     goToLogin()
                 }
             }
@@ -44,6 +44,8 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
         })
         return model
     }
+
+    protected fun isAuthenticated() = auth.currentUser != null
 
     override fun onStart() {
         super.onStart()

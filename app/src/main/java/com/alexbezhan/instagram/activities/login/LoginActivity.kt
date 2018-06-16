@@ -32,12 +32,12 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
     }
 
     override fun onClick(view: View) {
-        when(view.id) {
+        when (view.id) {
             R.id.login_btn -> {
                 val email = email_input.text.toString()
                 val password = password_input.text.toString()
                 if (validate(email, password)) {
-                    FirebaseHelper.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
+                    FirebaseHelper.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                         if (it.isSuccessful) {
                             startActivity(Intent(this, HomeActivity::class.java))
                             finish()

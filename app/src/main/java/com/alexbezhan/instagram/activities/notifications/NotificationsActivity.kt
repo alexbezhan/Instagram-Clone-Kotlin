@@ -22,21 +22,23 @@ class NotificationsActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_notifications)
-        setupBottomNavigation(BottomNavBar.POSITION_NOTIFICATIONS)
-        Log.d(TAG, "onCreate")
+        if (isAuthenticated()) {
+            setContentView(R.layout.activity_notifications)
+            setupBottomNavigation(BottomNavBar.POSITION_NOTIFICATIONS)
+            Log.d(TAG, "onCreate")
 
-        mAdapter = NotificationsAdapter(this)
-        notifications_recycler.layoutManager = LinearLayoutManager(this)
-        notifications_recycler.adapter = mAdapter
+            mAdapter = NotificationsAdapter(this)
+            notifications_recycler.layoutManager = LinearLayoutManager(this)
+            notifications_recycler.adapter = mAdapter
 
-        val model = initModel<NotificationsViewModel>()
-        model.notifications.observe(this, Observer {
-            it?.let { notifications ->
-                model.checkUnreadNotifications(notifications)
-                mAdapter.items = notifications
-            }
-        })
+            val model = initModel<NotificationsViewModel>()
+            model.notifications.observe(this, Observer {
+                it?.let { notifications ->
+                    model.checkUnreadNotifications(notifications)
+                    mAdapter.items = notifications
+                }
+            })
+        }
     }
 
     override fun openNotification(notification: Notification) {

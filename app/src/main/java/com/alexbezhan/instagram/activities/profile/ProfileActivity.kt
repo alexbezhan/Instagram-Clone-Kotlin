@@ -26,61 +26,63 @@ class ProfileActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
-        Log.d(TAG, "onCreate")
+        if (isAuthenticated()) {
+            setContentView(R.layout.activity_profile)
+            setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
+            Log.d(TAG, "onCreate")
 
-        mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
+            mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
 
-        edit_profile_btn.setOnClickListener {
-            startActivity(Intent(this, EditProfileActivity::class.java))
-        }
-        settings_image.setOnClickListener {
-            startActivity(Intent(this, ProfileSettingsActivity::class.java))
-        }
-        add_friends_image.setOnClickListener {
-            startActivity(Intent(this, AddFriendsActivity::class.java))
-        }
-
-        mAdapter = ProfileImagesAdapter()
-        images_recycler.layoutManager = GridLayoutManager(this, 3)
-        images_recycler.adapter = mAdapter
-
-        val model = initModel<ProfileViewModel>()
-        model.images.observe(this, Observer {
-            it?.let { images ->
-                mAdapter.items = images
-                posts_count_text.text = images.size.toString()
+            edit_profile_btn.setOnClickListener {
+                startActivity(Intent(this, EditProfileActivity::class.java))
             }
-        })
-        if (isAnotherUser()) {
-            model.setAnotherUid(mUid)
-            model.anotherUser.observe(this, Observer {
-                it?.let {
-                    mAnotherUser = it
-                    bindStats(mAnotherUser!!)
-                    bindFollowBtn()
+            settings_image.setOnClickListener {
+                startActivity(Intent(this, ProfileSettingsActivity::class.java))
+            }
+            add_friends_image.setOnClickListener {
+                startActivity(Intent(this, AddFriendsActivity::class.java))
+            }
+
+            mAdapter = ProfileImagesAdapter()
+            images_recycler.layoutManager = GridLayoutManager(this, 3)
+            images_recycler.adapter = mAdapter
+
+            val model = initModel<ProfileViewModel>()
+            model.images.observe(this, Observer {
+                it?.let { images ->
+                    mAdapter.items = images
+                    posts_count_text.text = images.size.toString()
                 }
             })
-        }
-        model.user.observe(this, Observer {
-            it?.let {
-                mUser = it
-                bindFollowBtn()
-                if (!isAnotherUser()) {
-                    bindStats(mUser!!)
-                }
+            if (isAnotherUser()) {
+                model.setAnotherUid(mUid)
+                model.anotherUser.observe(this, Observer {
+                    it?.let {
+                        mAnotherUser = it
+                        bindStats(mAnotherUser!!)
+                        bindFollowBtn()
+                    }
+                })
             }
-        })
+            model.user.observe(this, Observer {
+                it?.let {
+                    mUser = it
+                    bindFollowBtn()
+                    if (!isAnotherUser()) {
+                        bindStats(mUser!!)
+                    }
+                }
+            })
 
-        if (isAnotherUser()) {
-            add_friends_image.visibility = View.GONE
-            settings_image.visibility = View.GONE
-            edit_profile_btn.visibility = View.GONE
-            follow_profile_btn.visibility = View.VISIBLE
-            follow_profile_btn.setOnClickListener {
-                mUser?.let { user ->
-                    model.toggleFollow(user, mUid)
+            if (isAnotherUser()) {
+                add_friends_image.visibility = View.GONE
+                settings_image.visibility = View.GONE
+                edit_profile_btn.visibility = View.GONE
+                follow_profile_btn.visibility = View.VISIBLE
+                follow_profile_btn.setOnClickListener {
+                    mUser?.let { user ->
+                        model.toggleFollow(user, mUid)
+                    }
                 }
             }
         }

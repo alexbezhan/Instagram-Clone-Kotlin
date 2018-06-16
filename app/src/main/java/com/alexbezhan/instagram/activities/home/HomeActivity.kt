@@ -21,19 +21,21 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        Log.d(TAG, "onCreate")
-        setupBottomNavigation(BottomNavBar.POSITION_HOME)
+        if (isAuthenticated()) {
+            setContentView(R.layout.activity_home)
+            Log.d(TAG, "onCreate")
+            setupBottomNavigation(BottomNavBar.POSITION_HOME)
 
-        mAdapter = FeedAdapter(this)
-        feed_recycler.adapter = mAdapter
-        feed_recycler.layoutManager = LinearLayoutManager(this)
+            mAdapter = FeedAdapter(this)
+            feed_recycler.adapter = mAdapter
+            feed_recycler.layoutManager = LinearLayoutManager(this)
 
-        mModel = initModel()
-        mModel.user.observe(this, Observer { it?.let { mUser = it } })
-        mModel.feedPosts.observe(this, Observer {
-            it?.let { mAdapter.items = it }
-        })
+            mModel = initModel()
+            mModel.user.observe(this, Observer { it?.let { mUser = it } })
+            mModel.feedPosts.observe(this, Observer {
+                it?.let { mAdapter.items = it }
+            })
+        }
     }
 
     override fun toggleLike(post: FeedPost) {

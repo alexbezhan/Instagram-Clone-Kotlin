@@ -9,9 +9,11 @@ import kotlinx.android.synthetic.main.activity_profile_settings.*
 class ProfileSettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile_settings)
+        if (isAuthenticated()) {
+            setContentView(R.layout.activity_profile_settings)
 
-        sign_out_text.setOnClickListener { FirebaseHelper.auth.signOut() }
-        back_image.setOnClickListener { finish() }
+            sign_out_text.setOnClickListener { FirebaseHelper.auth.signOut() }
+            back_image.setOnClickListener { finish() }
+        }
     }
 }

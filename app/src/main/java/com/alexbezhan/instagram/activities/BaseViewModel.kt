@@ -16,7 +16,7 @@ abstract class BaseViewModel : ViewModel() {
     val error: LiveData<String> = _errorMessage
 
     val user: LiveData<User> = Transformations.map(
-            FirebaseLiveData(FirebaseHelper.currentUserReference()),
+            FirebaseLiveData(FirebaseHelper.currentUserReference()!!),
             {
                 it.asUser()!!
             })
