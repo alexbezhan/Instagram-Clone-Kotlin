@@ -42,10 +42,10 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
         mModel.toggleLike(mUser, post)
     }
 
-    override fun loadLikes(postId: String, position: Int) {
-        mModel.observeLikes(postId, this, Observer {
+    override fun loadStats(postId: String, position: Int) {
+        mModel.observePostStats(postId, this, Observer {
             it?.let {
-                mAdapter.updatePostLikes(position, it)
+                mAdapter.updatePostStats(position, it)
             }
         })
     }
@@ -54,6 +54,15 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
         val intent = Intent(this, CommentsActivity::class.java)
         intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
         intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
+        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, true)
+        startActivity(intent)
+    }
+
+    override fun showComments(postId: String, uid: String) {
+        val intent = Intent(this, CommentsActivity::class.java)
+        intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
+        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
+        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, false)
         startActivity(intent)
     }
 }

@@ -3,6 +3,7 @@ package com.alexbezhan.instagram.activities.home.comments
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.WindowManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.loadUserPhoto
@@ -14,6 +15,7 @@ class CommentsActivity : BaseActivity() {
     companion object {
         const val EXTRA_POST_ID = "post_id"
         const val EXTRA_POST_UID = "post_uid"
+        const val EXTRA_START_TYPING_COMMENT = "start_typing_comment"
     }
 
     private lateinit var mModel: CommentsViewModel
@@ -27,7 +29,9 @@ class CommentsActivity : BaseActivity() {
         setContentView(R.layout.activity_comments)
 
         mModel = initModel()
-        mModel.start(intent.getStringExtra(EXTRA_POST_ID), intent.getStringExtra(EXTRA_POST_UID))
+        mModel.start(
+                postId = intent.getStringExtra(EXTRA_POST_ID),
+                postUid = intent.getStringExtra(EXTRA_POST_UID))
         mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it
@@ -63,6 +67,10 @@ class CommentsActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        comment_input.requestFocus()
+        if (intent.getBooleanExtra(EXTRA_START_TYPING_COMMENT, false)) {
+            comment_input.requestFocus()
+        } else {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+        }
     }
 }

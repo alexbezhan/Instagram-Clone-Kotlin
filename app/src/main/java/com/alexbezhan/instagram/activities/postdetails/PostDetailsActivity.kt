@@ -13,7 +13,7 @@ import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.asFeedPost
 import com.alexbezhan.instagram.activities.home.DefaultFeedPostListener
 import com.alexbezhan.instagram.activities.home.FeedAdapter
-import com.alexbezhan.instagram.activities.home.FeedPostLikes
+import com.alexbezhan.instagram.activities.home.FeedPostStats
 import com.alexbezhan.instagram.activities.home.FeedPostListener
 import com.alexbezhan.instagram.activities.home.comments.CommentsActivity
 import com.alexbezhan.instagram.models.FeedPost
@@ -38,9 +38,9 @@ class PostDetailsViewModel : BaseViewModel(), FeedPostListener {
                 })
     }
 
-    override fun observeLikes(postId: String, owner: LifecycleOwner,
-                              observer: Observer<FeedPostLikes>) =
-            feedPostListener.observeLikes(postId, owner, observer)
+    override fun observePostStats(postId: String, owner: LifecycleOwner,
+                                  observer: Observer<FeedPostStats>) =
+            feedPostListener.observePostStats(postId, owner, observer)
 
     override fun toggleLike(currentUser: User, post: FeedPost) =
             feedPostListener.toggleLike(currentUser, post)
@@ -77,10 +77,10 @@ class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
     override fun toggleLike(post: FeedPost) =
             mModel.toggleLike(mUser, post)
 
-    override fun loadLikes(postId: String, position: Int) =
-            mModel.observeLikes(postId, this, Observer {
+    override fun loadStats(postId: String, position: Int) =
+            mModel.observePostStats(postId, this, Observer {
                 it?.let {
-                    mAdapter.updatePostLikes(position, it)
+                    mAdapter.updatePostStats(position, it)
                 }
             })
 
@@ -88,6 +88,15 @@ class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
         val intent = Intent(this, CommentsActivity::class.java)
         intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
         intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
+        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, true)
+        startActivity(intent)
+    }
+
+    override fun showComments(postId: String, uid: String) {
+        val intent = Intent(this, CommentsActivity::class.java)
+        intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
+        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
+        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, false)
         startActivity(intent)
     }
 

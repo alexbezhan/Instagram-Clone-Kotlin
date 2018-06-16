@@ -23,9 +23,9 @@ class HomeViewModel : BaseViewModel(), FeedPostListener {
                         .sortedByDescending { it.timestampDate() }
             })
 
-    override fun observeLikes(postId: String, owner: LifecycleOwner,
-                              observer: Observer<FeedPostLikes>) =
-            feedPostListener.observeLikes(postId, owner, observer)
+    override fun observePostStats(postId: String, owner: LifecycleOwner,
+                                  observer: Observer<FeedPostStats>) =
+            feedPostListener.observePostStats(postId, owner, observer)
 
     override fun toggleLike(currentUser: User, post: FeedPost) =
             feedPostListener.toggleLike(currentUser, post)

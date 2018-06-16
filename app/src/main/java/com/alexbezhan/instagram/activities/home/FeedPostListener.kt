@@ -4,22 +4,24 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
+import com.alexbezhan.instagram.activities.zipLiveData
 import com.alexbezhan.instagram.domain.Notifications
 import com.alexbezhan.instagram.domain.ToggleType
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.OnFailureListener
 
 interface FeedPostListener {
     fun toggleLike(currentUser: User, post: FeedPost)
-    fun observeLikes(postId: String, owner: LifecycleOwner, observer: Observer<FeedPostLikes>)
+    fun observePostStats(postId: String, owner: LifecycleOwner, observer: Observer<FeedPostStats>)
 }
 
 class DefaultFeedPostListener(private val onFailureListener: OnFailureListener) : FeedPostListener {
-    private var postLikes = mapOf<String, LiveData<FeedPostLikes>>()
+    private var postStats = mapOf<String, LiveData<FeedPostStats>>()
 
     override fun toggleLike(currentUser: User, post: FeedPost) {
         val likeRef = FirebaseHelper.database.child("likes").child(post.id).child(currentUser.uid)
@@ -33,18 +35,21 @@ class DefaultFeedPostListener(private val onFailureListener: OnFailureListener) 
                 }.addOnFailureListener(onFailureListener)
     }
 
-    override fun observeLikes(postId: String, owner: LifecycleOwner, observer: Observer<FeedPostLikes>) {
-        val createNewObserver = postLikes[postId] == null
+    override fun observePostStats(postId: String, owner: LifecycleOwner,
+                                  observer: Observer<FeedPostStats>) {
+        val createNewObserver = postStats[postId] == null
         if (createNewObserver) {
-            val data = Transformations.map(FirebaseLiveData(
-                    FirebaseHelper.database.child("likes").child(postId)), {
-                val userLikes = it.children.map { it.key }.toSet()
-                FeedPostLikes(
-                        userLikes.size,
-                        userLikes.contains(FirebaseHelper.currentUid()))
-            })
-            data.observe(owner, observer)
-            postLikes += (postId to data)
+            val likesData = FirebaseLiveData(database.child("likes").child(postId))
+            val commentsData = FirebaseLiveData(database.child("comments").child(postId))
+            val statsData = Transformations.map(zipLiveData(likesData, commentsData)) { (likesSnapshot, commentsSnapshot) ->
+                val userLikes = likesSnapshot.children.map { it.key }.toSet()
+                FeedPostStats(
+                        likesCount = userLikes.size,
+                        commentsCount = commentsSnapshot.children.count(),
+                        likedByUser = userLikes.contains(FirebaseHelper.currentUid()))
+            }
+            statsData.observe(owner, observer)
+            postStats += (postId to statsData)
         }
     }
 }

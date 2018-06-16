@@ -1,8 +1,10 @@
 package com.alexbezhan.instagram.activities
 
 import android.app.Activity
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.Transformations
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.text.*
 import android.text.format.DateUtils
@@ -20,7 +22,6 @@ import com.alexbezhan.instagram.utils.GlideApp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import java.util.*
 
 fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) {
@@ -120,3 +121,32 @@ fun DataSnapshot.asFeedPost(): FeedPost? =
 
 fun DataSnapshot.asNotification(): Notification? =
         getValue(Notification::class.java)?.copy(id = key)
+
+fun <A, B> zipLiveData(a: LiveData<A>, b: LiveData<B>): LiveData<Pair<A, B>> {
+    return MediatorLiveData<Pair<A, B>>().apply {
+        var lastA: A? = null
+        var lastB: B? = null
+
+        fun update() {
+            val localLastA = lastA
+            val localLastB = lastB
+            if (localLastA != null && localLastB != null)
+                this.value = Pair(localLastA, localLastB)
+        }
+
+        addSource(a) {
+            lastA = it
+            update()
+        }
+        addSource(b) {
+            lastB = it
+            update()
+        }
+    }
+}
+
+fun <A, B> LiveData<A>.zip(b: LiveData<B>): LiveData<Pair<A, B>> =
+        zipLiveData(this, b)
+
+fun <A, B> LiveData<A>.map(function: (A) -> B): LiveData<B> =
+        Transformations.map(this, function)
