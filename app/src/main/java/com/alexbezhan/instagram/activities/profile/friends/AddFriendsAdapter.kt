@@ -40,16 +40,16 @@ class AddFriendsAdapter(private val listener: Listener)
             name_text.text = user.name
 
             View.OnClickListener { listener.toggleFollow(user.uid) }.apply {
-                follow_btn.setOnClickListener(this)
+                follow_profile_btn.setOnClickListener(this)
                 unfollow_btn.setOnClickListener(this)
             }
 
             val follows = mFollows[user.uid] != null
             if (follows) {
-                follow_btn.visibility = View.GONE
+                follow_profile_btn.visibility = View.GONE
                 unfollow_btn.visibility = View.VISIBLE
             } else {
-                follow_btn.visibility = View.VISIBLE
+                follow_profile_btn.visibility = View.VISIBLE
                 unfollow_btn.visibility = View.GONE
             }
         }

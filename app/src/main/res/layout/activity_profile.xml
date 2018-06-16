@@ -116,7 +116,7 @@
         app:layout_constraintStart_toStartOf="@id/vertical_guideline" />
 
     <Button
-        android:id="@+id/follow_btn"
+        android:id="@+id/follow_profile_btn"
         style="@style/follow_profile_btn"
         android:text="Follow"
         android:visibility="gone"

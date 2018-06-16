@@ -111,6 +111,7 @@
     </style>
 
     <style name="follow_profile_btn" parent="profile_action_btn">
+        <item name="android:textColor">@color/btn_color</item>
         <item name="android:background">@drawable/statefull_btn_bg</item>
         <item name="android:text">Edit Profile</item>
     </style>

@@ -19,9 +19,10 @@ import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
-    private lateinit var mUser: User
     private lateinit var mAdapter: ProfileImagesAdapter
     private lateinit var mUid: String
+    private var mUser: User? = null
+    private var mAnotherUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,21 +53,56 @@ class ProfileActivity : BaseActivity() {
                 posts_count_text.text = images.size.toString()
             }
         })
+        if (isAnotherUser()) {
+            model.setAnotherUid(mUid)
+            model.anotherUser.observe(this, Observer {
+                it?.let {
+                    mAnotherUser = it
+                    bindStats(mAnotherUser!!)
+                    bindFollowBtn()
+                }
+            })
+        }
         model.user.observe(this, Observer {
             it?.let {
                 mUser = it
-                profile_image.loadUserPhoto(mUser.photo)
-                username_text.text = mUser.username
-                followers_count_text.text = mUser.followers.size.toString()
-                following_count_text.text = mUser.follows.size.toString()
+                bindFollowBtn()
+                if (!isAnotherUser()) {
+                    bindStats(mUser!!)
+                }
             }
         })
 
-        val isAnotherUser = mUid != currentUid()!!
-        val privateControlsVisibility = if (isAnotherUser) View.GONE else View.VISIBLE
-        add_friends_image.visibility = privateControlsVisibility
-        settings_image.visibility = privateControlsVisibility
+        if (isAnotherUser()) {
+            add_friends_image.visibility = View.GONE
+            settings_image.visibility = View.GONE
+            edit_profile_btn.visibility = View.GONE
+            follow_profile_btn.visibility = View.VISIBLE
+            follow_profile_btn.setOnClickListener {
+                mUser?.let { user ->
+                    model.toggleFollow(user, mUid)
+                }
+            }
+        }
     }
+
+    private fun bindFollowBtn() {
+        mUser?.let { user ->
+            mAnotherUser?.let { anotherUser ->
+                val isFollowing = user.follows.containsKey(anotherUser.uid)
+                follow_profile_btn.text = if (isFollowing) "Unfollow" else "Follow"
+            }
+        }
+    }
+
+    private fun bindStats(user: User) {
+        profile_image.loadUserPhoto(user.photo)
+        username_text.text = user.username
+        followers_count_text.text = user.followers.size.toString()
+        following_count_text.text = user.follows.size.toString()
+    }
+
+    private fun isAnotherUser() = mUid != currentUid()!!
 
     companion object {
         const val EXTRA_UID = "uid"
