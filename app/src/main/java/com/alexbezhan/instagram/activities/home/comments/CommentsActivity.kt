@@ -19,21 +19,12 @@ class CommentsActivity : BaseActivity() {
     private lateinit var mModel: CommentsViewModel
     private lateinit var mUser: User
     private lateinit var mAdapter: CommentsAdapter
-    private lateinit var mAuthor: User
+    private lateinit var mPostAuthor: User
     private lateinit var mPost: FeedPost
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
-        post_text.setOnClickListener {
-            mModel.postComment(comment_input.text.toString(), mUser, mAuthor, mPost)
-            comment_input.setText("")
-        }
-
-        mAdapter = CommentsAdapter()
-        comments_recycler.layoutManager = LinearLayoutManager(this)
-        comments_recycler.adapter = mAdapter
-        back_image.setOnClickListener { finish() }
 
         mModel = initModel()
         mModel.start(intent.getStringExtra(EXTRA_POST_ID), intent.getStringExtra(EXTRA_POST_UID))
@@ -48,9 +39,9 @@ class CommentsActivity : BaseActivity() {
                 mPost = it
             }
         })
-        mModel.author.observe(this, Observer {
+        mModel.postAuthor.observe(this, Observer {
             it?.let {
-                mAuthor = it
+                mPostAuthor = it
             }
         })
         mModel.comments.observe(this, Observer {
@@ -58,6 +49,16 @@ class CommentsActivity : BaseActivity() {
                 mAdapter.items = it
             }
         })
+
+        post_text.setOnClickListener {
+            mModel.postComment(comment_input.text.toString(), mUser, mPostAuthor, mPost)
+            comment_input.setText("")
+        }
+
+        mAdapter = CommentsAdapter()
+        comments_recycler.layoutManager = LinearLayoutManager(this)
+        comments_recycler.adapter = mAdapter
+        back_image.setOnClickListener { finish() }
     }
 
     override fun onStart() {

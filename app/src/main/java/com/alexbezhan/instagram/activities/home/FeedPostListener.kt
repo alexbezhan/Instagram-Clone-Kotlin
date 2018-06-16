@@ -24,7 +24,7 @@ class DefaultFeedPostListener(private val onFailureListener: OnFailureListener) 
     override fun toggleLike(currentUser: User, post: FeedPost) {
         val likeRef = FirebaseHelper.database.child("likes").child(post.id).child(currentUser.uid)
 
-        Notifications.toggleNotification(currentUser, post.uid, NotificationType.LIKE, post, likeRef)
+        Notifications.toggleNotification(currentUser, post.uid, NotificationType.LIKE, likeRef, post)
                 .onSuccessTask { result ->
                     when (result!!.toggleType) {
                         ToggleType.ADDED -> likeRef.setValue(result.notificationId)

@@ -40,14 +40,16 @@ class NotificationsAdapter(private val listener: Listener) :
 
         with(holder.view) {
             user_photo.loadUserPhoto(notification.photo)
-            notification_text.setCommentText(notification.username, notificationText,
-                    notification.timestampDate())
             post_image.loadImage(notification.postImage, hideOnNull = true)
             with(View.OnClickListener { listener.openNotification(notification) }) {
                 post_image.setOnClickListener(this)
                 notification_text.setOnClickListener(this)
             }
-            user_photo.setOnClickListener { listener.openProfile(notification.uid) }
+            with(View.OnClickListener { listener.openProfile(notification.uid) }) {
+                notification_text.setCommentText(notification.username, notificationText,
+                        notification.timestampDate(), this)
+                user_photo.setOnClickListener(this)
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ class NotificationsActivity : BaseActivity(),
             model.notifications.observe(this, Observer {
                 it?.let { notifications ->
                     model.checkUnreadNotifications(notifications)
-                    mAdapter.items = notifications
+                    mAdapter.items = notifications.sortedByDescending { it.timestampDate() }
                 }
             })
         }

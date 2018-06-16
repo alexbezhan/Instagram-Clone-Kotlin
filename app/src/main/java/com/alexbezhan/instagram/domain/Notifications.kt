@@ -14,15 +14,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 
 object Notifications {
-    fun toggleNotification(currentUser: User, toUid: String, type: NotificationType, toPost: FeedPost?,
-                           notificationIdRef: DatabaseReference): Task<ToggleNotificationResult> {
+    fun toggleNotification(currentUser: User, toUid: String, type: NotificationType,
+                           notificationIdRef: DatabaseReference, toPost: FeedPost? = null,
+                           commentText: String? = null): Task<ToggleNotificationResult> {
         return task { taskSource ->
             notificationIdRef.addListenerForSingleValueEvent(ValueEventListenerAdapter {
                 val result =
                         if (it.exists()) {
                             removeNotification(toUid, asNotificationId(it))
                         } else {
-                            addNotification(currentUser, toUid, type, toPost)
+                            addNotification(currentUser, toUid, type, toPost, commentText)
                         }
                 result.addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             })
@@ -33,7 +34,8 @@ object Notifications {
             FirebaseHelper.database.child("notifications").child(uid)
 
     private fun addNotification(fromUser: User, toUid: String, type: NotificationType,
-                                toPost: FeedPost?): Task<ToggleNotificationResult> {
+                                toPost: FeedPost?, commentText: String?)
+            : Task<ToggleNotificationResult> {
         val ref = getNotificationsRef(toUid).push()
         val id = ref.key
         val notification = Notification(
@@ -43,7 +45,8 @@ object Notifications {
                 username = fromUser.username,
                 type = type,
                 postId = toPost?.id,
-                postImage = toPost?.image)
+                postImage = toPost?.image,
+                commentText = commentText)
         return ref.setValue(notification).onSuccessTask {
             Tasks.forResult(ToggleNotificationResult(id, ToggleType.ADDED))
         }

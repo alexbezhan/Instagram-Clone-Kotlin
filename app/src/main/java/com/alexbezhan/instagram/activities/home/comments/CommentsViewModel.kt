@@ -21,7 +21,7 @@ class CommentsViewModel : BaseViewModel() {
     lateinit var comments: LiveData<List<Comment>>
         private set
 
-    lateinit var author: LiveData<User>
+    lateinit var postAuthor: LiveData<User>
         private set
 
     lateinit var post: LiveData<FeedPost>
@@ -41,22 +41,23 @@ class CommentsViewModel : BaseViewModel() {
         ) {
             it.asFeedPost()!!
         }
-        author = Transformations.map(
+        postAuthor = Transformations.map(
                 FirebaseLiveData(FirebaseHelper.database.child("users").child(postUid))
         ) {
             it.asUser()!!
         }
     }
 
-    fun postComment(comment: String, user: User, author: User, post: FeedPost) {
+    fun postComment(comment: String, user: User, postAuthor: User, post: FeedPost) {
         if (comment.isNotEmpty()) {
             val commentObj = Comment(uid = user.uid, photo = user.photo, username = user.username,
                     text = comment)
             val commentRef = FirebaseHelper.database.child("comments").child(postId).push()
             commentRef.setValue(commentObj).addOnFailureListener(onFailureListener)
 
-            Notifications.toggleNotification(user, author.uid, NotificationType.COMMENT, post,
-                    commentRef.child("notification")).addOnFailureListener(onFailureListener)
+            Notifications.toggleNotification(user, postAuthor.uid, NotificationType.COMMENT,
+                    commentRef.child("notification"), post, comment)
+                    .addOnFailureListener(onFailureListener)
         }
     }
 }

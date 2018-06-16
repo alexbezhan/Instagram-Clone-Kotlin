@@ -65,12 +65,14 @@ fun ImageView.loadImage(image: String?, hideOnNull: Boolean = false) =
             }
         }
 
-fun TextView.setCommentText(username: String, comment: String, timestamp: Date? = null) {
+fun TextView.setCommentText(username: String, comment: String,
+                            timestamp: Date? = null,
+                            onUsernameClick: View.OnClickListener? = null) {
     val usernameSpannable = SpannableString(username)
     usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     usernameSpannable.setSpan(object : ClickableSpan() {
-        override fun onClick(widget: View) { /* open another user profile ... */}
+        override fun onClick(widget: View) { onUsernameClick?.onClick(widget) }
 
         override fun updateDrawState(ds: TextPaint?) {}
     }, 0, usernameSpannable.length,

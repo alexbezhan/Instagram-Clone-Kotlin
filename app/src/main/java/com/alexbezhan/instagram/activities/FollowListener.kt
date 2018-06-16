@@ -38,7 +38,7 @@ class DefaultFollowListener(private val onFailureListener: OnFailureListener) : 
         val followersRef = FirebaseHelper.database.child("users").child(uid).child("followers")
                 .child(FirebaseHelper.currentUid())
 
-        Notifications.toggleNotification(currentUser, uid, NotificationType.FOLLOW, null, followsRef)
+        Notifications.toggleNotification(currentUser, uid, NotificationType.FOLLOW, followsRef)
                 .onSuccessTask { result ->
                     when (result!!.toggleType) {
                         ToggleType.ADDED ->
