@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.notifications_tooltip.view.*
 
 class BottomNavBar(private val activity: Activity,
                    private val bnv: BottomNavigationViewEx,
-                   private val navPosition: Int) {
+                   private val navPosition: Int) : ToolTipView.OnToolTipViewClickedListener {
     private val TAG = "BottomNavBar"
 
     private val notificationsImage: ImageView by lazy {
@@ -92,14 +92,16 @@ class BottomNavBar(private val activity: Activity,
             }
         }
 
+        if (lastToolTipView != null) {
+            val parent = notificationsContentView.parent
+            if (parent != null && parent is ViewGroup) {
+                parent.removeView(notificationsContentView)
+                lastToolTipView?.remove()
+            }
+            lastToolTipView = null
+        }
         navBarNotification.apply {
             if (commentsCount > 0 || followersCount > 0 || likesCount > 0) {
-                val parent = notificationsContentView.parent
-                if (parent != null && parent is ViewGroup) {
-                    parent.removeView(notificationsContentView)
-                    lastToolTipView?.remove()
-                }
-
                 notificationsContentView.apply {
                     setCount(likes_count_text, likes_image, likesCount)
                     setCount(followers_count_text, followers_image, followersCount)
@@ -112,6 +114,7 @@ class BottomNavBar(private val activity: Activity,
                         .withAnimationType(ToolTip.AnimationType.NONE)
                         .withContentView(notificationsContentView)
                 lastToolTipView = toolTipLayout.showToolTipForView(toolTip, notificationsImage)
+                lastToolTipView?.setOnToolTipViewClickedListener(this@BottomNavBar)
             }
         }
     }
@@ -134,7 +137,11 @@ class BottomNavBar(private val activity: Activity,
         const val POSITION_NOTIFICATIONS = 3
         const val POSITION_PROFILE = 4
     }
-}
 
-private data class NavBarNotification(val likesCount: Int = 0, val followersCount: Int = 0,
-                                      val commentsCount: Int = 0)
+    override fun onToolTipViewClicked(toolTipView: ToolTipView?) {
+        bnv.getBottomNavigationItemView(POSITION_NOTIFICATIONS).callOnClick()
+    }
+
+    private data class NavBarNotification(val likesCount: Int = 0, val followersCount: Int = 0,
+                                          val commentsCount: Int = 0)
+}
