@@ -54,8 +54,7 @@
         app:civ_border_color="@color/grey"
         app:civ_border_width="1dp"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/edit_profile_btn"
-        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintEnd_toStartOf="@id/vertical_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
@@ -63,18 +62,17 @@
         android:id="@+id/posts_count_text"
         style="@style/profile_text_count"
         android:text="50"
-        app:layout_constraintBottom_toTopOf="@id/edit_profile_btn"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@id/posts_text"
         app:layout_constraintStart_toStartOf="@id/posts_text"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <TextView
         android:id="@+id/posts_text"
         style="@style/profile_text"
         android:text="posts"
         app:layout_constraintEnd_toStartOf="@id/followers_text"
-        app:layout_constraintStart_toStartOf="@id/edit_profile_btn"
+        app:layout_constraintStart_toStartOf="@id/vertical_guideline"
         app:layout_constraintTop_toBottomOf="@id/posts_count_text" />
 
     <TextView
@@ -106,25 +104,25 @@
         style="@style/profile_text"
         android:text="following"
         app:layout_constraintBaseline_toBaselineOf="@id/posts_text"
-        app:layout_constraintEnd_toEndOf="@id/edit_profile_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/followers_text" />
 
     <Button
         android:id="@+id/edit_profile_btn"
         style="@style/edit_profile_btn"
-        app:layout_constraintBottom_toBottomOf="@id/profile_image"
-        app:layout_constraintEnd_toStartOf="@id/follow_btn"
-        app:layout_constraintStart_toEndOf="@id/profile_image"
-        tools:text="Edit Profile" />
-
-    <!--Button
-        android:id="@+id/follow_btn"
-        android:visibility="gone"
-        style="@style/follow_profile_btn"
+        android:text="Edit Profile"
         app:layout_constraintBottom_toBottomOf="@id/profile_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/edit_profile_btn"
-        tools:text="Follow" /-->
+        app:layout_constraintStart_toStartOf="@id/vertical_guideline" />
+
+    <Button
+        android:id="@+id/follow_btn"
+        style="@style/follow_profile_btn"
+        android:text="Follow"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/vertical_guideline" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/images_recycler"
@@ -136,6 +134,15 @@
         app:layout_constraintTop_toBottomOf="@id/edit_profile_btn">
 
     </android.support.v7.widget.RecyclerView>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.31" />
 
     <include layout="@layout/bottom_navigation_view" />
 
