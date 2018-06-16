@@ -50,9 +50,10 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
         })
     }
 
-    override fun comment(postId: String) {
+    override fun comment(postId: String, uid: String) {
         val intent = Intent(this, CommentsActivity::class.java)
         intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
+        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
         startActivity(intent)
     }
 }

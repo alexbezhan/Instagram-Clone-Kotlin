@@ -7,7 +7,6 @@ import android.arch.lifecycle.Transformations
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.BaseViewModel
@@ -85,9 +84,10 @@ class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
                 }
             })
 
-    override fun comment(postId: String) {
+    override fun comment(postId: String, uid: String) {
         val intent = Intent(this, CommentsActivity::class.java)
         intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
+        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
         startActivity(intent)
     }
 

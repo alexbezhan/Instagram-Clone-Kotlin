@@ -6,23 +6,27 @@ import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.loadUserPhoto
+import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import kotlinx.android.synthetic.main.activity_comments.*
 
 class CommentsActivity : BaseActivity() {
     companion object {
         const val EXTRA_POST_ID = "post_id"
+        const val EXTRA_POST_UID = "post_uid"
     }
 
     private lateinit var mModel: CommentsViewModel
     private lateinit var mUser: User
     private lateinit var mAdapter: CommentsAdapter
+    private lateinit var mAuthor: User
+    private lateinit var mPost: FeedPost
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
         post_text.setOnClickListener {
-            mModel.postComment(comment_input.text.toString(), mUser)
+            mModel.postComment(comment_input.text.toString(), mUser, mAuthor, mPost)
             comment_input.setText("")
         }
 
@@ -32,11 +36,21 @@ class CommentsActivity : BaseActivity() {
         back_image.setOnClickListener { finish() }
 
         mModel = initModel()
-        mModel.start(intent.getStringExtra(EXTRA_POST_ID))
+        mModel.start(intent.getStringExtra(EXTRA_POST_ID), intent.getStringExtra(EXTRA_POST_UID))
         mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it
                 user_photo.loadUserPhoto(mUser.photo)
+            }
+        })
+        mModel.post.observe(this, Observer {
+            it?.let {
+                mPost = it
+            }
+        })
+        mModel.author.observe(this, Observer {
+            it?.let {
+                mAuthor = it
             }
         })
         mModel.comments.observe(this, Observer {
