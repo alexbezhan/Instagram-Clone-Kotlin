@@ -19,6 +19,8 @@ class DefaultFollowListener(private val onFailureListener: OnFailureListener) : 
         fun feedPostsTask(follow: Boolean) =
                 task<Void> { taskSource ->
                     FirebaseHelper.database.child("feed-posts").child(uid)
+                            .orderByChild("uid")
+                            .equalTo(uid)
                             .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                                 val postsMap = if (follow) {
                                     it.children.map { it.key to it.value }.toMap()
