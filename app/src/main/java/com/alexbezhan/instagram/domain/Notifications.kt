@@ -52,7 +52,7 @@ object Notifications {
         }
     }
 
-    private fun removeNotification(toUid: String, id: String): Task<ToggleNotificationResult> {
+    fun removeNotification(toUid: String, id: String): Task<ToggleNotificationResult> {
         val ref = getNotificationsRef(toUid).child(id)
         return ref.removeValue().onSuccessTask {
             Tasks.forResult(ToggleNotificationResult(id, ToggleType.REMOVED))
