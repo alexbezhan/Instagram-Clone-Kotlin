@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alexbezhan.instagram.activities.SquareImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.alexbezhan.instagram.activities.profile.SquareImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="1dp">
 
-</com.alexbezhan.instagram.activities.SquareImageView>
+</com.alexbezhan.instagram.activities.profile.SquareImageView>

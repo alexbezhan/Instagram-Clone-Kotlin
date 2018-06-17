@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.utils
+package com.alexbezhan.instagram.utils.firebase
 
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task

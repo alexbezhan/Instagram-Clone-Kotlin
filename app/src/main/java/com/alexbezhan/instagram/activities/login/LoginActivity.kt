@@ -1,22 +1,24 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import com.alexbezhan.instagram.R
-import com.google.firebase.auth.FirebaseAuth
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.register.RegisterActivity
+import com.alexbezhan.instagram.activities.coordinateBtnAndInputs
+import com.alexbezhan.instagram.activities.home.HomeActivity
+import com.alexbezhan.instagram.activities.showToast
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
-class LoginActivity : AppCompatActivity(), KeyboardVisibilityEventListener, View.OnClickListener {
+class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityEventListener,
+        View.OnClickListener {
 
     private val TAG = "LoginActivity"
-    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,17 +29,15 @@ class LoginActivity : AppCompatActivity(), KeyboardVisibilityEventListener, View
         coordinateBtnAndInputs(login_btn, email_input, password_input)
         login_btn.setOnClickListener(this)
         create_account_text.setOnClickListener(this)
-
-        mAuth = FirebaseAuth.getInstance()
     }
 
     override fun onClick(view: View) {
-        when(view.id) {
+        when (view.id) {
             R.id.login_btn -> {
                 val email = email_input.text.toString()
                 val password = password_input.text.toString()
                 if (validate(email, password)) {
-                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
+                    FirebaseHelper.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                         if (it.isSuccessful) {
                             startActivity(Intent(this, HomeActivity::class.java))
                             finish()

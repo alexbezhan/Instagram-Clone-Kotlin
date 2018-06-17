@@ -1,24 +1,26 @@
-package com.alexbezhan.instagram.activities
+package com.alexbezhan.instagram.activities.profile.edit
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.loadUserPhoto
+import com.alexbezhan.instagram.activities.showToast
+import com.alexbezhan.instagram.activities.toStringOrNull
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
-import com.alexbezhan.instagram.utils.FirebaseHelper
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
 import com.alexbezhan.instagram.views.PasswordDialog
 import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
-class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
+class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private val TAG = "EditProfileActivity"
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
-    private lateinit var mFirebase: FirebaseHelper
     private lateinit var mCamera: CameraHelper
+    private lateinit var mModel: EditProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,26 +33,28 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mFirebase = FirebaseHelper(this)
-
-        mFirebase.currentUserReference()
-                .addListenerForSingleValueEvent(ValueEventListenerAdapter {
-                    mUser = it.asUser()!!
-                    name_input.setText(mUser.name)
-                    username_input.setText(mUser.username)
-                    website_input.setText(mUser.website)
-                    bio_input.setText(mUser.bio)
-                    email_input.setText(mUser.email)
-                    phone_input.setText(mUser.phone?.toString())
-                    profile_image.loadUserPhoto(mUser.photo)
-                })
+        mModel = initModel()
+        mModel.user.observe(this, Observer {
+            it?.let {
+                mUser = it
+                with(mUser) {
+                    name_input.setText(name)
+                    username_input.setText(username)
+                    website_input.setText(website)
+                    bio_input.setText(bio)
+                    email_input.setText(email)
+                    phone_input.setText(phone?.toString())
+                    profile_image.loadUserPhoto(photo)
+                }
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mFirebase.uploadUserPhoto(mCamera.imageUri!!) {
+            mModel.uploadUserPhoto(mCamera.imageUri!!) {
                 val photoUrl = it.downloadUrl.toString()
-                mFirebase.updateUserPhoto(photoUrl) {
+                mModel.updateUserPhoto(photoUrl) {
                     mUser = mUser.copy(photo = photoUrl)
                     profile_image.loadUserPhoto(mUser.photo)
                 }
@@ -86,8 +90,8 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
     override fun onPasswordConfirm(password: String) {
         if (password.isNotEmpty()) {
             val credential = EmailAuthProvider.getCredential(mUser.email, password)
-            mFirebase.reauthenticate(credential) {
-                mFirebase.updateEmail(mPendingUser.email) {
+            mModel.reauthenticate(credential) {
+                mModel.updateEmail(mPendingUser.email) {
                     updateUser(mPendingUser)
                 }
             }
@@ -105,7 +109,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         if (user.email != mUser.email) updatesMap["email"] = user.email
         if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
 
-        mFirebase.updateUser(updatesMap) {
+        mModel.updateUser(updatesMap) {
             showToast("Profile saved")
             finish()
         }
@@ -118,5 +122,4 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
                 user.email.isEmpty() -> "Please enter email"
                 else -> null
             }
-
 }
