@@ -111,7 +111,7 @@ class BottomNavBar(private val activity: Activity,
                 val toolTip = ToolTip()
                         .withColor(activity.resources.getColor(R.color.red))
                         .withShadow()
-                        .withAnimationType(ToolTip.AnimationType.NONE)
+                        .withAnimationType(ToolTip.AnimationType.FROM_TOP)
                         .withContentView(notificationsContentView)
                 lastToolTipView = toolTipLayout.showToolTipForView(toolTip, notificationsImage)
                 lastToolTipView?.setOnToolTipViewClickedListener(this@BottomNavBar)
