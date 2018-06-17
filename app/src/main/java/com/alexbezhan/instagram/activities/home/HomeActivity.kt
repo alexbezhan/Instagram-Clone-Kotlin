@@ -8,6 +8,7 @@ import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.BottomNavBar
+import com.alexbezhan.instagram.activities.disableChangeAnimation
 import com.alexbezhan.instagram.activities.home.comments.CommentsActivity
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
@@ -27,6 +28,7 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
             setupBottomNavigation(BottomNavBar.POSITION_HOME)
 
             mAdapter = FeedAdapter(this)
+            feed_recycler.disableChangeAnimation()
             feed_recycler.adapter = mAdapter
             feed_recycler.layoutManager = LinearLayoutManager(this)
 

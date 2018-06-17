@@ -6,6 +6,8 @@ import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.Transformations
 import android.content.Context
 import android.graphics.Typeface
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SimpleItemAnimator
 import android.text.*
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
@@ -13,6 +15,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
@@ -111,6 +114,15 @@ fun <T> task(block: (TaskCompletionSource<T>) -> Unit): Task<T> {
     val taskSource = TaskCompletionSource<T>()
     block(taskSource)
     return taskSource.task
+}
+
+fun View.hideSoftKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun RecyclerView.disableChangeAnimation() {
+    (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 }
 
 fun DataSnapshot.asUser(): User? =
