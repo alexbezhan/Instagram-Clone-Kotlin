@@ -50,13 +50,13 @@ class NotificationsActivity : BaseActivity(),
 
     private fun openPost(postId: String) {
         val intent = Intent(this, PostDetailsActivity::class.java)
-        intent.putExtra(PostDetailsActivity.EXTRA_POST_ID, postId)
+        PostDetailsActivity.setupStartIntent(intent, postId)
         startActivity(intent)
     }
 
     override fun openProfile(uid: String) {
         val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra(ProfileActivity.EXTRA_UID, uid)
+        ProfileActivity.setupStartIntent(intent, uid)
         startActivity(intent)
     }
 }
