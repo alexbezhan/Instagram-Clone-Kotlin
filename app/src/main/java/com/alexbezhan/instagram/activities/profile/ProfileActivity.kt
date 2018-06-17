@@ -108,5 +108,9 @@ class ProfileActivity : BaseActivity() {
 
     companion object {
         const val EXTRA_UID = "uid"
+
+        fun setupStartIntent(intent: Intent, uid: String) {
+            intent.putExtra(ProfileActivity.EXTRA_UID, uid)
+        }
     }
 }

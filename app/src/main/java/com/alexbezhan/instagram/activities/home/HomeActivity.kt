@@ -54,17 +54,15 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
 
     override fun comment(postId: String, uid: String) {
         val intent = Intent(this, CommentsActivity::class.java)
-        intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
-        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
-        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, true)
+        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+                startTypingComment = true)
         startActivity(intent)
     }
 
     override fun showComments(postId: String, uid: String) {
         val intent = Intent(this, CommentsActivity::class.java)
-        intent.putExtra(CommentsActivity.EXTRA_POST_ID, postId)
-        intent.putExtra(CommentsActivity.EXTRA_POST_UID, uid)
-        intent.putExtra(CommentsActivity.EXTRA_START_TYPING_COMMENT, false)
+        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+                startTypingComment = false)
         startActivity(intent)
     }
 }
