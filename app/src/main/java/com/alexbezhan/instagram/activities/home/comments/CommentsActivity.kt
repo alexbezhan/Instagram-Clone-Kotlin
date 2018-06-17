@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.WindowManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.BaseActivity
+import com.alexbezhan.instagram.activities.hideSoftKeyboard
 import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
@@ -62,7 +63,10 @@ class CommentsActivity : BaseActivity() {
         mAdapter = CommentsAdapter()
         comments_recycler.layoutManager = LinearLayoutManager(this)
         comments_recycler.adapter = mAdapter
-        back_image.setOnClickListener { finish() }
+        back_image.setOnClickListener {
+            it.hideSoftKeyboard()
+            finish()
+        }
     }
 
     override fun onStart() {

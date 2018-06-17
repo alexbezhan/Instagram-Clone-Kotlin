@@ -5,10 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.activities.BaseActivity
-import com.alexbezhan.instagram.activities.loadUserPhoto
-import com.alexbezhan.instagram.activities.showToast
-import com.alexbezhan.instagram.activities.toStringOrNull
+import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.views.PasswordDialog
@@ -29,7 +26,10 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
 
         mCamera = CameraHelper(this)
 
-        back_image.setOnClickListener { finish() }
+        back_image.setOnClickListener {
+            it.hideSoftKeyboard()
+            finish()
+        }
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
@@ -111,6 +111,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
 
         mModel.updateUser(updatesMap) {
             showToast("Profile saved")
+            back_image.hideSoftKeyboard()
             finish()
         }
     }

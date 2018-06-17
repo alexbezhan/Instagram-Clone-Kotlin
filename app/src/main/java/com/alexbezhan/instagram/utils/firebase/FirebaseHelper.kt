@@ -13,7 +13,7 @@ object FirebaseHelper {
 
     init {
         val db = FirebaseDatabase.getInstance()
-        db.setPersistenceEnabled(true)
+        db.setPersistenceEnabled(false) // temporarily for development stage
         database = db.reference
     }
 
