@@ -93,7 +93,7 @@ class ProfileActivity : BaseActivity() {
         mUser?.let { user ->
             mAnotherUser?.let { anotherUser ->
                 val isFollowing = user.follows.containsKey(anotherUser.uid)
-                follow_profile_btn.text = if (isFollowing) "Unfollow" else "Follow"
+                follow_profile_btn.text = if (isFollowing) getString(R.string.unfollow_btn) else getString(R.string.follow_btn)
             }
         }
     }

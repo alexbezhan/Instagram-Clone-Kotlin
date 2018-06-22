@@ -32,9 +32,9 @@ class NotificationsAdapter(private val listener: Listener) :
         val notification = items[position]
         val notificationText = with(notification) {
             when (type) {
-                NotificationType.FOLLOW -> "started following you"
-                NotificationType.LIKE -> "liked your post"
-                NotificationType.COMMENT -> "commented: $commentText"
+                NotificationType.FOLLOW -> holder.view.context.getString(R.string.started_following_you)
+                NotificationType.LIKE -> holder.view.context.getString(R.string.liked_your_post)
+                NotificationType.COMMENT -> holder.view.context.getString(R.string.commented) + commentText
             }
         }
 

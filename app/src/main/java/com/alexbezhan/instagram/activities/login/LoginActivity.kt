@@ -44,7 +44,7 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
                         }
                     }
                 } else {
-                    showToast("Please enter email and password")
+                    showToast(getString(R.string.enter_email_and_password))
                 }
             }
             R.id.create_account_text -> {

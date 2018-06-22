@@ -2,4 +2,27 @@
     <string name="app_name">Instagram</string>
     <string name="create_account">Don\'t have an account? <b>Sign up.</b></string>
     <string name="please_enter_password">Please enter your password</string>
+    <string name="enter_email_and_password">Please enter email and password</string>
+    <string name="started_following_you">started following you</string>
+    <string name="liked_your_post">liked your post</string>
+    <string name="commented">commented:</string>
+    <string name="unfollow_btn">Unfollow</string>
+    <string name="follow_btn">Follow</string>
+    <string name="you_should_enter_password">You should enter your password</string>
+    <string name="profile_saved">Profile saved</string>
+    <string name="please_enter_name">Please enter name</string>
+    <string name="please_enter_username">Please enter username</string>
+    <string name="please_enter_email">Please enter email</string>
+    <string name="email_already_exists">This email already exists</string>
+    <string name="enter_email">Please enter email</string>
+    <string name="try_again_later">Something wrong happened. Please try again later</string>
+
+    <plurals name="likes_count">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+    <plurals name="comments_count">
+        <item quantity="one">View %d comment</item>
+        <item quantity="other">View all %d comments</item>
+    </plurals>
 </resources>

@@ -58,7 +58,7 @@ class AddFriendsAdapter(private val listener: Listener)
     override fun getItemCount() = mUsers.size
 
     fun update(users: List<User>, follows: Map<Uid, NotificationId>) {
-        val result = DiffUtil.calculateDiff(SimpleCallback(this.mUsers, users, { it.uid }))
+        val result = DiffUtil.calculateDiff(SimpleCallback(this.mUsers, users) { it.uid })
         mUsers = users
         mPositions = users.withIndex().map { (idx, user) -> user.uid to idx }.toMap()
         mFollows = follows
