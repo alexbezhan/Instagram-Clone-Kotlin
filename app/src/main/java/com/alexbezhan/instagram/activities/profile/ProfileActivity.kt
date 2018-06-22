@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.activities.profile
 
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -107,10 +108,13 @@ class ProfileActivity : BaseActivity() {
     private fun isAnotherUser() = mUid != currentUid()!!
 
     companion object {
-        const val EXTRA_UID = "uid"
+        private const val EXTRA_UID = "uid"
 
-        fun setupStartIntent(intent: Intent, uid: String) {
-            intent.putExtra(ProfileActivity.EXTRA_UID, uid)
+        fun start(context: Context, uid: String) {
+            val intent = Intent(context, ProfileActivity::class.java).apply {
+                putExtra(ProfileActivity.EXTRA_UID, uid)
+            }
+            context.startActivity(intent)
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.alexbezhan.instagram.activities.notifications
 
 import android.arch.lifecycle.Observer
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -49,14 +48,10 @@ class NotificationsActivity : BaseActivity(),
     }
 
     private fun openPost(postId: String) {
-        val intent = Intent(this, PostDetailsActivity::class.java)
-        PostDetailsActivity.setupStartIntent(intent, postId)
-        startActivity(intent)
+        PostDetailsActivity.start(this, postId)
     }
 
     override fun openProfile(uid: String) {
-        val intent = Intent(this, ProfileActivity::class.java)
-        ProfileActivity.setupStartIntent(intent, uid)
-        startActivity(intent)
+        ProfileActivity.start(this, uid)
     }
 }

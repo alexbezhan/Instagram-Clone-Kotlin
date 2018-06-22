@@ -53,16 +53,12 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
     }
 
     override fun comment(postId: String, uid: String) {
-        val intent = Intent(this, CommentsActivity::class.java)
-        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+        CommentsActivity.start(this, postId = postId, postUid = uid,
                 startTypingComment = true)
-        startActivity(intent)
     }
 
     override fun showComments(postId: String, uid: String) {
-        val intent = Intent(this, CommentsActivity::class.java)
-        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+        CommentsActivity.start(this, postId = postId, postUid = uid,
                 startTypingComment = false)
-        startActivity(intent)
     }
 }
