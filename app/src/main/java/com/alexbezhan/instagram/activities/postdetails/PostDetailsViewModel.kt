@@ -23,10 +23,10 @@ class PostDetailsViewModel : BaseViewModel(), FeedPostListener {
     fun start(postId: String) {
         this.postId = postId
         post = Transformations.map(
-                FirebaseLiveData(FirebaseHelper.database.child("feed-posts").child(FirebaseHelper.currentUid()!!).child(postId)),
-                {
-                    it.asFeedPost()!!
-                })
+                FirebaseLiveData(FirebaseHelper.database.child("feed-posts").child(FirebaseHelper.currentUid()!!).child(postId))
+        ) {
+            it.asFeedPost()!!
+        }
     }
 
     override fun observePostStats(postId: String, owner: LifecycleOwner,

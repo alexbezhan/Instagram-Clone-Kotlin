@@ -16,12 +16,12 @@ class HomeViewModel : BaseViewModel(), FeedPostListener {
     private val feedPostListener = DefaultFeedPostListener(onFailureListener)
 
     val feedPosts: LiveData<List<FeedPost>> = Transformations.map(
-            FirebaseLiveData(database.child("feed-posts").child(FirebaseHelper.currentUid())),
-            {
-                it.children
-                        .map { it.asFeedPost()!! }
-                        .sortedByDescending { it.timestampDate() }
-            })
+            FirebaseLiveData(database.child("feed-posts").child(FirebaseHelper.currentUid()))
+    ) {
+        it.children
+                .map { it.asFeedPost()!! }
+                .sortedByDescending { it.timestampDate() }
+    }
 
     override fun observePostStats(postId: String, owner: LifecycleOwner,
                                   observer: Observer<FeedPostStats>) =
