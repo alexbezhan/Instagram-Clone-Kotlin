@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.activities
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -35,8 +36,9 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
         }
     }
 
-    protected inline fun <reified T : BaseViewModel> initModel(): T {
-        val model = ViewModelProviders.of(this).get(T::class.java)
+    protected inline fun <reified T : BaseViewModel> initModel(
+            factory: ViewModelProvider.Factory? = null): T {
+        val model = ViewModelProviders.of(this, factory).get(T::class.java)
         model.error.observe(this, ShowToastErrorObserver(this))
         model.notifications.observe(this, Observer {
             it?.let { notifications ->

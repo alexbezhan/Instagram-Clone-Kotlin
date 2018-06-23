@@ -28,7 +28,7 @@ class HomeActivity : BaseFeedActivity() {
             feed_recycler.layoutManager = LinearLayoutManager(this)
             feed_recycler.adapter = mAdapter
 
-            mModel = initModel()
+            mModel = initModel(HomeViewModelFactory())
             mModel.user.observe(this, Observer { it?.let { mUser = it } })
             mModel.feedPosts.observe(this, Observer {
                 it?.let { mAdapter.items = it }
