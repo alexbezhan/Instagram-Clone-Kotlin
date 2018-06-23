@@ -11,7 +11,7 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
 class AddFriendsViewModel : BaseViewModel(), FollowListener {
-    private val followListener = DefaultFollowListener(onFailureListener)
+    private val followListener = DefaultFollowListener(setErrorOnFailureListener)
 
     val userAndFriends: LiveData<Pair<User, List<User>>> = Transformations.map(
             FirebaseLiveData(FirebaseHelper.database.child("users"))) {

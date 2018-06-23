@@ -12,7 +12,7 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
 class ProfileViewModel : BaseViewModel(), FollowListener {
-    private val followListener = DefaultFollowListener(onFailureListener)
+    private val followListener = DefaultFollowListener(setErrorOnFailureListener)
 
     lateinit var anotherUser: LiveData<User>
 
