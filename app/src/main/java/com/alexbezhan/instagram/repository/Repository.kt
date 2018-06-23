@@ -8,6 +8,7 @@ import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.storage
 import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.Task
@@ -23,13 +24,17 @@ interface Repository {
     fun createComment(postId: String, comment: Comment): Task<String>
     fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Unit>
     fun getImages(uid: String): LiveData<List<String>>
-    fun uploadAndSetUserPhoto(uid: String, photo: Uri): Task<Unit>
     fun updateUserProfile(uid: String, user: User): Task<Unit>
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
     fun getUsers(): LiveData<List<User>>
     fun signOut()
     fun isUserExistsByEmail(email: String): Task<Boolean>
     fun createUser(user: User, password: String): Task<Unit>
+    fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri>
+    fun setUserPhotoUrl(uid: String, photoUrl: Uri): Task<Unit>
+    fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri>
+    fun addUserImageUrl(uid: String, imageUri: Uri): Task<Unit>
+    fun addFeedPost(uid: String, post: FeedPost): Task<Unit>
 }
 
 class FirebaseRepository : Repository {
@@ -104,20 +109,26 @@ class FirebaseRepository : Repository {
                 it.children.map { it.getValue(String::class.java)!! }
             }
 
-    override fun uploadAndSetUserPhoto(uid: String, photo: Uri): Task<Unit> =
-            uploadUserPhoto(uid, photo).onSuccessTask {
-                updateUserPhoto(uid, it.toString())
-            }
-
-    private fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri> =
+    override fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri> =
             FirebaseHelper.storage.child("users/$uid/photo").putFile(photo)
                     .onSuccessTask { it ->
                         Tasks.forResult(it!!.downloadUrl!!)
                     }
 
-    private fun updateUserPhoto(uid: String, photoUrl: String): Task<Unit> =
-            FirebaseHelper.database.child("users/$uid/photo").setValue(photoUrl)
+    override fun setUserPhotoUrl(uid: String, photoUrl: Uri): Task<Unit> =
+            FirebaseHelper.database.child("users/$uid/photo").setValue(photoUrl.toString())
                     .toUnit()
+
+    override fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri> =
+            storage.child("users/$uid/images").child(imageUri.lastPathSegment).putFile(imageUri)
+                    .onSuccessTask { Tasks.forResult(it!!.downloadUrl!!) }
+
+    override fun addUserImageUrl(uid: String, imageUri: Uri): Task<Unit> =
+            database.child("images").child(uid).push().setValue(imageUri).toUnit()
+
+    override fun addFeedPost(uid: String, post: FeedPost): Task<Unit> =
+        database.child("feed-posts").child(uid)
+                .push().setValue(post).toUnit()
 
     override fun updateUserProfile(uid: String, user: User): Task<Unit> {
         val updatesMap = mutableMapOf<String, Any?>()

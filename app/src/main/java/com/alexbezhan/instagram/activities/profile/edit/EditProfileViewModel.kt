@@ -18,9 +18,11 @@ class EditProfileViewModel(private val uid: String,
     val pendingEmail: LiveData<String> = _pendingEmail
     val profileSavedEvent = SingleLiveEvent<Unit>()
 
-    fun uploadAndSetUserPhoto(photo: Uri): Task<Unit> =
-            repository.uploadAndSetUserPhoto(uid, photo)
-                    .addOnFailureListener(setErrorOnFailureListener)
+    fun onImageTaken(photo: Uri): Task<Unit> =
+            repository.uploadUserPhoto(uid, photo).onSuccessTask {
+                repository.setUserPhotoUrl(uid, it!!)
+            }.addOnFailureListener(setErrorOnFailureListener)
+
 
     fun updateEmail(currentEmail: String, newEmail: String, password: String): Task<Unit> {
         return repository.updateUserEmail(currentEmail, newEmail, password)

@@ -58,7 +58,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mModel.uploadAndSetUserPhoto(mCamera.imageUri!!)
+            mModel.onImageTaken(mCamera.imageUri!!)
         }
     }
 

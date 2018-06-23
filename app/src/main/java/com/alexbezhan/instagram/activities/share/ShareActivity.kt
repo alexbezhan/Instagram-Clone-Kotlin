@@ -30,8 +30,12 @@ class ShareActivity : BaseActivity() {
             back_image.setOnClickListener { finish() }
             share_text.setOnClickListener { share() }
 
-            mModel = initModel()
+            mModel = initModel(ShareViewModelFactory())
             mModel.user.observe(this, Observer { it?.let { mUser = it } })
+            mModel.openProfileUiCmd.observe(this, Observer {
+                startActivity(Intent(this, ProfileActivity::class.java))
+                finish()
+            })
         }
     }
 
@@ -45,14 +49,6 @@ class ShareActivity : BaseActivity() {
         }
     }
 
-    private fun share() {
-        val imageUri = mCamera.imageUri
-        val caption = caption_input.text.toString()
-        if (imageUri != null && caption.isNotEmpty()) {
-            mModel.share(imageUri, caption, mUser).addOnSuccessListener {
-                startActivity(Intent(this, ProfileActivity::class.java))
-                finish()
-            }
-        }
-    }
+    private fun share() =
+            mModel.share(mCamera.imageUri, caption_input.text.toString(), mUser)
 }
