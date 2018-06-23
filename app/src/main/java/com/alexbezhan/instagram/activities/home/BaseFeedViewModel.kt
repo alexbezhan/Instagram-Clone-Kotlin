@@ -6,29 +6,18 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.zipLiveData
-import com.alexbezhan.instagram.domain.Notifications
-import com.alexbezhan.instagram.domain.ToggleType
 import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
-import com.google.android.gms.tasks.OnFailureListener
 
 abstract class BaseFeedViewModel : BaseViewModel() {
     private var postStats = mapOf<String, LiveData<FeedPostStats>>()
+    private var likeManager = LikeManager()
 
     fun toggleLike(currentUser: User, post: FeedPost) {
-        val likeRef = FirebaseHelper.database.child("likes").child(post.id).child(currentUser.uid)
-
-        Notifications.toggleNotification(currentUser, post.uid, NotificationType.LIKE, likeRef, post)
-                .onSuccessTask { result ->
-                    when (result!!.toggleType) {
-                        ToggleType.ADDED -> likeRef.setValue(result.notificationId)
-                        ToggleType.REMOVED -> likeRef.removeValue()
-                    }
-                }.addOnFailureListener(setErrorOnFailureListener)
+        likeManager.toggleLike(currentUser, post, setErrorOnFailureListener)
     }
 
     fun observePostStats(postId: String, owner: LifecycleOwner,

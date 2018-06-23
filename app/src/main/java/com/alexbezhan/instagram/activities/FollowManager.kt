@@ -10,12 +10,8 @@ import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Tasks
 
-interface FollowListener {
-    fun toggleFollow(currentUser: User, uid: String)
-}
-
-class DefaultFollowListener(private val onFailureListener: OnFailureListener) : FollowListener {
-    override fun toggleFollow(currentUser: User, uid: String) {
+class FollowManager {
+    fun toggleFollow(currentUser: User, uid: String, onFailureListener: OnFailureListener) {
         fun feedPostsTask(follow: Boolean) =
                 task<Void> { taskSource ->
                     FirebaseHelper.database.child("feed-posts").child(uid)
