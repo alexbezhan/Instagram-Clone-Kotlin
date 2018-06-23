@@ -28,7 +28,7 @@
 
                 <TextView
                     style="@style/toolbar_title"
-                    android:text="Comments"
+                    android:text="@string/comments"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/back_image"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -72,7 +72,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="Add a comment..."
+                    android:hint="@string/add_a_comment"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/post_text"
@@ -84,7 +84,7 @@
                     style="@style/toolbar_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Post"
+                    android:text="@string/post"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

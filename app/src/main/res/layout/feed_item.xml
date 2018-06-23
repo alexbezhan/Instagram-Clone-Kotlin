@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_photo_image"
@@ -15,7 +16,7 @@
         android:id="@+id/username_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="willsmith"
+        tools:text="willsmith"
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/user_photo_image"
@@ -73,7 +74,7 @@
         android:id="@+id/likes_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="828,123 likes"
+        tools:text="828,123 likes"
         android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/like_image"
@@ -90,7 +91,7 @@
         app:layout_constraintTop_toBottomOf="@id/likes_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/comments_count_text"
-        android:text="willsmith This is a caption for the post. It's actually a very long caption."/>
+        tools:text="willsmith This is a caption for the post. It's actually a very long caption."/>
 
     <TextView
         android:id="@+id/comments_count_text"
@@ -101,6 +102,6 @@
         app:layout_constraintTop_toBottomOf="@id/caption_text"
         app:layout_constraintBottom_toBottomOf="parent"
         android:textColor="@color/grey"
-        android:text="View all 16 comments"/>
+        tools:text="View all 16 comments"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.alexbezhan.instagram.activities
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.alexbezhan.instagram.activities.login.LoginActivity
@@ -22,6 +23,7 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         if (isAuthProtected) {
             mAuthListener = FirebaseAuth.AuthStateListener {

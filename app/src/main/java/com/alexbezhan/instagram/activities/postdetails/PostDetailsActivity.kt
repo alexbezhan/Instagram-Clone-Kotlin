@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.activities.postdetails
 
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -52,24 +53,23 @@ class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
             })
 
     override fun comment(postId: String, uid: String) {
-        val intent = Intent(this, CommentsActivity::class.java)
-        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+        CommentsActivity.start(this, postId = postId, postUid = uid,
                 startTypingComment = true)
-        startActivity(intent)
     }
 
     override fun showComments(postId: String, uid: String) {
-        val intent = Intent(this, CommentsActivity::class.java)
-        CommentsActivity.setupStartIntent(intent, postId = postId, postUid = uid,
+        CommentsActivity.start(this, postId = postId, postUid = uid,
                 startTypingComment = false)
-        startActivity(intent)
     }
 
     companion object {
-        const val EXTRA_POST_ID = "post_id"
+        private const val EXTRA_POST_ID = "post_id"
 
-        fun setupStartIntent(intent: Intent, postId: String) {
-            intent.putExtra(PostDetailsActivity.EXTRA_POST_ID, postId)
+        fun start(context: Context, postId: String) {
+            val intent = Intent(context, PostDetailsActivity::class.java).apply {
+                putExtra(PostDetailsActivity.EXTRA_POST_ID, postId)
+            }
+            context.startActivity(intent)
         }
     }
 }

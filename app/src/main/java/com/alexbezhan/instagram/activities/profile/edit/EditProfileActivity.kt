@@ -96,7 +96,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
                 }
             }
         } else {
-            showToast("You should enter your password")
+            showToast(getString(R.string.you_should_enter_password))
         }
     }
 
@@ -110,7 +110,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
 
         mModel.updateUser(updatesMap) {
-            showToast("Profile saved")
+            showToast(getString(R.string.profile_saved))
             back_image.hideSoftKeyboard()
             finish()
         }
@@ -118,9 +118,9 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
 
     private fun validate(user: User): String? =
             when {
-                user.name.isEmpty() -> "Please enter name"
-                user.username.isEmpty() -> "Please enter username"
-                user.email.isEmpty() -> "Please enter email"
+                user.name.isEmpty() -> getString(R.string.please_enter_name)
+                user.username.isEmpty() -> getString(R.string.please_enter_username)
+                user.email.isEmpty() -> getString(R.string.please_enter_email)
                 else -> null
             }
 }

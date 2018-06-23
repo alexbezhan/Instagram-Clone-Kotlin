@@ -1,10 +1,12 @@
 package com.alexbezhan.instagram.activities.home
 
 import android.annotation.SuppressLint
+import android.support.annotation.PluralsRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.activities.loadImage
 import com.alexbezhan.instagram.activities.loadUserPhoto
@@ -41,24 +43,23 @@ class FeedAdapter(private val listener: Listener)
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        fun TextView.setCountTextOrHide(count: Int, @PluralsRes pluralsRes: Int) {
+            if (count == 0) {
+                visibility = View.GONE
+            } else {
+                visibility = View.VISIBLE
+                text = holder.view.context.resources.getQuantityString(pluralsRes, count, count)
+            }
+        }
+
         val post = items[position]
         val stats = postStats[position] ?: defaultPostLikes
         with(holder.view) {
             user_photo_image.loadUserPhoto(post.photo)
-            username_text.text = post.username
             post_image.loadImage(post.image)
-            if (stats.likesCount == 0) {
-                likes_text.visibility = View.GONE
-            } else {
-                likes_text.visibility = View.VISIBLE
-                likes_text.text = "${stats.likesCount} likes"
-            }
-            if (stats.commentsCount == 0) {
-                comments_count_text.visibility = View.GONE
-            } else {
-                comments_count_text.visibility = View.VISIBLE
-                comments_count_text.text = "View all ${stats.commentsCount} comments"
-            }
+            username_text.text = post.username
+            likes_text.setCountTextOrHide(stats.likesCount, R.plurals.likes_count)
+            comments_count_text.setCountTextOrHide(stats.commentsCount, R.plurals.comments_count)
             comments_count_text.setOnClickListener{ listener.showComments(post.id, post.uid)}
             caption_text.setCommentText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post) }
