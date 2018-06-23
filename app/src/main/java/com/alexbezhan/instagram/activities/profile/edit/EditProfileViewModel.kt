@@ -1,42 +1,64 @@
 package com.alexbezhan.instagram.activities.profile.edit
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
+import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.SingleLiveEvent
 import com.alexbezhan.instagram.activities.BaseViewModel
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.storage.UploadTask
+import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.repository.Repository
+import com.google.android.gms.tasks.Task
 
-class EditProfileViewModel : BaseViewModel() {
+class EditProfileViewModel(private val uid: String,
+                           private val repository: Repository) : BaseViewModel() {
 
-    private val uid = FirebaseHelper.currentUid()!!
+    val openPasswordConfirmDialogCmd = SingleLiveEvent<String>()
+    private val _pendingEmail = MutableLiveData<String>()
+    val pendingEmail: LiveData<String> = _pendingEmail
+    val profileSavedEvent = SingleLiveEvent<Unit>()
 
-    fun uploadUserPhoto(photo: Uri, onSuccess: (UploadTask.TaskSnapshot) -> Unit) {
-        FirebaseHelper.storage.child("users/$uid/photo").putFile(photo)
+    fun uploadAndSetUserPhoto(photo: Uri): Task<Unit> =
+            repository.uploadAndSetUserPhoto(uid, photo)
+                    .addOnFailureListener(setErrorOnFailureListener)
+
+    fun updateEmail(currentEmail: String, newEmail: String, password: String): Task<Unit> {
+        return repository.updateUserEmail(currentEmail, newEmail, password)
                 .addOnFailureListener(setErrorOnFailureListener)
-                .addOnSuccessListener(onSuccess)
     }
 
-    fun updateUserPhoto(photoUrl: String, onSuccess: () -> Unit) {
-        FirebaseHelper.database.child("users/$uid/photo").setValue(photoUrl)
-                .addOnFailureListener(setErrorOnFailureListener)
-                .addOnSuccessListener { onSuccess() }
+    fun onPasswordConfirm(currentEmail: String, newEmail: String, password: String) {
+        if (password.isNotEmpty()) {
+            updateEmail(
+                    currentEmail = currentEmail,
+                    newEmail = newEmail,
+                    password = password)
+        } else {
+            setErrorMessage(R.string.you_should_enter_password)
+        }
     }
 
-    fun updateUser(updates: Map<String, Any?>, onSuccess: () -> Unit) {
-        FirebaseHelper.database.child("users").child(uid).updateChildren(updates)
-                .addOnFailureListener(setErrorOnFailureListener)
-                .addOnSuccessListener { onSuccess() }
+    fun onSaveProfileClick(newUser: User, currentUser: User) {
+        val error = validate(newUser)
+        if (error == null) {
+            if (newUser.email == currentUser.email) {
+                repository.updateUserProfile(uid, newUser)
+                        .addOnSuccessListener { profileSavedEvent.call() }
+                        .addOnFailureListener(setErrorOnFailureListener)
+            } else {
+                _pendingEmail.value = newUser.email
+                openPasswordConfirmDialogCmd.call()
+            }
+        } else {
+            setErrorMessage(error)
+        }
     }
 
-    fun updateEmail(email: String, onSuccess: () -> Unit) {
-        FirebaseHelper.auth.currentUser!!.updateEmail(email)
-                .addOnFailureListener(setErrorOnFailureListener)
-                .addOnSuccessListener { onSuccess() }
-    }
-
-    fun reauthenticate(credential: AuthCredential, onSuccess: () -> Unit) {
-        FirebaseHelper.auth.currentUser!!.reauthenticate(credential)
-                .addOnFailureListener(setErrorOnFailureListener)
-                .addOnSuccessListener { onSuccess() }
-    }
+    private fun validate(user: User): Int? =
+            when {
+                user.name.isEmpty() -> R.string.please_enter_name
+                user.username.isEmpty() -> R.string.please_enter_username
+                user.email.isEmpty() -> R.string.please_enter_email
+                else -> null
+            }
 }

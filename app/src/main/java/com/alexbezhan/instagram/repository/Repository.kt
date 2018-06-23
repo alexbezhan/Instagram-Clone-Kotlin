@@ -1,10 +1,8 @@
 package com.alexbezhan.instagram.repository
 
 import android.arch.lifecycle.LiveData
-import com.alexbezhan.instagram.activities.asFeedPost
-import com.alexbezhan.instagram.activities.asUser
-import com.alexbezhan.instagram.activities.map
-import com.alexbezhan.instagram.activities.task
+import android.net.Uri
+import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
@@ -14,6 +12,7 @@ import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.EmailAuthProvider
 
 interface Repository {
     fun signIn(email: String, password: String): Task<Unit>
@@ -22,8 +21,11 @@ interface Repository {
     fun getComments(postId: String): LiveData<List<Comment>>
     fun getUser(uid: String): LiveData<User>
     fun createComment(postId: String, comment: Comment): Task<String>
-    fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Void>
+    fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Unit>
     fun getImages(uid: String): LiveData<List<String>>
+    fun uploadAndSetUserPhoto(uid: String, photo: Uri): Task<Unit>
+    fun updateUserProfile(uid: String, user: User): Task<Unit>
+    fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
 }
 
 class FirebaseRepository : Repository {
@@ -59,19 +61,59 @@ class FirebaseRepository : Repository {
     override fun signIn(email: String, password: String): Task<Unit> =
             task { taskSource ->
                 FirebaseHelper.auth.signInWithEmailAndPassword(email, password)
-                        .onSuccessTask { Tasks.forResult(Unit) }
+                        .toUnit()
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             }
 
     override fun setNotificationsRead(uid: String, notificationsIds: List<String>,
-                                      read: Boolean): Task<Void> {
+                                      read: Boolean): Task<Unit> {
         val updatesMap = notificationsIds.map { "/$it/read" to read }.toMap()
         return database.child("notifications").child(uid)
                 .updateChildren(updatesMap)
+                .toUnit()
     }
 
     override fun getImages(uid: String): LiveData<List<String>> =
             FirebaseLiveData(database.child("images").child(uid)).map {
                 it.children.map { it.getValue(String::class.java)!! }
             }
+
+    override fun uploadAndSetUserPhoto(uid: String, photo: Uri): Task<Unit> =
+            uploadUserPhoto(uid, photo).onSuccessTask {
+                updateUserPhoto(uid, it.toString())
+            }
+
+    private fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri> =
+            FirebaseHelper.storage.child("users/$uid/photo").putFile(photo)
+                    .onSuccessTask { it ->
+                        Tasks.forResult(it!!.downloadUrl!!)
+                    }
+
+    private fun updateUserPhoto(uid: String, photoUrl: String): Task<Unit> =
+            FirebaseHelper.database.child("users/$uid/photo").setValue(photoUrl)
+                    .toUnit()
+
+    override fun updateUserProfile(uid: String, user: User): Task<Unit> {
+        val updatesMap = mutableMapOf<String, Any?>()
+        if (user.name != user.name) updatesMap["name"] = user.name
+        if (user.username != user.username) updatesMap["username"] = user.username
+        if (user.website != user.website) updatesMap["website"] = user.website
+        if (user.bio != user.bio) updatesMap["bio"] = user.bio
+        if (user.email != user.email) updatesMap["email"] = user.email
+        if (user.phone != user.phone) updatesMap["phone"] = user.phone
+
+        return FirebaseHelper.database.child("users").child(uid).updateChildren(updatesMap)
+                .toUnit()
+    }
+
+    override fun updateUserEmail(currentEmail: String, newEmail: String,
+                                 password: String): Task<Unit> {
+        val credential = EmailAuthProvider.getCredential(currentEmail, password)
+        val user = FirebaseHelper.auth.currentUser
+        return user?.reauthenticate(credential)?.onSuccessTask {
+            user.updateEmail(newEmail).toUnit()
+        } ?: Tasks.forException(IllegalStateException("User is unauthenticated"))
+    }
+
+
 }

@@ -24,6 +24,7 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.GlideApp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DataSnapshot
 import java.util.*
 
@@ -115,6 +116,8 @@ fun <T> task(block: (TaskCompletionSource<T>) -> Unit): Task<T> {
     block(taskSource)
     return taskSource.task
 }
+
+fun Task<*>.toUnit(): Task<Unit> = onSuccessTask { Tasks.forResult(Unit) }
 
 fun View.hideSoftKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
