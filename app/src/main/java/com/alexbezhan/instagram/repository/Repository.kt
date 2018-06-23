@@ -27,9 +27,14 @@ interface Repository {
     fun updateUserProfile(uid: String, user: User): Task<Unit>
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
     fun getUsers(): LiveData<List<User>>
+    fun signOut()
 }
 
 class FirebaseRepository : Repository {
+    override fun signOut() {
+        FirebaseHelper.auth.signOut()
+    }
+
     override fun getUsers(): LiveData<List<User>> =
             FirebaseLiveData(FirebaseHelper.database.child("users")).map {
                 it.children.map { it.asUser()!! }
