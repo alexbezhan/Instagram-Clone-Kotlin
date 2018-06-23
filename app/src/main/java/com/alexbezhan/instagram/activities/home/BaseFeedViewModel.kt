@@ -12,9 +12,8 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
-abstract class BaseFeedViewModel : BaseViewModel() {
+abstract class BaseFeedViewModel(private val likeManager: LikeManager) : BaseViewModel() {
     private var postStats = mapOf<String, LiveData<FeedPostStats>>()
-    private var likeManager = LikeManager()
 
     fun toggleLike(currentUser: User, post: FeedPost) {
         likeManager.toggleLike(currentUser, post, setErrorOnFailureListener)

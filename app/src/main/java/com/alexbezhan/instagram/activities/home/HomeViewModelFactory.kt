@@ -8,6 +8,6 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 @Suppress("UNCHECKED_CAST")
 class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return HomeViewModel(currentUid()!!, FirebaseRepository()) as T
+        return HomeViewModel(currentUid()!!, FirebaseRepository(), FirebaseLikeManager()) as T
     }
 }
