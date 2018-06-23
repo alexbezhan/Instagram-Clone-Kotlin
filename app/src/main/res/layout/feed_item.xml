@@ -91,7 +91,7 @@
         app:layout_constraintTop_toBottomOf="@id/likes_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/comments_count_text"
-        android:text="willsmith This is a caption for the post. It's actually a very long caption."/>
+        tools:text="willsmith This is a caption for the post. It's actually a very long caption."/>
 
     <TextView
         android:id="@+id/comments_count_text"
