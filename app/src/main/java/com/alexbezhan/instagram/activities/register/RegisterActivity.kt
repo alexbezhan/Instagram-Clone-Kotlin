@@ -62,7 +62,7 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
                 supportFragmentManager.popBackStack()
             }
         } else {
-            showToast(getString(R.string.enter_email_and_password))
+            showToast(getString(R.string.please_enter_email_and_password))
         }
     }
 

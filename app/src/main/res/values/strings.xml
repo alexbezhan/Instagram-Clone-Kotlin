@@ -2,7 +2,7 @@
     <string name="app_name">Instagram</string>
     <string name="create_account">Don\'t have an account? <b>Sign up.</b></string>
     <string name="please_enter_password">Please enter your password</string>
-    <string name="enter_email_and_password">Please enter email and password</string>
+    <string name="please_enter_email_and_password">Please enter email and password</string>
     <string name="started_following_you">started following you</string>
     <string name="liked_your_post">liked your post</string>
     <string name="commented">commented:</string>

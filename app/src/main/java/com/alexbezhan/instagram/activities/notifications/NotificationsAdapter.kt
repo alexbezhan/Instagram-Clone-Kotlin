@@ -30,20 +30,20 @@ class NotificationsAdapter(private val listener: Listener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = items[position]
-        val notificationText = with(notification) {
-            when (type) {
-                NotificationType.FOLLOW -> holder.view.context.getString(R.string.started_following_you)
-                NotificationType.LIKE -> holder.view.context.getString(R.string.liked_your_post)
-                NotificationType.COMMENT -> holder.view.context.getString(R.string.commented) + commentText
-            }
-        }
-
         with(holder.view) {
             user_photo.loadUserPhoto(notification.photo)
             post_image.loadImage(notification.postImage, hideOnNull = true)
             with(View.OnClickListener { listener.openNotification(notification) }) {
                 post_image.setOnClickListener(this)
                 notification_text.setOnClickListener(this)
+            }
+
+            val notificationText = with(notification) {
+                when (type) {
+                    NotificationType.FOLLOW -> context.getString(R.string.started_following_you)
+                    NotificationType.LIKE -> context.getString(R.string.liked_your_post)
+                    NotificationType.COMMENT -> context.getString(R.string.commented) + commentText
+                }
             }
             with(View.OnClickListener { listener.openProfile(notification.uid) }) {
                 notification_text.setCommentText(notification.username, notificationText,
