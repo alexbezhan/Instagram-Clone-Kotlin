@@ -32,16 +32,14 @@ class ProfileActivity : BaseActivity() {
             setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
             Log.d(TAG, "onCreate")
 
-            mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
+            val anotherUid = intent.extras?.getString(EXTRA_UID)
+            mUid = anotherUid ?: currentUid()!!
 
             mAdapter = ProfileImagesAdapter()
             images_recycler.layoutManager = GridLayoutManager(this, 3)
             images_recycler.adapter = mAdapter
 
-            val model = initModel<ProfileViewModel>()
-            if (isAnotherUser()) {
-                model.setAnotherUid(mUid)
-            }
+            val model = initModel<ProfileViewModel>(ProfileViewModelFactory(anotherUid))
             model.images.observe(this, Observer {
                 it?.let { images ->
                     mAdapter.items = images
@@ -61,18 +59,20 @@ class ProfileActivity : BaseActivity() {
                 }
             })
 
-            edit_profile_btn.setOnClickListener {
+            model.openEditProfileUiCmd.observe(this, Observer{
                 startActivity(Intent(this, EditProfileActivity::class.java))
-            }
-            settings_image.setOnClickListener {
+            })
+            model.openProfileSettingsUiCmd.observe(this, Observer{
                 startActivity(Intent(this, ProfileSettingsActivity::class.java))
-            }
-            add_friends_image.setOnClickListener {
+            })
+            model.openAddFriendsUiCmd.observe(this, Observer{
                 startActivity(Intent(this, AddFriendsActivity::class.java))
-            }
-            follow_profile_btn.setOnClickListener {
-                model.toggleFollow(mUser, mUid)
-            }
+            })
+
+            edit_profile_btn.setOnClickListener { model.onEditProfileClick() }
+            settings_image.setOnClickListener { model.onSettingsClick() }
+            add_friends_image.setOnClickListener {model.onAddFriendsClick() }
+            follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mUid) }
 
             if (isAnotherUser()) {
                 add_friends_image.visibility = View.GONE

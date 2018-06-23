@@ -23,6 +23,7 @@ interface Repository {
     fun getUser(uid: String): LiveData<User>
     fun createComment(postId: String, comment: Comment): Task<String>
     fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Void>
+    fun getImages(uid: String): LiveData<List<String>>
 }
 
 class FirebaseRepository : Repository {
@@ -62,9 +63,15 @@ class FirebaseRepository : Repository {
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             }
 
-    override fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Void> {
+    override fun setNotificationsRead(uid: String, notificationsIds: List<String>,
+                                      read: Boolean): Task<Void> {
         val updatesMap = notificationsIds.map { "/$it/read" to read }.toMap()
         return database.child("notifications").child(uid)
                 .updateChildren(updatesMap)
     }
+
+    override fun getImages(uid: String): LiveData<List<String>> =
+            FirebaseLiveData(database.child("images").child(uid)).map {
+                it.children.map { it.getValue(String::class.java)!! }
+            }
 }
