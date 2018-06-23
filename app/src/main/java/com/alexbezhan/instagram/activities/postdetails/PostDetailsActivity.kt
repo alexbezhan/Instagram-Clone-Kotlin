@@ -30,9 +30,11 @@ class PostDetailsActivity : BaseFeedActivity() {
             back_image.setOnClickListener { finish() }
 
             val postId = intent.getStringExtra(EXTRA_POST_ID)
-            mModel = initModel()
+            mModel = initModel(PostDetailsViewModelFactory())
             mModel.start(postId)
-            mModel.user.observe(this, Observer { it?.let { mUser = it } })
+            mModel.user.observe(this, Observer {
+                it?.let { mUser = it }
+            })
             mModel.post.observe(this, Observer {
                 it?.let { mAdapter.items = listOf(it) }
             })
