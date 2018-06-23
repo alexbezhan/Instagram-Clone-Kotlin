@@ -33,7 +33,7 @@ object Notifications {
     private fun getNotificationsRef(uid: String) =
             FirebaseHelper.database.child("notifications").child(uid)
 
-    private fun addNotification(fromUser: User, toUid: String, type: NotificationType,
+    fun addNotification(fromUser: User, toUid: String, type: NotificationType,
                                 toPost: FeedPost?, commentText: String?)
             : Task<ToggleNotificationResult> {
         val ref = getNotificationsRef(toUid).push()

@@ -25,7 +25,7 @@ class CommentsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
 
-        mModel = initModel()
+        mModel = initModel(CommentsViewModelFactory())
         mModel.start(
                 postId = intent.getStringExtra(EXTRA_POST_ID),
                 postUid = intent.getStringExtra(EXTRA_POST_UID))
