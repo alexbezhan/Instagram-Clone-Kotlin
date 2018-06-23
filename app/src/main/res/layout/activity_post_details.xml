@@ -24,7 +24,7 @@
 
             <TextView
                 style="@style/toolbar_title"
-                android:text="Photo"
+                android:text="@string/photo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/back_image"
                 app:layout_constraintTop_toTopOf="parent" />

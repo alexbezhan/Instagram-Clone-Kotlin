@@ -39,11 +39,11 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
                             .addToBackStack(null)
                             .commit()
                 } else {
-                    showToast("This email already exists")
+                    showToast(getString(R.string.email_already_exists))
                 }
             }
         } else {
-            showToast("Please enter email")
+            showToast(getString(R.string.enter_email))
         }
     }
 
@@ -58,17 +58,17 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
                 }
             } else {
                 Log.e(TAG, "onRegister: email is null")
-                showToast("Please enter email")
+                showToast(getString(R.string.enter_email))
                 supportFragmentManager.popBackStack()
             }
         } else {
-            showToast("Please enter full name and password")
+            showToast(getString(R.string.please_enter_email_and_password))
         }
     }
 
     private fun unknownRegisterError(it: Task<*>) {
         Log.e(TAG, "failed to create user profile", it.exception)
-        showToast("Something wrong happened. Please try again later")
+        showToast(getString(R.string.try_again_later))
     }
 
     private fun startHomeActivity() {
