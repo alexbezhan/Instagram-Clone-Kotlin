@@ -11,7 +11,7 @@ class NotificationsViewModel : BaseViewModel() {
         if (unreadNotifications.isNotEmpty()) {
             val updatesMap = unreadNotifications.map { "/${it.id}/read" to true }.toMap()
             database.child("notifications").child(currentUid()!!).updateChildren(updatesMap)
-                    .addOnFailureListener(onFailureListener)
+                    .addOnFailureListener(setErrorOnFailureListener)
         }
     }
 }

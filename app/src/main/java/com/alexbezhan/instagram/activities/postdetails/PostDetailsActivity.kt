@@ -6,20 +6,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.disableChangeAnimation
+import com.alexbezhan.instagram.activities.home.BaseFeedActivity
 import com.alexbezhan.instagram.activities.home.FeedAdapter
-import com.alexbezhan.instagram.activities.home.comments.CommentsActivity
-import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import kotlinx.android.synthetic.main.activity_post_details.*
 
-class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
+class PostDetailsActivity : BaseFeedActivity() {
     private val TAG = "PostDetailsActivity"
-
-    private lateinit var mModel: PostDetailsViewModel
-    private lateinit var mUser: User
-    private lateinit var mAdapter: FeedAdapter
+    override lateinit var mModel: PostDetailsViewModel
+    override lateinit var mUser: User
+    override lateinit var mAdapter: FeedAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,26 +37,6 @@ class PostDetailsActivity : BaseActivity(), FeedAdapter.Listener {
                 it?.let { mAdapter.items = listOf(it) }
             })
         }
-    }
-
-    override fun toggleLike(post: FeedPost) =
-            mModel.toggleLike(mUser, post)
-
-    override fun loadStats(postId: String, position: Int) =
-            mModel.observePostStats(postId, this, Observer {
-                it?.let {
-                    mAdapter.updatePostStats(position, it)
-                }
-            })
-
-    override fun comment(postId: String, uid: String) {
-        CommentsActivity.start(this, postId = postId, postUid = uid,
-                startTypingComment = true)
-    }
-
-    override fun showComments(postId: String, uid: String) {
-        CommentsActivity.start(this, postId = postId, postUid = uid,
-                startTypingComment = false)
     }
 
     companion object {

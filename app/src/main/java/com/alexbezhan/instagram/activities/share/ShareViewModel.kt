@@ -19,7 +19,7 @@ class ShareViewModel : BaseViewModel() {
         return task { taskSource ->
             storage.child("users").child(uid).child("images")
                     .child(imageUri.lastPathSegment).putFile(imageUri)
-                    .addOnFailureListener(onFailureListener)
+                    .addOnFailureListener(setErrorOnFailureListener)
                     .addOnSuccessListener {
                         val imageDownloadUrl = it.downloadUrl!!.toString()
 
@@ -30,7 +30,7 @@ class ShareViewModel : BaseViewModel() {
                                 .setValue(mkFeedPost(uid, imageDownloadUrl, caption, user))
 
                         Tasks.whenAll(addImage, addFeedPost)
-                                .addOnFailureListener(onFailureListener)
+                                .addOnFailureListener(setErrorOnFailureListener)
                                 .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                     }
         }
