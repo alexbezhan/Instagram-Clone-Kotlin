@@ -13,7 +13,7 @@ import com.google.android.gms.tasks.OnFailureListener
 
 abstract class BaseViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
-    protected val onFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
+    protected val setErrorOnFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
     val error: LiveData<String> = _errorMessage
 
     val user: LiveData<User> = Transformations.map(

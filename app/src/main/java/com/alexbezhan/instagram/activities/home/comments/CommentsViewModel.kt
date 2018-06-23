@@ -53,11 +53,11 @@ class CommentsViewModel : BaseViewModel() {
             val commentObj = Comment(uid = user.uid, photo = user.photo, username = user.username,
                     text = comment)
             val commentRef = FirebaseHelper.database.child("comments").child(postId).push()
-            commentRef.setValue(commentObj).addOnFailureListener(onFailureListener)
+            commentRef.setValue(commentObj).addOnFailureListener(setErrorOnFailureListener)
 
             Notifications.toggleNotification(user, postAuthor.uid, NotificationType.COMMENT,
                     commentRef.child("notification"), post, comment)
-                    .addOnFailureListener(onFailureListener)
+                    .addOnFailureListener(setErrorOnFailureListener)
         }
     }
 }
