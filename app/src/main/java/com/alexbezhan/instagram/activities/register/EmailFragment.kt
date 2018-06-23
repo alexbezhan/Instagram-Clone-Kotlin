@@ -14,7 +14,7 @@ class EmailFragment : Fragment() {
     private lateinit var mListener: Listener
 
     interface Listener {
-        fun onNext(email: String)
+        fun onEmailEntered(email: String)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +27,7 @@ class EmailFragment : Fragment() {
 
         next_btn.setOnClickListener {
             val email = email_input.text.toString()
-            mListener.onNext(email)
+            mListener.onEmailEntered(email)
         }
     }
 

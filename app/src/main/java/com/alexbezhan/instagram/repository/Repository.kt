@@ -28,9 +28,24 @@ interface Repository {
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
     fun getUsers(): LiveData<List<User>>
     fun signOut()
+    fun isUserExistsByEmail(email: String): Task<Boolean>
+    fun createUser(user: User, password: String): Task<Unit>
 }
 
 class FirebaseRepository : Repository {
+    override fun createUser(user: User, password: String): Task<Unit> =
+            FirebaseHelper.auth.createUserWithEmailAndPassword(user.email, password)
+                    .onSuccessTask {
+                        database.child("users").child(it!!.user.uid).setValue(user)
+                                .toUnit()
+                    }
+
+    override fun isUserExistsByEmail(email: String): Task<Boolean> =
+            FirebaseHelper.auth.fetchSignInMethodsForEmail(email).onSuccessTask {
+                val signInMethods = it?.signInMethods ?: emptyList()
+                Tasks.forResult(signInMethods.isEmpty())
+            }
+
     override fun signOut() {
         FirebaseHelper.auth.signOut()
     }
