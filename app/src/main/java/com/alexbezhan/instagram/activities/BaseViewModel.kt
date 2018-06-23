@@ -30,7 +30,9 @@ abstract class BaseViewModel : ViewModel() {
                     .child(FirebaseHelper.currentUid()!!))
     ) {
         Log.d(this.toString(), "notifications: ")
-        it.children.map { it.asNotification()!! }
+        it.children
+                .map { it.asNotification()!! }
+                .sortedByDescending { it.timestampDate() }
     }
 
     protected fun setErrorMessage(@StringRes resId: Int) {

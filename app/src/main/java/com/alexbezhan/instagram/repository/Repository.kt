@@ -22,6 +22,7 @@ interface Repository {
     fun getComments(postId: String): LiveData<List<Comment>>
     fun getUser(uid: String): LiveData<User>
     fun createComment(postId: String, comment: Comment): Task<String>
+    fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Void>
 }
 
 class FirebaseRepository : Repository {
@@ -60,4 +61,10 @@ class FirebaseRepository : Repository {
                         .onSuccessTask { Tasks.forResult(Unit) }
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             }
+
+    override fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Void> {
+        val updatesMap = notificationsIds.map { "/$it/read" to read }.toMap()
+        return database.child("notifications").child(uid)
+                .updateChildren(updatesMap)
+    }
 }

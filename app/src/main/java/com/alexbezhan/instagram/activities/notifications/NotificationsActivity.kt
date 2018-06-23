@@ -10,7 +10,6 @@ import com.alexbezhan.instagram.activities.BottomNavBar
 import com.alexbezhan.instagram.activities.postdetails.PostDetailsActivity
 import com.alexbezhan.instagram.activities.profile.ProfileActivity
 import com.alexbezhan.instagram.models.Notification
-import com.alexbezhan.instagram.models.NotificationType
 import kotlinx.android.synthetic.main.activity_notifications.*
 
 class NotificationsActivity : BaseActivity(),
@@ -18,6 +17,7 @@ class NotificationsActivity : BaseActivity(),
     private val TAG = "NotificationsActivity"
 
     private lateinit var mAdapter: NotificationsAdapter
+    private lateinit var mModel: NotificationsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,22 +30,24 @@ class NotificationsActivity : BaseActivity(),
             notifications_recycler.layoutManager = LinearLayoutManager(this)
             notifications_recycler.adapter = mAdapter
 
-            val model = initModel<NotificationsViewModel>()
-            model.notifications.observe(this, Observer {
+            mModel = initModel()
+            mModel.notifications.observe(this, Observer {
                 it?.let { notifications ->
-                    model.checkUnreadNotifications(notifications)
-                    mAdapter.items = notifications.sortedByDescending { it.timestampDate() }
+                    mModel.onNotifications(notifications)
+                    mAdapter.items = notifications
                 }
+            })
+            mModel.openPostUiCmd.observe(this, Observer {
+                it?.let { postId -> openPost(postId) }
+            })
+            mModel.openProfileUiCmd.observe(this, Observer {
+                it?.let { uid -> openProfile(uid) }
             })
         }
     }
 
-    override fun openNotification(notification: Notification) {
-        when (notification.type) {
-            NotificationType.LIKE, NotificationType.COMMENT -> openPost(notification.postId!!)
-            NotificationType.FOLLOW -> openProfile(notification.uid)
-        }
-    }
+    override fun openNotification(notification: Notification) =
+            mModel.openNotification(notification)
 
     private fun openPost(postId: String) {
         PostDetailsActivity.start(this, postId)

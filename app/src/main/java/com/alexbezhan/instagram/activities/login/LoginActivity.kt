@@ -26,11 +26,11 @@ class LoginActivity : BaseActivity(isAuthProtected = false), KeyboardVisibilityE
         Log.d(TAG, "onCreate")
 
         mModel = initModel(LoginViewModelFactory())
-        mModel.openHomeActivityCmd.observe(this, Observer {
+        mModel.openHomeUiCmd.observe(this, Observer {
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
         })
-        mModel.openRegisterActivityCmd.observe(this, Observer {
+        mModel.openRegisterUiCmd.observe(this, Observer {
             startActivity(Intent(this, RegisterActivity::class.java))
         })
 
