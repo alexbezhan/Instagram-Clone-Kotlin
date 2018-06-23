@@ -24,7 +24,7 @@ class AddFriendsActivity : BaseActivity(), AddFriendsAdapter.Listener {
         add_friends_recycler.adapter = mAdapter
         add_friends_recycler.layoutManager = LinearLayoutManager(this)
 
-        mModel = initModel()
+        mModel = initModel(AddFriendsViewModelFactory())
         mModel.userAndFriends.observe(this, Observer {
             it?.let { (user, friends) ->
                 mUser = user

@@ -26,9 +26,15 @@ interface Repository {
     fun uploadAndSetUserPhoto(uid: String, photo: Uri): Task<Unit>
     fun updateUserProfile(uid: String, user: User): Task<Unit>
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
+    fun getUsers(): LiveData<List<User>>
 }
 
 class FirebaseRepository : Repository {
+    override fun getUsers(): LiveData<List<User>> =
+            FirebaseLiveData(FirebaseHelper.database.child("users")).map {
+                it.children.map { it.asUser()!! }
+            }
+
     override fun getFeedPosts(uid: String): LiveData<List<FeedPost>> =
             FirebaseLiveData(database.child("feed-posts").child(uid)).map {
                 it.children.map { it.asFeedPost()!! }
