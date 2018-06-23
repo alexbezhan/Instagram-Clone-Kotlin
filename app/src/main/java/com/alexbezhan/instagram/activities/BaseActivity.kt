@@ -36,11 +36,11 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
     }
 
     protected inline fun <reified T : BaseViewModel> initModel(
-            factory: ViewModelProvider.Factory? = null): T {
+            factory: ViewModelProvider.Factory): T {
         val model = ViewModelProviders.of(this, factory).get(T::class.java)
-        model.error.observe(this, Observer{
+        model.error.observe(this, Observer {
             it?.let {
-                when(it) {
+                when (it) {
                     is ErrorMessage.Plain -> showToast(it.message)
                     is ErrorMessage.StringRes -> showToast(resources.getString(it.resId))
                 }

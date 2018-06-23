@@ -30,7 +30,7 @@ class NotificationsActivity : BaseActivity(),
             notifications_recycler.layoutManager = LinearLayoutManager(this)
             notifications_recycler.adapter = mAdapter
 
-            mModel = initModel()
+            mModel = initModel(NotificationsViewModelFactory())
             mModel.notifications.observe(this, Observer {
                 it?.let { notifications ->
                     mModel.onNotifications(notifications)

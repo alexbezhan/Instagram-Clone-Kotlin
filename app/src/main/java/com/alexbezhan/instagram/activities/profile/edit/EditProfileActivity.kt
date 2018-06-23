@@ -34,7 +34,7 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mModel = initModel()
+        mModel = initModel(EditProfileViewModelFactory())
         mModel.pendingEmail.observe(this, Observer {
             it?.let {
                 pendingEmail = it
