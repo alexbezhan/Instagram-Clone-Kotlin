@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 
 interface Repository {
+    fun signIn(email: String, password: String): Task<Unit>
     fun getFeedPosts(uid: String): LiveData<List<FeedPost>>
     fun getFeedPost(uid: String, postId: String): LiveData<FeedPost>
     fun getComments(postId: String): LiveData<List<Comment>>
@@ -50,6 +51,13 @@ class FirebaseRepository : Repository {
                 val commentRef = FirebaseHelper.database.child("comments").child(postId).push()
                 commentRef.setValue(comment)
                         .onSuccessTask { Tasks.forResult(commentRef.key) }
+                        .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
+            }
+
+    override fun signIn(email: String, password: String): Task<Unit> =
+            task { taskSource ->
+                FirebaseHelper.auth.signInWithEmailAndPassword(email, password)
+                        .onSuccessTask { Tasks.forResult(Unit) }
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             }
 }

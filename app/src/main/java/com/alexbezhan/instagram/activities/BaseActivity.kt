@@ -8,7 +8,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.alexbezhan.instagram.activities.login.LoginActivity
-import com.alexbezhan.instagram.utils.ShowToastErrorObserver
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.auth
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +38,14 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
     protected inline fun <reified T : BaseViewModel> initModel(
             factory: ViewModelProvider.Factory? = null): T {
         val model = ViewModelProviders.of(this, factory).get(T::class.java)
-        model.error.observe(this, ShowToastErrorObserver(this))
+        model.error.observe(this, Observer{
+            it?.let {
+                when(it) {
+                    is ErrorMessage.Plain -> showToast(it.message)
+                    is ErrorMessage.StringRes -> showToast(resources.getString(it.resId))
+                }
+            }
+        })
         model.notifications.observe(this, Observer {
             it?.let { notifications ->
                 bottomNavBar?.setNotifications(notifications)
