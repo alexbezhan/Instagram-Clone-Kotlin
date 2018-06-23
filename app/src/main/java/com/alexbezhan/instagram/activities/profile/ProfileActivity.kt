@@ -22,7 +22,7 @@ class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mAdapter: ProfileImagesAdapter
     private lateinit var mUid: String
-    private var mUser: User? = null
+    private lateinit var mUser: User
     private var mAnotherUser: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +34,33 @@ class ProfileActivity : BaseActivity() {
 
             mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
 
+            mAdapter = ProfileImagesAdapter()
+            images_recycler.layoutManager = GridLayoutManager(this, 3)
+            images_recycler.adapter = mAdapter
+
+            val model = initModel<ProfileViewModel>()
+            if (isAnotherUser()) {
+                model.setAnotherUid(mUid)
+            }
+            model.images.observe(this, Observer {
+                it?.let { images ->
+                    mAdapter.items = images
+                    posts_count_text.text = images.size.toString()
+                }
+            })
+            model.user.observe(this, Observer {
+                it?.let {
+                    mUser = it
+                    bindOnUserChange()
+                }
+            })
+            model.anotherUser?.observe(this, Observer {
+                it?.let {
+                    mAnotherUser = it
+                    bindOnUserChange()
+                }
+            })
+
             edit_profile_btn.setOnClickListener {
                 startActivity(Intent(this, EditProfileActivity::class.java))
             }
@@ -43,66 +70,43 @@ class ProfileActivity : BaseActivity() {
             add_friends_image.setOnClickListener {
                 startActivity(Intent(this, AddFriendsActivity::class.java))
             }
-
-            mAdapter = ProfileImagesAdapter()
-            images_recycler.layoutManager = GridLayoutManager(this, 3)
-            images_recycler.adapter = mAdapter
-
-            val model = initModel<ProfileViewModel>()
-            model.images.observe(this, Observer {
-                it?.let { images ->
-                    mAdapter.items = images
-                    posts_count_text.text = images.size.toString()
-                }
-            })
-            if (isAnotherUser()) {
-                model.setAnotherUid(mUid)
-                model.anotherUser.observe(this, Observer {
-                    it?.let {
-                        mAnotherUser = it
-                        bindStats(mAnotherUser!!)
-                        bindFollowBtn()
-                    }
-                })
+            follow_profile_btn.setOnClickListener {
+                model.toggleFollow(mUser, mUid)
             }
-            model.user.observe(this, Observer {
-                it?.let {
-                    mUser = it
-                    bindFollowBtn()
-                    if (!isAnotherUser()) {
-                        bindStats(mUser!!)
-                    }
-                }
-            })
 
             if (isAnotherUser()) {
                 add_friends_image.visibility = View.GONE
                 settings_image.visibility = View.GONE
                 edit_profile_btn.visibility = View.GONE
                 follow_profile_btn.visibility = View.VISIBLE
-                follow_profile_btn.setOnClickListener {
-                    mUser?.let { user ->
-                        model.toggleFollow(user, mUid)
-                    }
-                }
             }
         }
+    }
+
+    private fun bindOnUserChange() {
+        bindFollowBtn()
+        bindStats()
     }
 
     private fun bindFollowBtn() {
-        mUser?.let { user ->
+        if (isAnotherUser()) {
             mAnotherUser?.let { anotherUser ->
-                val isFollowing = user.follows.containsKey(anotherUser.uid)
-                follow_profile_btn.text = if (isFollowing) getString(R.string.unfollow) else getString(R.string.follow)
+                val isFollowing = mUser.follows.containsKey(anotherUser.uid)
+                follow_profile_btn.text =
+                        if (isFollowing) getString(R.string.unfollow)
+                        else getString(R.string.follow)
             }
         }
     }
 
-    private fun bindStats(user: User) {
-        profile_image.loadUserPhoto(user.photo)
-        username_text.text = user.username
-        followers_count_text.text = user.followers.size.toString()
-        following_count_text.text = user.follows.size.toString()
+    private fun bindStats() {
+        val user = if (isAnotherUser()) mAnotherUser else mUser
+        user?.let {
+            profile_image.loadUserPhoto(user.photo)
+            username_text.text = user.username
+            followers_count_text.text = user.followers.size.toString()
+            following_count_text.text = user.follows.size.toString()
+        }
     }
 
     private fun isAnotherUser() = mUid != currentUid()!!

@@ -14,7 +14,7 @@ import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 class ProfileViewModel : BaseViewModel(), FollowListener {
     private val followListener = DefaultFollowListener(setErrorOnFailureListener)
 
-    lateinit var anotherUser: LiveData<User>
+    var anotherUser: LiveData<User>? = null
 
     fun setAnotherUid(anotherUid: String) {
         anotherUser = Transformations.map(
