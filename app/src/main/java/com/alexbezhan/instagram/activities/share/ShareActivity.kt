@@ -20,23 +20,21 @@ class ShareActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_share)
-            Log.d(TAG, "onCreate")
+        setContentView(R.layout.activity_share)
+        Log.d(TAG, "onCreate")
 
-            mCamera = CameraHelper(this)
-            mCamera.takeCameraPicture()
+        mCamera = CameraHelper(this)
+        mCamera.takeCameraPicture()
 
-            back_image.setOnClickListener { finish() }
-            share_text.setOnClickListener { share() }
+        back_image.setOnClickListener { finish() }
+        share_text.setOnClickListener { share() }
 
-            mModel = initModel(ShareViewModelFactory())
-            mModel.user.observe(this, Observer { it?.let { mUser = it } })
-            mModel.openProfileUiCmd.observe(this, Observer {
-                startActivity(Intent(this, ProfileActivity::class.java))
-                finish()
-            })
-        }
+        mModel = initModel(ShareViewModelFactory())
+        mModel.user.observe(this, Observer { it?.let { mUser = it } })
+        mModel.openProfileUiCmd.observe(this, Observer {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            finish()
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

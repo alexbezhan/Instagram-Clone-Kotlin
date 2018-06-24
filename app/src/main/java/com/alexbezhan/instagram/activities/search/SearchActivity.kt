@@ -11,10 +11,8 @@ class SearchActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_home)
-            setupBottomNavigation(BottomNavBar.POSITION_SEARCH)
-            Log.d(TAG, "onCreate")
-        }
+        setContentView(R.layout.activity_home)
+        setupBottomNavigation(BottomNavBar.POSITION_SEARCH)
+        Log.d(TAG, "onCreate")
     }
 }

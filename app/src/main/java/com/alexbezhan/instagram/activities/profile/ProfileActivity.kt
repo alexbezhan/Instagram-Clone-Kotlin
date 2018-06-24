@@ -27,59 +27,57 @@ class ProfileActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_profile)
-            setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
-            Log.d(TAG, "onCreate")
+        setContentView(R.layout.activity_profile)
+        setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
+        Log.d(TAG, "onCreate")
 
-            val anotherUid = intent.extras?.getString(EXTRA_UID)
-            mUid = anotherUid ?: currentUid()!!
+        val anotherUid = intent.extras?.getString(EXTRA_UID)
+        mUid = anotherUid ?: currentUid()!!
 
-            mAdapter = ProfileImagesAdapter()
-            images_recycler.layoutManager = GridLayoutManager(this, 3)
-            images_recycler.adapter = mAdapter
+        mAdapter = ProfileImagesAdapter()
+        images_recycler.layoutManager = GridLayoutManager(this, 3)
+        images_recycler.adapter = mAdapter
 
-            val model = initModel<ProfileViewModel>(ProfileViewModelFactory(anotherUid))
-            model.images.observe(this, Observer {
-                it?.let { images ->
-                    mAdapter.items = images
-                    posts_count_text.text = images.size.toString()
-                }
-            })
-            model.user.observe(this, Observer {
-                it?.let {
-                    mUser = it
-                    bindOnUserChange()
-                }
-            })
-            model.anotherUser?.observe(this, Observer {
-                it?.let {
-                    mAnotherUser = it
-                    bindOnUserChange()
-                }
-            })
-
-            model.openEditProfileUiCmd.observe(this, Observer{
-                startActivity(Intent(this, EditProfileActivity::class.java))
-            })
-            model.openProfileSettingsUiCmd.observe(this, Observer{
-                startActivity(Intent(this, ProfileSettingsActivity::class.java))
-            })
-            model.openAddFriendsUiCmd.observe(this, Observer{
-                startActivity(Intent(this, AddFriendsActivity::class.java))
-            })
-
-            edit_profile_btn.setOnClickListener { model.onEditProfileClick() }
-            settings_image.setOnClickListener { model.onSettingsClick() }
-            add_friends_image.setOnClickListener {model.onAddFriendsClick() }
-            follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mUid) }
-
-            if (isAnotherUser()) {
-                add_friends_image.visibility = View.GONE
-                settings_image.visibility = View.GONE
-                edit_profile_btn.visibility = View.GONE
-                follow_profile_btn.visibility = View.VISIBLE
+        val model = initModel<ProfileViewModel>(ProfileViewModelFactory(anotherUid))
+        model.images.observe(this, Observer {
+            it?.let { images ->
+                mAdapter.items = images
+                posts_count_text.text = images.size.toString()
             }
+        })
+        model.user.observe(this, Observer {
+            it?.let {
+                mUser = it
+                bindOnUserChange()
+            }
+        })
+        model.anotherUser?.observe(this, Observer {
+            it?.let {
+                mAnotherUser = it
+                bindOnUserChange()
+            }
+        })
+
+        model.openEditProfileUiCmd.observe(this, Observer {
+            startActivity(Intent(this, EditProfileActivity::class.java))
+        })
+        model.openProfileSettingsUiCmd.observe(this, Observer {
+            startActivity(Intent(this, ProfileSettingsActivity::class.java))
+        })
+        model.openAddFriendsUiCmd.observe(this, Observer {
+            startActivity(Intent(this, AddFriendsActivity::class.java))
+        })
+
+        edit_profile_btn.setOnClickListener { model.onEditProfileClick() }
+        settings_image.setOnClickListener { model.onSettingsClick() }
+        add_friends_image.setOnClickListener { model.onAddFriendsClick() }
+        follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mUid) }
+
+        if (isAnotherUser()) {
+            add_friends_image.visibility = View.GONE
+            settings_image.visibility = View.GONE
+            edit_profile_btn.visibility = View.GONE
+            follow_profile_btn.visibility = View.VISIBLE
         }
     }
 

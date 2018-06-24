@@ -8,12 +8,10 @@ import kotlinx.android.synthetic.main.activity_profile_settings.*
 class ProfileSettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_profile_settings)
+        setContentView(R.layout.activity_profile_settings)
 
-            val model = initModel<ProfileSettingsViewModel>(ProfileSettingsViewModelFactory())
-            sign_out_text.setOnClickListener { model.onSignOut() }
-            back_image.setOnClickListener { finish() }
-        }
+        val model = initModel<ProfileSettingsViewModel>(ProfileSettingsViewModelFactory())
+        sign_out_text.setOnClickListener { model.onSignOut() }
+        back_image.setOnClickListener { finish() }
     }
 }

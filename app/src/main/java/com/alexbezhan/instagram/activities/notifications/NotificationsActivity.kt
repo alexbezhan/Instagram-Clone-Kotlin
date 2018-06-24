@@ -21,29 +21,27 @@ class NotificationsActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_notifications)
-            setupBottomNavigation(BottomNavBar.POSITION_NOTIFICATIONS)
-            Log.d(TAG, "onCreate")
+        setContentView(R.layout.activity_notifications)
+        setupBottomNavigation(BottomNavBar.POSITION_NOTIFICATIONS)
+        Log.d(TAG, "onCreate")
 
-            mAdapter = NotificationsAdapter(this)
-            notifications_recycler.layoutManager = LinearLayoutManager(this)
-            notifications_recycler.adapter = mAdapter
+        mAdapter = NotificationsAdapter(this)
+        notifications_recycler.layoutManager = LinearLayoutManager(this)
+        notifications_recycler.adapter = mAdapter
 
-            mModel = initModel(NotificationsViewModelFactory())
-            mModel.notifications.observe(this, Observer {
-                it?.let { notifications ->
-                    mModel.onNotifications(notifications)
-                    mAdapter.items = notifications
-                }
-            })
-            mModel.openPostUiCmd.observe(this, Observer {
-                it?.let { postId -> openPost(postId) }
-            })
-            mModel.openProfileUiCmd.observe(this, Observer {
-                it?.let { uid -> openProfile(uid) }
-            })
-        }
+        mModel = initModel(NotificationsViewModelFactory())
+        mModel.notifications.observe(this, Observer {
+            it?.let { notifications ->
+                mModel.onNotifications(notifications)
+                mAdapter.items = notifications
+            }
+        })
+        mModel.openPostUiCmd.observe(this, Observer {
+            it?.let { postId -> openPost(postId) }
+        })
+        mModel.openProfileUiCmd.observe(this, Observer {
+            it?.let { uid -> openProfile(uid) }
+        })
     }
 
     override fun openNotification(notification: Notification) =

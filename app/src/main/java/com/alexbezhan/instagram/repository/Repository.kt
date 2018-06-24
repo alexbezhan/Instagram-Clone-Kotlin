@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.net.Uri
 import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.*
+import com.alexbezhan.instagram.utils.firebase.FirebaseAuthStateLiveData
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.auth
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
@@ -38,9 +39,12 @@ interface Repository {
     fun likes(postId: String): LiveData<List<FeedPostLike>>
     fun commentsCount(postId: String): LiveData<Int>
     fun currentUid(): String?
+    fun authState(): LiveData<String>
 }
 
 class FirebaseRepository : Repository {
+    override fun authState(): LiveData<String> = FirebaseAuthStateLiveData()
+
     override fun currentUid(): String? = FirebaseHelper.currentUid()
 
     override fun likes(postId: String): LiveData<List<FeedPostLike>> =
