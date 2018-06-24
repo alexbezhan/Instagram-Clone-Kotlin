@@ -21,7 +21,9 @@ class ProfileViewModel(anotherUid: String?,
         }
     }
 
-    val images: LiveData<List<String>> = repository.getImages(anotherUid)
+    val images: LiveData<List<String>> =
+            if (anotherUid != null) repository.getImages(anotherUid)
+            else repository.getImages()
 
     fun onToggleFollowClick(currentUser: User, uid: String) =
             followManager.toggleFollow(currentUser, uid, setErrorOnFailureListener)

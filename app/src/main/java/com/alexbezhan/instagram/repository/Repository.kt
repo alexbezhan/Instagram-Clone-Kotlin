@@ -21,9 +21,11 @@ interface Repository {
     fun getFeedPost(uid: String, postId: String): LiveData<FeedPost>
     fun getComments(postId: String): LiveData<List<Comment>>
     fun getUser(uid: String): LiveData<User>
+    fun getUser(): LiveData<User>
     fun createComment(postId: String, comment: Comment): Task<String>
     fun setNotificationsRead(notificationsIds: List<String>, read: Boolean): Task<Unit>
-    fun getImages(uid: String? = null): LiveData<List<String>>
+    fun getImages(uid: String): LiveData<List<String>>
+    fun getImages(): LiveData<List<String>>
     fun updateUserProfile(user: User): Task<Unit>
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
     fun getUsers(): LiveData<List<User>>
@@ -109,6 +111,11 @@ class FirebaseRepository : Repository {
                 it.asFeedPost()!!
             }
 
+    override fun getUser(): LiveData<User> =
+            FirebaseLiveData { "users/$it" }.map {
+                it.asUser()!!
+            }
+
     override fun getUser(uid: String): LiveData<User> =
             FirebaseLiveData { "users/$uid" }.map {
                 it.asUser()!!
@@ -137,8 +144,13 @@ class FirebaseRepository : Repository {
                 .toUnit()
     }
 
-    override fun getImages(uid: String?): LiveData<List<String>> =
-            FirebaseLiveData { "images/${uid ?: it}" }.map {
+    override fun getImages(uid: String): LiveData<List<String>> =
+            FirebaseLiveData { "images/$uid" }.map {
+                it.children.map { it.getValue(String::class.java)!! }
+            }
+
+    override fun getImages(): LiveData<List<String>> =
+            FirebaseLiveData { "images/$it" }.map {
                 it.children.map { it.getValue(String::class.java)!! }
             }
 

@@ -15,7 +15,7 @@ abstract class BaseViewModel(protected val repository: Repository) : ViewModel()
 
     val authState: LiveData<String> = repository.authState()
     val error: LiveData<ErrorMessage> = _errorMessage
-    val user: LiveData<User> = repository.getUser(repository.currentUid()!!)
+    val user: LiveData<User> = repository.getUser()
 
     val notifications: LiveData<List<Notification>> =
             repository.notifications().map {
