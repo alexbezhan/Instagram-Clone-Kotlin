@@ -9,9 +9,6 @@ import com.alexbezhan.instagram.activities.zipLiveData
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
 abstract class BaseFeedViewModel(repository: Repository,
                                  private val likeManager: LikeManager) : BaseViewModel(repository) {
@@ -22,18 +19,18 @@ abstract class BaseFeedViewModel(repository: Repository,
     }
 
     fun observePostStats(postId: String, owner: LifecycleOwner,
-                                  observer: Observer<FeedPostStats>) {
+                         observer: Observer<FeedPostStats>) {
         val createNewObserver = postStats[postId] == null
         if (createNewObserver) {
-            val likesData = FirebaseLiveData(database.child("likes").child(postId))
-            val commentsData = FirebaseLiveData(database.child("comments").child(postId))
-            val statsData = Transformations.map(zipLiveData(likesData, commentsData))
-            { (likesSnapshot, commentsSnapshot) ->
-                val userLikes = likesSnapshot.children.map { it.key }.toSet()
+            val likes = repository.likes(postId)
+            val commentsData = repository.commentsCount(postId)
+            val statsData = Transformations.map(zipLiveData(likes, commentsData))
+            { (likes, commentsCount) ->
+                val userLikes = likes.map { it.userId }.toSet()
                 FeedPostStats(
                         likesCount = userLikes.size,
-                        commentsCount = commentsSnapshot.children.count(),
-                        likedByUser = userLikes.contains(FirebaseHelper.currentUid()))
+                        commentsCount = commentsCount,
+                        likedByUser = userLikes.contains(repository.currentUid()))
             }
             statsData.observe(owner, observer)
             postStats += (postId to statsData)

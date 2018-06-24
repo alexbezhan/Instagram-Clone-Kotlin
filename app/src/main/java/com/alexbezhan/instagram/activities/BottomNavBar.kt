@@ -3,6 +3,7 @@ package com.alexbezhan.instagram.activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -109,7 +110,7 @@ class BottomNavBar(private val activity: Activity,
                 }
 
                 val toolTip = ToolTip()
-                        .withColor(activity.resources.getColor(R.color.red))
+                        .withColor(ContextCompat.getColor(activity, R.color.red))
                         .withShadow()
                         .withAnimationType(ToolTip.AnimationType.FROM_TOP)
                         .withContentView(notificationsContentView)

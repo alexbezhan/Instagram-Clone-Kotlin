@@ -46,14 +46,12 @@ abstract class BaseActivity(val isAuthProtected: Boolean = true)
                 }
             }
         })
-        if (isAuthProtected) {
-            model.notifications.observe(this, Observer {
-                it?.let { notifications ->
-                    bottomNavBar?.setNotifications(notifications)
-                    bottomNavBar?.showNotificationPopover(tooltip_relative_layout)
-                }
-            })
-        }
+        model.notifications.observe(this, Observer {
+            it?.let { notifications ->
+                bottomNavBar?.setNotifications(notifications)
+                bottomNavBar?.showNotificationPopover(tooltip_relative_layout)
+            }
+        })
         return model
     }
 
