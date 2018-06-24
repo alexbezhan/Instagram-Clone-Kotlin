@@ -11,7 +11,7 @@ import com.alexbezhan.instagram.repository.Repository
 import com.google.android.gms.tasks.Task
 
 class EditProfileViewModel(private val uid: String,
-                           private val repository: Repository) : BaseViewModel() {
+                           repository: Repository) : BaseViewModel(repository) {
 
     val openPasswordConfirmDialogCmd = SingleLiveEvent<String>()
     private val _pendingEmail = MutableLiveData<String>()

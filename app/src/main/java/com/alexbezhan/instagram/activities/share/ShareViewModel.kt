@@ -10,7 +10,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 
 class ShareViewModel(private val uid: String,
-                     private val repository: Repository) : BaseViewModel() {
+                     repository: Repository) : BaseViewModel(repository) {
 
     val openProfileUiCmd = SingleLiveEvent<Unit>()
 

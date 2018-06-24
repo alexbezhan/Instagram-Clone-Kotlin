@@ -7,7 +7,7 @@ import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.repository.Repository
 
 class NotificationsViewModel(private val uid: String,
-                             private val repository: Repository) : BaseViewModel() {
+                             repository: Repository) : BaseViewModel(repository) {
 
     val openPostUiCmd = SingleLiveEvent<String>()
     val openProfileUiCmd = SingleLiveEvent<String>()

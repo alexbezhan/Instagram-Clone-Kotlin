@@ -8,11 +8,13 @@ import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.zipLiveData
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.repository.Repository
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 
-abstract class BaseFeedViewModel(private val likeManager: LikeManager) : BaseViewModel() {
+abstract class BaseFeedViewModel(repository: Repository,
+                                 private val likeManager: LikeManager) : BaseViewModel(repository) {
     private var postStats = mapOf<String, LiveData<FeedPostStats>>()
 
     fun toggleLike(currentUser: User, post: FeedPost) {

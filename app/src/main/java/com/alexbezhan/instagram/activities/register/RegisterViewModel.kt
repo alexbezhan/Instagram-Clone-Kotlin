@@ -8,7 +8,7 @@ import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 
-class RegisterViewModel(private val repository: Repository) : BaseViewModel() {
+class RegisterViewModel(repository: Repository) : BaseViewModel(repository) {
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
 

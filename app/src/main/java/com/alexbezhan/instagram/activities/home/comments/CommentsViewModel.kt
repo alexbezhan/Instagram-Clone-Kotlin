@@ -10,7 +10,7 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 
 
-class CommentsViewModel(private val repository: Repository) : BaseViewModel() {
+class CommentsViewModel(repository: Repository) : BaseViewModel(repository) {
     private lateinit var postId: String
     private lateinit var postUid: String
 

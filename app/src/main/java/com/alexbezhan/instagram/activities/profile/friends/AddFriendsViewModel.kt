@@ -9,7 +9,7 @@ import com.alexbezhan.instagram.repository.Repository
 
 class AddFriendsViewModel(uid: String,
                           repository: Repository,
-                          private val followManager: FollowManager) : BaseViewModel() {
+                          private val followManager: FollowManager) : BaseViewModel(repository) {
 
     val userAndFriends: LiveData<Pair<User, List<User>>> =
             repository.getUsers().map { allUsers ->

@@ -8,11 +8,12 @@ import android.support.annotation.StringRes
 import android.util.Log
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.repository.Repository
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.OnFailureListener
 
-abstract class BaseViewModel : ViewModel() {
+abstract class BaseViewModel(protected val repository: Repository) : ViewModel() {
     private val _errorMessage = MutableLiveData<ErrorMessage>()
     protected val setErrorOnFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
     val error: LiveData<ErrorMessage> = _errorMessage

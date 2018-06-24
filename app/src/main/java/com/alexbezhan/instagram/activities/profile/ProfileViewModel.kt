@@ -11,7 +11,7 @@ import com.alexbezhan.instagram.repository.Repository
 class ProfileViewModel(uid: String,
                        anotherUid: String?,
                        repository: Repository,
-                       private val followManager: FollowManager) : BaseViewModel() {
+                       private val followManager: FollowManager) : BaseViewModel(repository) {
     var anotherUser: LiveData<User>? = null
     val openEditProfileUiCmd = SingleLiveEvent<Unit>()
     val openProfileSettingsUiCmd = SingleLiveEvent<Unit>()

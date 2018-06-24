@@ -5,7 +5,7 @@ import com.alexbezhan.instagram.SingleLiveEvent
 import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.repository.Repository
 
-class LoginViewModel(private val repository: Repository) : BaseViewModel() {
+class LoginViewModel(repository: Repository) : BaseViewModel(repository) {
 
     val openHomeUiCmd = SingleLiveEvent<Unit>()
     val openRegisterUiCmd = SingleLiveEvent<Unit>()
