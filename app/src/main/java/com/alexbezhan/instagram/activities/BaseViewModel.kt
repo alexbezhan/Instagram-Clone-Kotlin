@@ -2,15 +2,12 @@ package com.alexbezhan.instagram.activities
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import android.support.annotation.StringRes
-import android.util.Log
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
-import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
+import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 import com.google.android.gms.tasks.OnFailureListener
 
 abstract class BaseViewModel(protected val repository: Repository) : ViewModel() {
@@ -18,22 +15,12 @@ abstract class BaseViewModel(protected val repository: Repository) : ViewModel()
     protected val setErrorOnFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
     val error: LiveData<ErrorMessage> = _errorMessage
 
-    val user: LiveData<User> by lazy {
-        Transformations.map(
-                FirebaseLiveData(FirebaseHelper.currentUserReference()!!)
-        ) {
-            it.asUser()!!
-        }
-    }
+    val user: LiveData<User> by lazy { repository.getUser(currentUid()!!) }
 
-    val notifications: LiveData<List<Notification>> = Transformations.map(
-            FirebaseLiveData(FirebaseHelper.database.child("notifications")
-                    .child(FirebaseHelper.currentUid()!!))
-    ) {
-        Log.d(this.toString(), "notifications: ")
-        it.children
-                .map { it.asNotification()!! }
-                .sortedByDescending { it.timestampDate() }
+    val notifications: LiveData<List<Notification>> by lazy {
+        repository.notifications(currentUid()!!).map {
+            it.sortedByDescending { it.timestampDate() }
+        }
     }
 
     protected fun setErrorMessage(@StringRes resId: Int) {

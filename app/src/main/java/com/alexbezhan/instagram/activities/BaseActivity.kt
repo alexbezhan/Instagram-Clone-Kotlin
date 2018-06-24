@@ -13,7 +13,7 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.auth
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
-abstract class BaseActivity(private val isAuthProtected: Boolean = true)
+abstract class BaseActivity(val isAuthProtected: Boolean = true)
     : AppCompatActivity() {
     private val TAG = "BaseActivity"
 
@@ -46,12 +46,14 @@ abstract class BaseActivity(private val isAuthProtected: Boolean = true)
                 }
             }
         })
-        model.notifications.observe(this, Observer {
-            it?.let { notifications ->
-                bottomNavBar?.setNotifications(notifications)
-                bottomNavBar?.showNotificationPopover(tooltip_relative_layout)
-            }
-        })
+        if (isAuthProtected) {
+            model.notifications.observe(this, Observer {
+                it?.let { notifications ->
+                    bottomNavBar?.setNotifications(notifications)
+                    bottomNavBar?.showNotificationPopover(tooltip_relative_layout)
+                }
+            })
+        }
         return model
     }
 

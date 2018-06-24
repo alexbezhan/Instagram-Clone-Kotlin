@@ -5,6 +5,7 @@ import android.net.Uri
 import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
+import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
@@ -35,9 +36,15 @@ interface Repository {
     fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri>
     fun addUserImageUrl(uid: String, imageUri: Uri): Task<Unit>
     fun addFeedPost(uid: String, post: FeedPost): Task<Unit>
+    fun notifications(uid: String): LiveData<List<Notification>>
 }
 
 class FirebaseRepository : Repository {
+    override fun notifications(uid: String): LiveData<List<Notification>> =
+            FirebaseLiveData(database.child("notifications").child(uid)).map {
+                it.children.map { it.asNotification()!! }
+            }
+
     override fun createUser(user: User, password: String): Task<Unit> =
             FirebaseHelper.auth.createUserWithEmailAndPassword(user.email, password)
                     .onSuccessTask {
@@ -127,8 +134,8 @@ class FirebaseRepository : Repository {
             database.child("images").child(uid).push().setValue(imageUri).toUnit()
 
     override fun addFeedPost(uid: String, post: FeedPost): Task<Unit> =
-        database.child("feed-posts").child(uid)
-                .push().setValue(post).toUnit()
+            database.child("feed-posts").child(uid)
+                    .push().setValue(post).toUnit()
 
     override fun updateUserProfile(uid: String, user: User): Task<Unit> {
         val updatesMap = mutableMapOf<String, Any?>()
