@@ -15,15 +15,14 @@ import com.alexbezhan.instagram.activities.profile.edit.EditProfileActivity
 import com.alexbezhan.instagram.activities.profile.friends.AddFriendsActivity
 import com.alexbezhan.instagram.activities.profile.settings.ProfileSettingsActivity
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mAdapter: ProfileImagesAdapter
-    private lateinit var mUid: String
     private lateinit var mUser: User
     private var mAnotherUser: User? = null
+    private var mAnotherUid: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +30,13 @@ class ProfileActivity : BaseActivity() {
         setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
         Log.d(TAG, "onCreate")
 
-        val anotherUid = intent.extras?.getString(EXTRA_UID)
-        mUid = anotherUid ?: currentUid()!!
+        mAnotherUid = intent.extras?.getString(EXTRA_UID)
 
         mAdapter = ProfileImagesAdapter()
         images_recycler.layoutManager = GridLayoutManager(this, 3)
         images_recycler.adapter = mAdapter
 
-        val model = initModel<ProfileViewModel>(ProfileViewModelFactory(anotherUid))
+        val model = initModel<ProfileViewModel>(ProfileViewModelFactory(mAnotherUid))
         model.images.observe(this, Observer {
             it?.let { images ->
                 mAdapter.items = images
@@ -71,9 +69,9 @@ class ProfileActivity : BaseActivity() {
         edit_profile_btn.setOnClickListener { model.onEditProfileClick() }
         settings_image.setOnClickListener { model.onSettingsClick() }
         add_friends_image.setOnClickListener { model.onAddFriendsClick() }
-        follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mUid) }
+        follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mAnotherUid!!) }
 
-        if (isAnotherUser()) {
+        if (mAnotherUid != null) {
             add_friends_image.visibility = View.GONE
             settings_image.visibility = View.GONE
             edit_profile_btn.visibility = View.GONE
@@ -87,7 +85,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindFollowBtn() {
-        if (isAnotherUser()) {
+        if (mAnotherUid != null) {
             mAnotherUser?.let { anotherUser ->
                 val isFollowing = mUser.follows.containsKey(anotherUser.uid)
                 follow_profile_btn.text =
@@ -98,7 +96,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindStats() {
-        val user = if (isAnotherUser()) mAnotherUser else mUser
+        val user = if (mAnotherUid != null) mAnotherUser else mUser
         user?.let {
             profile_image.loadUserPhoto(user.photo)
             username_text.text = user.username
@@ -106,8 +104,6 @@ class ProfileActivity : BaseActivity() {
             following_count_text.text = user.follows.size.toString()
         }
     }
-
-    private fun isAnotherUser() = mUid != currentUid()!!
 
     companion object {
         private const val EXTRA_UID = "uid"

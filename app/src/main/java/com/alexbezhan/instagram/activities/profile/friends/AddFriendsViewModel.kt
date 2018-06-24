@@ -7,13 +7,12 @@ import com.alexbezhan.instagram.activities.map
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 
-class AddFriendsViewModel(uid: String,
-                          repository: Repository,
+class AddFriendsViewModel(repository: Repository,
                           private val followManager: FollowManager) : BaseViewModel(repository) {
 
     val userAndFriends: LiveData<Pair<User, List<User>>> =
             repository.getUsers().map { allUsers ->
-                val (userList, otherUsersList) = allUsers.partition { it.uid == uid }
+                val (userList, otherUsersList) = allUsers.partition { it.uid == repository.currentUid() }
                 userList.first() to otherUsersList
             }
 

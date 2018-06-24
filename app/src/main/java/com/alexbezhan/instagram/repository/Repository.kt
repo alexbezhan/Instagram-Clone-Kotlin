@@ -17,29 +17,30 @@ import com.google.firebase.auth.EmailAuthProvider
 
 interface Repository {
     fun signIn(email: String, password: String): Task<Unit>
-    fun getFeedPosts(uid: String): LiveData<List<FeedPost>>
+    fun getFeedPosts(): LiveData<List<FeedPost>>
     fun getFeedPost(uid: String, postId: String): LiveData<FeedPost>
     fun getComments(postId: String): LiveData<List<Comment>>
     fun getUser(uid: String): LiveData<User>
     fun createComment(postId: String, comment: Comment): Task<String>
-    fun setNotificationsRead(uid: String, notificationsIds: List<String>, read: Boolean): Task<Unit>
-    fun getImages(uid: String): LiveData<List<String>>
-    fun updateUserProfile(uid: String, user: User): Task<Unit>
+    fun setNotificationsRead(notificationsIds: List<String>, read: Boolean): Task<Unit>
+    fun getImages(uid: String? = null): LiveData<List<String>>
+    fun updateUserProfile(user: User): Task<Unit>
     fun updateUserEmail(currentEmail: String, newEmail: String, password: String): Task<Unit>
     fun getUsers(): LiveData<List<User>>
     fun signOut()
     fun isUserExistsByEmail(email: String): Task<Boolean>
     fun createUser(user: User, password: String): Task<Unit>
-    fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri>
-    fun setUserPhotoUrl(uid: String, photoUrl: Uri): Task<Unit>
-    fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri>
-    fun addUserImageUrl(uid: String, imageUri: Uri): Task<Unit>
+    fun uploadUserPhoto(photo: Uri): Task<Uri>
+    fun setUserPhotoUrl(photoUrl: Uri): Task<Unit>
+    fun uploadUserImage(imageUri: Uri): Task<Uri>
+    fun addUserImageUrl(imageUri: Uri): Task<Unit>
     fun addFeedPost(uid: String, post: FeedPost): Task<Unit>
     fun notifications(): LiveData<List<Notification>>
     fun likes(postId: String): LiveData<List<FeedPostLike>>
     fun commentsCount(postId: String): LiveData<Int>
     fun currentUid(): String?
     fun authState(): LiveData<String>
+    fun getCurrentUserFeedPost(postId: String): LiveData<FeedPost>
 }
 
 class FirebaseRepository : Repository {
@@ -88,14 +89,19 @@ class FirebaseRepository : Repository {
                 it.children.map { it.asUser()!! }
             }
 
-    override fun getFeedPosts(uid: String): LiveData<List<FeedPost>> =
-            FirebaseLiveData { "feed-posts/$uid" }.map {
+    override fun getFeedPosts(): LiveData<List<FeedPost>> =
+            FirebaseLiveData { "feed-posts/$it" }.map {
                 it.children.map { it.asFeedPost()!! }
             }
 
     override fun getComments(postId: String): LiveData<List<Comment>> =
             FirebaseLiveData { "comments/$postId" }.map {
                 it.children.map { it.getValue(Comment::class.java)!! }
+            }
+
+    override fun getCurrentUserFeedPost(postId: String): LiveData<FeedPost> =
+            FirebaseLiveData { "feed-posts/$it/$postId" }.map {
+                it.asFeedPost()!!
             }
 
     override fun getFeedPost(uid: String, postId: String): LiveData<FeedPost> =
@@ -123,41 +129,41 @@ class FirebaseRepository : Repository {
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
             }
 
-    override fun setNotificationsRead(uid: String, notificationsIds: List<String>,
+    override fun setNotificationsRead(notificationsIds: List<String>,
                                       read: Boolean): Task<Unit> {
         val updatesMap = notificationsIds.map { "/$it/read" to read }.toMap()
-        return database.child("notifications").child(uid)
+        return database.child("notifications/${currentUid()}")
                 .updateChildren(updatesMap)
                 .toUnit()
     }
 
-    override fun getImages(uid: String): LiveData<List<String>> =
-            FirebaseLiveData { "images/$uid" }.map {
+    override fun getImages(uid: String?): LiveData<List<String>> =
+            FirebaseLiveData { "images/${uid ?: it}" }.map {
                 it.children.map { it.getValue(String::class.java)!! }
             }
 
-    override fun uploadUserPhoto(uid: String, photo: Uri): Task<Uri> =
-            storage.child("users/$uid/photo").putFile(photo)
+    override fun uploadUserPhoto(photo: Uri): Task<Uri> =
+            storage.child("users/${currentUid()}/photo").putFile(photo)
                     .onSuccessTask { it ->
                         Tasks.forResult(it!!.downloadUrl!!)
                     }
 
-    override fun setUserPhotoUrl(uid: String, photoUrl: Uri): Task<Unit> =
-            database.child("users/$uid/photo").setValue(photoUrl.toString())
+    override fun setUserPhotoUrl(photoUrl: Uri): Task<Unit> =
+            database.child("users/${currentUid()}/photo").setValue(photoUrl.toString())
                     .toUnit()
 
-    override fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri> =
-            storage.child("users/$uid/images/${imageUri.lastPathSegment}")
+    override fun uploadUserImage(imageUri: Uri): Task<Uri> =
+            storage.child("users/${currentUid()}/images/${imageUri.lastPathSegment}")
                     .putFile(imageUri)
                     .onSuccessTask { Tasks.forResult(it!!.downloadUrl!!) }
 
-    override fun addUserImageUrl(uid: String, imageUri: Uri): Task<Unit> =
-            database.child("images/$uid").push().setValue(imageUri).toUnit()
+    override fun addUserImageUrl(imageUri: Uri): Task<Unit> =
+            database.child("images/${currentUid()}").push().setValue(imageUri).toUnit()
 
     override fun addFeedPost(uid: String, post: FeedPost): Task<Unit> =
             database.child("feed-posts/$uid").push().setValue(post).toUnit()
 
-    override fun updateUserProfile(uid: String, user: User): Task<Unit> {
+    override fun updateUserProfile(user: User): Task<Unit> {
         val updatesMap = mutableMapOf<String, Any?>()
         if (user.name != user.name) updatesMap["name"] = user.name
         if (user.username != user.username) updatesMap["username"] = user.username
@@ -166,7 +172,7 @@ class FirebaseRepository : Repository {
         if (user.email != user.email) updatesMap["email"] = user.email
         if (user.phone != user.phone) updatesMap["phone"] = user.phone
 
-        return database.child("users/$uid").updateChildren(updatesMap).toUnit()
+        return database.child("users/${currentUid()}").updateChildren(updatesMap).toUnit()
     }
 
     override fun updateUserEmail(currentEmail: String, newEmail: String,

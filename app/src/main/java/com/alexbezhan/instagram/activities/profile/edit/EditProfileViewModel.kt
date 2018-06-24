@@ -10,8 +10,7 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 import com.google.android.gms.tasks.Task
 
-class EditProfileViewModel(private val uid: String,
-                           repository: Repository) : BaseViewModel(repository) {
+class EditProfileViewModel(repository: Repository) : BaseViewModel(repository) {
 
     val openPasswordConfirmDialogCmd = SingleLiveEvent<String>()
     private val _pendingEmail = MutableLiveData<String>()
@@ -19,8 +18,8 @@ class EditProfileViewModel(private val uid: String,
     val profileSavedEvent = SingleLiveEvent<Unit>()
 
     fun onImageTaken(photo: Uri): Task<Unit> =
-            repository.uploadUserPhoto(uid, photo).onSuccessTask {
-                repository.setUserPhotoUrl(uid, it!!)
+            repository.uploadUserPhoto(photo).onSuccessTask {
+                repository.setUserPhotoUrl(it!!)
             }.addOnFailureListener(setErrorOnFailureListener)
 
 
@@ -44,7 +43,7 @@ class EditProfileViewModel(private val uid: String,
         val error = validate(newUser)
         if (error == null) {
             if (newUser.email == currentUser.email) {
-                repository.updateUserProfile(uid, newUser)
+                repository.updateUserProfile(newUser)
                         .addOnSuccessListener { profileSavedEvent.call() }
                         .addOnFailureListener(setErrorOnFailureListener)
             } else {

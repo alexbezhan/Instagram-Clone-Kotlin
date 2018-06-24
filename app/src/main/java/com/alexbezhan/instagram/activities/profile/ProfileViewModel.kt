@@ -3,13 +3,11 @@ package com.alexbezhan.instagram.activities.profile
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.SingleLiveEvent
 import com.alexbezhan.instagram.activities.BaseViewModel
-import com.alexbezhan.instagram.activities.FirebaseFollowManager
 import com.alexbezhan.instagram.activities.FollowManager
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 
-class ProfileViewModel(uid: String,
-                       anotherUid: String?,
+class ProfileViewModel(anotherUid: String?,
                        repository: Repository,
                        private val followManager: FollowManager) : BaseViewModel(repository) {
     var anotherUser: LiveData<User>? = null
@@ -23,7 +21,7 @@ class ProfileViewModel(uid: String,
         }
     }
 
-    val images: LiveData<List<String>> = repository.getImages(uid)
+    val images: LiveData<List<String>> = repository.getImages(anotherUid)
 
     fun onToggleFollowClick(currentUser: User, uid: String) =
             followManager.toggleFollow(currentUser, uid, setErrorOnFailureListener)

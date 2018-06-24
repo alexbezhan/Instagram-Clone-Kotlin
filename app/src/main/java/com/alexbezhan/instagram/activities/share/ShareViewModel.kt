@@ -9,8 +9,7 @@ import com.alexbezhan.instagram.repository.Repository
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 
-class ShareViewModel(private val uid: String,
-                     repository: Repository) : BaseViewModel(repository) {
+class ShareViewModel(repository: Repository) : BaseViewModel(repository) {
 
     val openProfileUiCmd = SingleLiveEvent<Unit>()
 
@@ -18,7 +17,7 @@ class ShareViewModel(private val uid: String,
         fun mkFeedPost(imageDownloadUrl: String)
                 : FeedPost {
             return FeedPost(
-                    uid = uid,
+                    uid = repository.currentUid()!!,
                     username = user.username,
                     image = imageDownloadUrl,
                     caption = caption,
@@ -27,9 +26,9 @@ class ShareViewModel(private val uid: String,
         }
 
         if (localImageUri != null && caption.isNotEmpty()) {
-            val uploadUserImage: Task<Uri> = repository.uploadUserImage(uid, localImageUri)
+            val uploadUserImage: Task<Uri> = repository.uploadUserImage(localImageUri)
             uploadUserImage.onSuccessTask { remoteImageUri ->
-                val addImage = repository.addUserImageUrl(uid, remoteImageUri!!)
+                val addImage = repository.addUserImageUrl(remoteImageUri!!)
                 val addFeedPost = with(mkFeedPost(remoteImageUri.toString())) {
                     repository.addFeedPost(uid, this)
                 }
