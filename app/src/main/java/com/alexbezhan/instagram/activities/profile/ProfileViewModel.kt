@@ -7,7 +7,7 @@ import com.alexbezhan.instagram.activities.FollowManager
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 
-class ProfileViewModel(anotherUid: String?,
+class ProfileViewModel(private val anotherUid: String?,
                        repository: Repository,
                        private val followManager: FollowManager) : BaseViewModel(repository) {
     var anotherUser: LiveData<User>? = null
@@ -16,8 +16,8 @@ class ProfileViewModel(anotherUid: String?,
     val openAddFriendsUiCmd = SingleLiveEvent<Unit>()
 
     init {
-        if (anotherUid != null) {
-            anotherUser = repository.getUser(anotherUid)
+        if (isAnotherUser()) {
+            anotherUser = repository.getUser(anotherUid!!)
         }
     }
 
@@ -25,8 +25,12 @@ class ProfileViewModel(anotherUid: String?,
             if (anotherUid != null) repository.getImages(anotherUid)
             else repository.getImages()
 
-    fun onToggleFollowClick(currentUser: User, uid: String) =
-            followManager.toggleFollow(currentUser, uid, setErrorOnFailureListener)
+    fun isAnotherUser(): Boolean = anotherUid != null && anotherUid != repository.currentUid()
+
+    fun onToggleFollowClick(currentUser: User) =
+            anotherUid?.let {
+                followManager.toggleFollow(currentUser, anotherUid, setErrorOnFailureListener)
+            }
 
     fun onEditProfileClick() {
         openEditProfileUiCmd.call()

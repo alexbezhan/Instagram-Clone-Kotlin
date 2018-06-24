@@ -159,8 +159,7 @@ class FirebaseRepository : Repository {
             storage.child("users/${currentUid()}/photo").uploadFile(photo)
 
     override fun setUserPhotoUrl(photoUrl: Uri): Task<Unit> =
-            database.child("users/${currentUid()}/photo").setValue(photoUrl.toString())
-                    .toUnit()
+            database.child("users/${currentUid()}/photo").setValue(photoUrl.toString()).toUnit()
 
     override fun uploadUserImage(imageUri: Uri): Task<Uri> =
             storage.child("users/${currentUid()}/images/${imageUri.lastPathSegment}")
@@ -178,7 +177,7 @@ class FirebaseRepository : Repository {
             }
 
     override fun addUserImageUrl(imageUri: Uri): Task<Unit> =
-            database.child("images/${currentUid()}").push().setValue(imageUri).toUnit()
+            database.child("images/${currentUid()}").push().setValue(imageUri.toString()).toUnit()
 
     override fun addFeedPost(uid: String, post: FeedPost): Task<Unit> =
             database.child("feed-posts/$uid").push().setValue(post).toUnit()

@@ -22,7 +22,7 @@ class ProfileActivity : BaseActivity() {
     private lateinit var mAdapter: ProfileImagesAdapter
     private lateinit var mUser: User
     private var mAnotherUser: User? = null
-    private var mAnotherUid: String? = null
+    private lateinit var mModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,48 +30,46 @@ class ProfileActivity : BaseActivity() {
         setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
         Log.d(TAG, "onCreate")
 
-        mAnotherUid = intent.extras?.getString(EXTRA_UID)
-
         mAdapter = ProfileImagesAdapter()
         images_recycler.layoutManager = GridLayoutManager(this, 3)
         images_recycler.adapter = mAdapter
 
-        val model = initModel<ProfileViewModel>(ProfileViewModelFactory(mAnotherUid))
-        model.images.observe(this, Observer {
+        mModel = initModel(ProfileViewModelFactory(intent.extras?.getString(EXTRA_UID)))
+        mModel.images.observe(this, Observer {
             it?.let { images ->
                 mAdapter.items = images
                 posts_count_text.text = images.size.toString()
             }
         })
-        model.user.observe(this, Observer {
+        mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it
                 bindOnUserChange()
             }
         })
-        model.anotherUser?.observe(this, Observer {
+        mModel.anotherUser?.observe(this, Observer {
             it?.let {
                 mAnotherUser = it
                 bindOnUserChange()
             }
         })
 
-        model.openEditProfileUiCmd.observe(this, Observer {
+        mModel.openEditProfileUiCmd.observe(this, Observer {
             startActivity(Intent(this, EditProfileActivity::class.java))
         })
-        model.openProfileSettingsUiCmd.observe(this, Observer {
+        mModel.openProfileSettingsUiCmd.observe(this, Observer {
             startActivity(Intent(this, ProfileSettingsActivity::class.java))
         })
-        model.openAddFriendsUiCmd.observe(this, Observer {
+        mModel.openAddFriendsUiCmd.observe(this, Observer {
             startActivity(Intent(this, AddFriendsActivity::class.java))
         })
 
-        edit_profile_btn.setOnClickListener { model.onEditProfileClick() }
-        settings_image.setOnClickListener { model.onSettingsClick() }
-        add_friends_image.setOnClickListener { model.onAddFriendsClick() }
-        follow_profile_btn.setOnClickListener { model.onToggleFollowClick(mUser, mAnotherUid!!) }
+        edit_profile_btn.setOnClickListener { mModel.onEditProfileClick() }
+        settings_image.setOnClickListener { mModel.onSettingsClick() }
+        add_friends_image.setOnClickListener { mModel.onAddFriendsClick() }
+        follow_profile_btn.setOnClickListener { mModel.onToggleFollowClick(mUser) }
 
-        if (mAnotherUid != null) {
+        if (mModel.isAnotherUser()) {
             add_friends_image.visibility = View.GONE
             settings_image.visibility = View.GONE
             edit_profile_btn.visibility = View.GONE
@@ -85,7 +83,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindFollowBtn() {
-        if (mAnotherUid != null) {
+        if (mModel.isAnotherUser()) {
             mAnotherUser?.let { anotherUser ->
                 val isFollowing = mUser.follows.containsKey(anotherUser.uid)
                 follow_profile_btn.text =
@@ -96,7 +94,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindStats() {
-        val user = if (mAnotherUid != null) mAnotherUser else mUser
+        val user = if (mModel.isAnotherUser()) mAnotherUser else mUser
         user?.let {
             profile_image.loadUserPhoto(user.photo)
             username_text.text = user.username
