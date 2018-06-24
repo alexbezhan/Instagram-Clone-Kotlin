@@ -44,6 +44,7 @@ class FirebaseLiveData(private val computeReference: (String) -> String)
             }
         } else if (localReference != null && (!isActive || localCurrentUid == null)) {
             localReference.removeEventListener(listener)
+            reference = null
         }
     }
 }

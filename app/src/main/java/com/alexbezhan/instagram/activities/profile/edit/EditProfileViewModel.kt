@@ -1,7 +1,5 @@
 package com.alexbezhan.instagram.activities.profile.edit
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.SingleLiveEvent
@@ -13,8 +11,7 @@ import com.google.android.gms.tasks.Task
 class EditProfileViewModel(repository: Repository) : BaseViewModel(repository) {
 
     val openPasswordConfirmDialogCmd = SingleLiveEvent<String>()
-    private val _pendingEmail = MutableLiveData<String>()
-    val pendingEmail: LiveData<String> = _pendingEmail
+    private var pendingUser: User? = null
     val profileSavedEvent = SingleLiveEvent<Unit>()
 
     fun onImageTaken(photo: Uri): Task<Unit> =
@@ -23,17 +20,13 @@ class EditProfileViewModel(repository: Repository) : BaseViewModel(repository) {
             }.addOnFailureListener(setErrorOnFailureListener)
 
 
-    fun updateEmail(currentEmail: String, newEmail: String, password: String): Task<Unit> {
-        return repository.updateUserEmail(currentEmail, newEmail, password)
-                .addOnFailureListener(setErrorOnFailureListener)
-    }
-
-    fun onPasswordConfirm(currentEmail: String, newEmail: String, password: String) {
+    fun onPasswordConfirm(currentUser: User, password: String) {
         if (password.isNotEmpty()) {
-            updateEmail(
-                    currentEmail = currentEmail,
-                    newEmail = newEmail,
-                    password = password)
+            val newUser = pendingUser!!
+            repository.updateUserEmail(currentUser.email, newUser.email, password)
+                    .onSuccessTask { repository.updateUserProfile(newUser, currentUser) }
+                    .addOnSuccessListener { profileSavedEvent.call() }
+                    .addOnFailureListener(setErrorOnFailureListener)
         } else {
             setErrorMessage(R.string.you_should_enter_password)
         }
@@ -43,11 +36,11 @@ class EditProfileViewModel(repository: Repository) : BaseViewModel(repository) {
         val error = validate(newUser)
         if (error == null) {
             if (newUser.email == currentUser.email) {
-                repository.updateUserProfile(newUser)
+                repository.updateUserProfile(newUser, currentUser)
                         .addOnSuccessListener { profileSavedEvent.call() }
                         .addOnFailureListener(setErrorOnFailureListener)
             } else {
-                _pendingEmail.value = newUser.email
+                pendingUser = newUser
                 openPasswordConfirmDialogCmd.call()
             }
         } else {

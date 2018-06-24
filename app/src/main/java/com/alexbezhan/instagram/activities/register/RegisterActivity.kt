@@ -31,6 +31,11 @@ class RegisterActivity : BaseActivity(isAuthProtected = false), EmailFragment.Li
         mModel.openHomeUiCmd.observe(this, Observer {
             startHomeActivity()
         })
+        mModel.openNamePassUiCmd.observe(this, Observer {
+            supportFragmentManager.beginTransaction().replace(R.id.frame_layout, NamePassFragment())
+                    .addToBackStack(null)
+                    .commit()
+        })
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.frame_layout, EmailFragment())
                     .commit()

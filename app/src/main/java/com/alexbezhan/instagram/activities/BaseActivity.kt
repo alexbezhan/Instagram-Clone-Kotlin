@@ -7,13 +7,12 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.alexbezhan.instagram.activities.login.LoginActivity
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
 abstract class BaseActivity(val isAuthProtected: Boolean = true)
     : AppCompatActivity() {
-    private val TAG = "BaseActivity"
-
     protected var bottomNavBar: BottomNavBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +25,12 @@ abstract class BaseActivity(val isAuthProtected: Boolean = true)
         val model = ViewModelProviders.of(this, factory).get(T::class.java)
         model.error.observe(this, Observer {
             it?.let {
-                when (it) {
-                    is ErrorMessage.Plain -> showToast(it.message)
-                    is ErrorMessage.StringRes -> showToast(resources.getString(it.resId))
+                val message = when (it) {
+                    is ErrorMessage.Plain -> it.message
+                    is ErrorMessage.StringRes -> resources.getString(it.resId)
                 }
+                Log.e(TAG, "error: $message")
+                showToast(message)
             }
         })
         model.notifications.observe(this, Observer {
@@ -58,5 +59,9 @@ abstract class BaseActivity(val isAuthProtected: Boolean = true)
             navBar.setCurrentNavItemActive()
             navBar.showNotificationPopover(tooltip_relative_layout)
         }
+    }
+
+    companion object {
+        const val TAG = "BaseActivity"
     }
 }

@@ -22,8 +22,6 @@ abstract class BaseViewModel(protected val repository: Repository) : ViewModel()
                 it.sortedByDescending { it.timestampDate() }
             }
 
-    fun isAuthenticated(): Boolean = repository.currentUid() != null
-
     protected fun setErrorMessage(@StringRes resId: Int) {
         _errorMessage.value = ErrorMessage.stringRes(resId)
     }

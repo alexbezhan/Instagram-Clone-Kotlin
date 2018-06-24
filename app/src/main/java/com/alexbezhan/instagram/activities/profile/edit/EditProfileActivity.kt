@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.activity_edit_profile.*
 class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private val TAG = "EditProfileActivity"
     private lateinit var mUser: User
-    private var pendingEmail: String? = null
     private lateinit var mCamera: CameraHelper
     private lateinit var mModel: EditProfileViewModel
 
@@ -35,11 +34,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
         mModel = initModel(EditProfileViewModelFactory())
-        mModel.pendingEmail.observe(this, Observer {
-            it?.let {
-                pendingEmail = it
-            }
-        })
         mModel.openPasswordConfirmDialogCmd.observe(this, Observer {
             PasswordDialog().show(supportFragmentManager, "password_dialog")
         })
@@ -74,19 +68,16 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         }
     }
 
-    private fun readInputs(): User {
-        return User(
-                name = name_input.text.toString(),
-                username = username_input.text.toString(),
-                email = email_input.text.toString(),
-                website = website_input.text.toStringOrNull(),
-                bio = bio_input.text.toStringOrNull(),
-                phone = phone_input.text.toString().toLongOrNull()
-        )
-    }
+    private fun readInputs(): User =
+            User(
+                    name = name_input.text.toString(),
+                    username = username_input.text.toString(),
+                    email = email_input.text.toString(),
+                    website = website_input.text.toStringOrNull(),
+                    bio = bio_input.text.toStringOrNull(),
+                    phone = phone_input.text.toString().toLongOrNull()
+            )
 
     override fun onPasswordConfirm(password: String) =
-            mModel.onPasswordConfirm(currentEmail = mUser.email,
-                    newEmail = pendingEmail!!,
-                    password = password)
+            mModel.onPasswordConfirm(currentUser = mUser, password = password)
 }
