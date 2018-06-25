@@ -9,13 +9,11 @@ import com.alexbezhan.instagram.activities.*
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.views.PasswordDialog
-import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private val TAG = "EditProfileActivity"
     private lateinit var mUser: User
-    private lateinit var mPendingUser: User
     private lateinit var mCamera: CameraHelper
     private lateinit var mModel: EditProfileViewModel
 
@@ -30,97 +28,56 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
             it.hideSoftKeyboard()
             finish()
         }
-        save_image.setOnClickListener { updateProfile() }
+        save_image.setOnClickListener {
+            mModel.onSaveProfileClick(newUser = readInputs(), currentUser = mUser)
+        }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mModel = initModel()
+        mModel = initModel(EditProfileViewModelFactory())
+        mModel.openPasswordConfirmDialogCmd.observe(this, Observer {
+            PasswordDialog().show(supportFragmentManager, "password_dialog")
+        })
         mModel.user.observe(this, Observer {
             it?.let {
                 mUser = it
-                with(mUser) {
-                    name_input.setText(name)
-                    username_input.setText(username)
-                    website_input.setText(website)
-                    bio_input.setText(bio)
-                    email_input.setText(email)
-                    phone_input.setText(phone?.toString())
-                    profile_image.loadUserPhoto(photo)
-                }
+                bindUser()
             }
+        })
+        mModel.profileSavedEvent.observe(this, Observer {
+            showToast(getString(R.string.profile_saved))
+            back_image.hideSoftKeyboard()
+            finish()
         })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mModel.uploadUserPhoto(mCamera.imageUri!!) {
-                val photoUrl = it.downloadUrl.toString()
-                mModel.updateUserPhoto(photoUrl) {
-                    mUser = mUser.copy(photo = photoUrl)
-                    profile_image.loadUserPhoto(mUser.photo)
-                }
-            }
+            mModel.onImageTaken(mCamera.imageUri!!)
         }
     }
 
-    private fun updateProfile() {
-        mPendingUser = readInputs()
-        val error = validate(mPendingUser)
-        if (error == null) {
-            if (mPendingUser.email == mUser.email) {
-                updateUser(mPendingUser)
-            } else {
-                PasswordDialog().show(supportFragmentManager, "password_dialog")
-            }
-        } else {
-            showToast(error)
+    private fun bindUser() {
+        with(mUser) {
+            name_input.setText(name)
+            username_input.setText(username)
+            website_input.setText(website)
+            bio_input.setText(bio)
+            email_input.setText(email)
+            phone_input.setText(phone?.toString())
+            profile_image.loadUserPhoto(photo)
         }
     }
 
-    private fun readInputs(): User {
-        return User(
-                name = name_input.text.toString(),
-                username = username_input.text.toString(),
-                email = email_input.text.toString(),
-                website = website_input.text.toStringOrNull(),
-                bio = bio_input.text.toStringOrNull(),
-                phone = phone_input.text.toString().toLongOrNull()
-        )
-    }
+    private fun readInputs(): User =
+            User(
+                    name = name_input.text.toString(),
+                    username = username_input.text.toString(),
+                    email = email_input.text.toString(),
+                    website = website_input.text.toStringOrNull(),
+                    bio = bio_input.text.toStringOrNull(),
+                    phone = phone_input.text.toString().toLongOrNull()
+            )
 
-    override fun onPasswordConfirm(password: String) {
-        if (password.isNotEmpty()) {
-            val credential = EmailAuthProvider.getCredential(mUser.email, password)
-            mModel.reauthenticate(credential) {
-                mModel.updateEmail(mPendingUser.email) {
-                    updateUser(mPendingUser)
-                }
-            }
-        } else {
-            showToast(getString(R.string.you_should_enter_password))
-        }
-    }
-
-    private fun updateUser(user: User) {
-        val updatesMap = mutableMapOf<String, Any?>()
-        if (user.name != mUser.name) updatesMap["name"] = user.name
-        if (user.username != mUser.username) updatesMap["username"] = user.username
-        if (user.website != mUser.website) updatesMap["website"] = user.website
-        if (user.bio != mUser.bio) updatesMap["bio"] = user.bio
-        if (user.email != mUser.email) updatesMap["email"] = user.email
-        if (user.phone != mUser.phone) updatesMap["phone"] = user.phone
-
-        mModel.updateUser(updatesMap) {
-            showToast(getString(R.string.profile_saved))
-            back_image.hideSoftKeyboard()
-            finish()
-        }
-    }
-
-    private fun validate(user: User): String? =
-            when {
-                user.name.isEmpty() -> getString(R.string.please_enter_name)
-                user.username.isEmpty() -> getString(R.string.please_enter_username)
-                user.email.isEmpty() -> getString(R.string.please_enter_email)
-                else -> null
-            }
+    override fun onPasswordConfirm(password: String) =
+            mModel.onPasswordConfirm(currentUser = mUser, password = password)
 }

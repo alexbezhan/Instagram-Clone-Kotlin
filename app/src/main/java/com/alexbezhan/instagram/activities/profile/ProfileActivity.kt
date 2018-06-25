@@ -15,71 +15,65 @@ import com.alexbezhan.instagram.activities.profile.edit.EditProfileActivity
 import com.alexbezhan.instagram.activities.profile.friends.AddFriendsActivity
 import com.alexbezhan.instagram.activities.profile.settings.ProfileSettingsActivity
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mAdapter: ProfileImagesAdapter
-    private lateinit var mUid: String
     private lateinit var mUser: User
     private var mAnotherUser: User? = null
+    private lateinit var mModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_profile)
-            setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
-            Log.d(TAG, "onCreate")
+        setContentView(R.layout.activity_profile)
+        setupBottomNavigation(BottomNavBar.POSITION_PROFILE)
+        Log.d(TAG, "onCreate")
 
-            mUid = intent.extras?.getString(EXTRA_UID) ?: currentUid()!!
+        mAdapter = ProfileImagesAdapter()
+        images_recycler.layoutManager = GridLayoutManager(this, 3)
+        images_recycler.adapter = mAdapter
 
-            mAdapter = ProfileImagesAdapter()
-            images_recycler.layoutManager = GridLayoutManager(this, 3)
-            images_recycler.adapter = mAdapter
+        mModel = initModel(ProfileViewModelFactory(intent.extras?.getString(EXTRA_UID)))
+        mModel.images.observe(this, Observer {
+            it?.let { images ->
+                mAdapter.items = images
+                posts_count_text.text = images.size.toString()
+            }
+        })
+        mModel.user.observe(this, Observer {
+            it?.let {
+                mUser = it
+                bindOnUserChange()
+            }
+        })
+        mModel.anotherUser?.observe(this, Observer {
+            it?.let {
+                mAnotherUser = it
+                bindOnUserChange()
+            }
+        })
 
-            val model = initModel<ProfileViewModel>()
-            if (isAnotherUser()) {
-                model.setAnotherUid(mUid)
-            }
-            model.images.observe(this, Observer {
-                it?.let { images ->
-                    mAdapter.items = images
-                    posts_count_text.text = images.size.toString()
-                }
-            })
-            model.user.observe(this, Observer {
-                it?.let {
-                    mUser = it
-                    bindOnUserChange()
-                }
-            })
-            model.anotherUser?.observe(this, Observer {
-                it?.let {
-                    mAnotherUser = it
-                    bindOnUserChange()
-                }
-            })
+        mModel.openEditProfileUiCmd.observe(this, Observer {
+            startActivity(Intent(this, EditProfileActivity::class.java))
+        })
+        mModel.openProfileSettingsUiCmd.observe(this, Observer {
+            startActivity(Intent(this, ProfileSettingsActivity::class.java))
+        })
+        mModel.openAddFriendsUiCmd.observe(this, Observer {
+            startActivity(Intent(this, AddFriendsActivity::class.java))
+        })
 
-            edit_profile_btn.setOnClickListener {
-                startActivity(Intent(this, EditProfileActivity::class.java))
-            }
-            settings_image.setOnClickListener {
-                startActivity(Intent(this, ProfileSettingsActivity::class.java))
-            }
-            add_friends_image.setOnClickListener {
-                startActivity(Intent(this, AddFriendsActivity::class.java))
-            }
-            follow_profile_btn.setOnClickListener {
-                model.toggleFollow(mUser, mUid)
-            }
+        edit_profile_btn.setOnClickListener { mModel.onEditProfileClick() }
+        settings_image.setOnClickListener { mModel.onSettingsClick() }
+        add_friends_image.setOnClickListener { mModel.onAddFriendsClick() }
+        follow_profile_btn.setOnClickListener { mModel.onToggleFollowClick(mUser) }
 
-            if (isAnotherUser()) {
-                add_friends_image.visibility = View.GONE
-                settings_image.visibility = View.GONE
-                edit_profile_btn.visibility = View.GONE
-                follow_profile_btn.visibility = View.VISIBLE
-            }
+        if (mModel.isAnotherUser()) {
+            add_friends_image.visibility = View.GONE
+            settings_image.visibility = View.GONE
+            edit_profile_btn.visibility = View.GONE
+            follow_profile_btn.visibility = View.VISIBLE
         }
     }
 
@@ -89,7 +83,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindFollowBtn() {
-        if (isAnotherUser()) {
+        if (mModel.isAnotherUser()) {
             mAnotherUser?.let { anotherUser ->
                 val isFollowing = mUser.follows.containsKey(anotherUser.uid)
                 follow_profile_btn.text =
@@ -100,7 +94,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun bindStats() {
-        val user = if (isAnotherUser()) mAnotherUser else mUser
+        val user = if (mModel.isAnotherUser()) mAnotherUser else mUser
         user?.let {
             profile_image.loadUserPhoto(user.photo)
             username_text.text = user.username
@@ -108,8 +102,6 @@ class ProfileActivity : BaseActivity() {
             following_count_text.text = user.follows.size.toString()
         }
     }
-
-    private fun isAnotherUser() = mUid != currentUid()!!
 
     companion object {
         private const val EXTRA_UID = "uid"

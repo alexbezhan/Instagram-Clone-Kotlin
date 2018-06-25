@@ -20,23 +20,23 @@ class PostDetailsActivity : BaseFeedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_post_details)
+        setContentView(R.layout.activity_post_details)
 
-            mAdapter = FeedAdapter(this)
-            post_recycler.disableChangeAnimation()
-            post_recycler.layoutManager = LinearLayoutManager(this)
-            post_recycler.adapter = mAdapter
-            back_image.setOnClickListener { finish() }
+        mAdapter = FeedAdapter(this)
+        post_recycler.disableChangeAnimation()
+        post_recycler.layoutManager = LinearLayoutManager(this)
+        post_recycler.adapter = mAdapter
+        back_image.setOnClickListener { finish() }
 
-            val postId = intent.getStringExtra(EXTRA_POST_ID)
-            mModel = initModel()
-            mModel.start(postId)
-            mModel.user.observe(this, Observer { it?.let { mUser = it } })
-            mModel.post.observe(this, Observer {
-                it?.let { mAdapter.items = listOf(it) }
-            })
-        }
+        val postId = intent.getStringExtra(EXTRA_POST_ID)
+        mModel = initModel(PostDetailsViewModelFactory())
+        mModel.start(postId)
+        mModel.user.observe(this, Observer {
+            it?.let { mUser = it }
+        })
+        mModel.post.observe(this, Observer {
+            it?.let { mAdapter.items = listOf(it) }
+        })
     }
 
     companion object {
