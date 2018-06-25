@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import com.alexbezhan.instagram.activities.login.LoginActivity
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
 
@@ -43,6 +44,19 @@ abstract class BaseActivity(val isAuthProtected: Boolean = true)
             if (uid == null && isAuthProtected) {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
+            }
+        })
+        model.isLoading.observe(this, Observer {
+            it?.let { isLoading ->
+                with(findViewById<View>(android.R.id.content)) {
+                    if (isLoading) {
+                        alpha = 0.3f
+                        setClickableDeep(false)
+                    } else {
+                        alpha = 1.0f
+                        setClickableDeep(true)
+                    }
+                }
             }
         })
         return model

@@ -3,9 +3,9 @@ package com.alexbezhan.instagram.activities.home
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
 import com.alexbezhan.instagram.activities.BaseViewModel
-import com.alexbezhan.instagram.activities.zipLiveData
+import com.alexbezhan.instagram.activities.map
+import com.alexbezhan.instagram.activities.zip
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
@@ -24,8 +24,7 @@ abstract class BaseFeedViewModel(repository: Repository,
         if (createNewObserver) {
             val likes = repository.likes(postId)
             val commentsData = repository.commentsCount(postId)
-            val statsData = Transformations.map(zipLiveData(likes, commentsData))
-            { (likes, commentsCount) ->
+            val statsData = likes.zip(commentsData).map { (likes, commentsCount) ->
                 val userLikes = likes.map { it.userId }.toSet()
                 FeedPostStats(
                         likesCount = userLikes.size,

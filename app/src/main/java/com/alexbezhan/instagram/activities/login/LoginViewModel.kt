@@ -12,9 +12,11 @@ class LoginViewModel(repository: Repository) : BaseViewModel(repository) {
 
     fun onLogin(email: String, password: String) {
         if (validate(email, password)) {
+            setLoading(true)
             repository.signIn(email, password)
                     .addOnFailureListener(setErrorOnFailureListener)
                     .addOnSuccessListener { openHomeUiCmd.call() }
+                    .addOnCompleteListener { setLoading(false) }
         } else {
             setErrorMessage(R.string.please_enter_email_and_password)
         }

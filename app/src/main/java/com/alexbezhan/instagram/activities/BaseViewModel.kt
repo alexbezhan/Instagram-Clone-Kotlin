@@ -13,6 +13,8 @@ abstract class BaseViewModel(protected val repository: Repository) : ViewModel()
     private val _errorMessage = MutableLiveData<ErrorMessage>()
     protected val setErrorOnFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
     val authState: LiveData<String> = repository.authState()
     val error: LiveData<ErrorMessage> = _errorMessage
     val user: LiveData<User> = repository.getUser()
@@ -21,6 +23,10 @@ abstract class BaseViewModel(protected val repository: Repository) : ViewModel()
             repository.notifications().map {
                 it.sortedByDescending { it.timestampDate() }
             }
+
+    protected fun setLoading(loading: Boolean) {
+        this._isLoading.value = loading
+    }
 
     protected fun setErrorMessage(@StringRes resId: Int) {
         _errorMessage.value = ErrorMessage.stringRes(resId)

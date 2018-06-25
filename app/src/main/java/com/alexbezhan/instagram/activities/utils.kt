@@ -16,6 +16,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.alexbezhan.instagram.R
@@ -70,6 +71,15 @@ fun ImageView.loadImage(image: String?, hideOnNull: Boolean = false) =
                 GlideApp.with(this).load(image).centerCrop().into(this)
             }
         }
+
+fun View.setClickableDeep(clickable: Boolean) {
+    isEnabled = clickable
+    if (this is ViewGroup) {
+        repeat(childCount) { idx ->
+            getChildAt(idx).setClickableDeep(clickable)
+        }
+    }
+}
 
 fun TextView.setCommentText(username: String, comment: String,
                             timestamp: Date? = null,
