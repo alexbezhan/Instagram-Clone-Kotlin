@@ -17,9 +17,6 @@ object FirebaseHelper {
         database = db.reference
     }
 
-    fun currentUserReference(): DatabaseReference? =
-            currentUid()?.let { database.child("users").child(it) }
-
     fun currentUid(): String? =
             auth.currentUser?.uid
 

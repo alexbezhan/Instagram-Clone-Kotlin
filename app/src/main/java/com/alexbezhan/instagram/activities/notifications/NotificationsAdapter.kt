@@ -42,7 +42,7 @@ class NotificationsAdapter(private val listener: Listener) :
                 when (type) {
                     NotificationType.FOLLOW -> context.getString(R.string.started_following_you)
                     NotificationType.LIKE -> context.getString(R.string.liked_your_post)
-                    NotificationType.COMMENT -> context.getString(R.string.commented) + commentText
+                    NotificationType.COMMENT -> context.getString(R.string.commented) + " " + commentText
                 }
             }
             with(View.OnClickListener { listener.openProfile(notification.uid) }) {

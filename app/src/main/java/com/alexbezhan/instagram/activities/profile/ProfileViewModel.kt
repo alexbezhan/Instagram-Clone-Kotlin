@@ -1,34 +1,46 @@
 package com.alexbezhan.instagram.activities.profile
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
+import com.alexbezhan.instagram.SingleLiveEvent
 import com.alexbezhan.instagram.activities.BaseViewModel
 import com.alexbezhan.instagram.activities.FollowManager
-import com.alexbezhan.instagram.activities.asUser
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.currentUid
-import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
+import com.alexbezhan.instagram.repository.Repository
 
-class ProfileViewModel : BaseViewModel() {
-    private val followListener = FollowManager()
-
+class ProfileViewModel(private val anotherUid: String?,
+                       repository: Repository,
+                       private val followManager: FollowManager) : BaseViewModel(repository) {
     var anotherUser: LiveData<User>? = null
+    val openEditProfileUiCmd = SingleLiveEvent<Unit>()
+    val openProfileSettingsUiCmd = SingleLiveEvent<Unit>()
+    val openAddFriendsUiCmd = SingleLiveEvent<Unit>()
 
-    fun setAnotherUid(anotherUid: String) {
-        anotherUser = Transformations.map(
-                FirebaseLiveData(database.child("users").child(anotherUid)))
-        {
-            it.asUser()!!
+    init {
+        if (isAnotherUser()) {
+            anotherUser = repository.getUser(anotherUid!!)
         }
     }
 
-    val images: LiveData<List<String>> = Transformations.map(
-            FirebaseLiveData(database.child("images").child(currentUid()!!))
-    ) {
-        it.children.map { it.getValue(String::class.java)!! }
+    val images: LiveData<List<String>> =
+            if (anotherUid != null) repository.getImages(anotherUid)
+            else repository.getImages()
+
+    fun isAnotherUser(): Boolean = anotherUid != null && anotherUid != repository.currentUid()
+
+    fun onToggleFollowClick(currentUser: User) =
+            anotherUid?.let {
+                followManager.toggleFollow(currentUser, anotherUid, setErrorOnFailureListener)
+            }
+
+    fun onEditProfileClick() {
+        openEditProfileUiCmd.call()
     }
 
-    fun toggleFollow(currentUser: User, uid: String) =
-        followListener.toggleFollow(currentUser, uid, setErrorOnFailureListener)
+    fun onSettingsClick() {
+        openProfileSettingsUiCmd.call()
+    }
+
+    fun onAddFriendsClick() {
+        openAddFriendsUiCmd.call()
+    }
 }

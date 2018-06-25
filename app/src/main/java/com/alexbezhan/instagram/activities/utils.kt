@@ -6,6 +6,7 @@ import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.Transformations
 import android.content.Context
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.*
@@ -24,6 +25,7 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.GlideApp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.database.DataSnapshot
 import java.util.*
 
@@ -76,7 +78,9 @@ fun TextView.setCommentText(username: String, comment: String,
     usernameSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     usernameSpannable.setSpan(object : ClickableSpan() {
-        override fun onClick(widget: View) { onUsernameClick?.onClick(widget) }
+        override fun onClick(widget: View) {
+            onUsernameClick?.onClick(widget)
+        }
 
         override fun updateDrawState(ds: TextPaint?) {}
     }, 0, usernameSpannable.length,
@@ -94,7 +98,7 @@ fun TextView.setCommentText(username: String, comment: String,
                     .replace(Regex(" ago$"), "")
             val dateTimeSpannable = SpannableString(relativeDateTime)
             dateTimeSpannable.setSpan(ForegroundColorSpan(
-                    resources.getColor(R.color.grey)),
+                    ContextCompat.getColor(context, R.color.grey)),
                     0,
                     dateTimeSpannable.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -115,6 +119,8 @@ fun <T> task(block: (TaskCompletionSource<T>) -> Unit): Task<T> {
     block(taskSource)
     return taskSource.task
 }
+
+fun Task<*>.toUnit(): Task<Unit> = onSuccessTask { Tasks.forResult(Unit) }
 
 fun View.hideSoftKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

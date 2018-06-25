@@ -18,21 +18,19 @@ class HomeActivity : BaseFeedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isAuthenticated()) {
-            setContentView(R.layout.activity_home)
-            Log.d(TAG, "onCreate")
-            setupBottomNavigation(BottomNavBar.POSITION_HOME)
+        setContentView(R.layout.activity_home)
+        Log.d(TAG, "onCreate")
+        setupBottomNavigation(BottomNavBar.POSITION_HOME)
 
-            mAdapter = FeedAdapter(this)
-            feed_recycler.disableChangeAnimation()
-            feed_recycler.layoutManager = LinearLayoutManager(this)
-            feed_recycler.adapter = mAdapter
+        mAdapter = FeedAdapter(this)
+        feed_recycler.disableChangeAnimation()
+        feed_recycler.layoutManager = LinearLayoutManager(this)
+        feed_recycler.adapter = mAdapter
 
-            mModel = initModel()
-            mModel.user.observe(this, Observer { it?.let { mUser = it } })
-            mModel.feedPosts.observe(this, Observer {
-                it?.let { mAdapter.items = it }
-            })
-        }
+        mModel = initModel(HomeViewModelFactory())
+        mModel.user.observe(this, Observer { it?.let { mUser = it } })
+        mModel.feedPosts.observe(this, Observer {
+            it?.let { mAdapter.items = it }
+        })
     }
 }
