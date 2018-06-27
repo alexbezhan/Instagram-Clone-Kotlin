@@ -13,30 +13,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.home.HomeActivity">
+        <activity android:name=".screens.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.search.SearchActivity" />
-        <activity android:name=".activities.share.ShareActivity" />
-        <activity android:name=".activities.notifications.NotificationsActivity" />
-        <activity android:name=".activities.profile.ProfileActivity" />
-        <activity android:name=".activities.profile.edit.EditProfileActivity" />
+        <activity android:name=".screens.search.SearchActivity" />
+        <activity android:name=".screens.share.ShareActivity" />
+        <activity android:name=".screens.notifications.NotificationsActivity" />
+        <activity android:name=".screens.profile.ProfileActivity" />
+        <activity android:name=".screens.profile.edit.EditProfileActivity" />
         <activity
-            android:name=".activities.login.LoginActivity"
+            android:name=".screens.login.LoginActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".activities.register.RegisterActivity"
+            android:name=".screens.register.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
-        <activity android:name=".activities.profile.settings.ProfileSettingsActivity" />
-        <activity android:name=".activities.profile.friends.AddFriendsActivity" />
+        <activity android:name=".screens.profile.settings.ProfileSettingsActivity" />
+        <activity android:name=".screens.profile.friends.AddFriendsActivity" />
         <activity
-            android:name=".activities.home.comments.CommentsActivity"
+            android:name=".screens.home.comments.CommentsActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".activities.postdetails.PostDetailsActivity" />
+        <activity android:name=".screens.postdetails.PostDetailsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
