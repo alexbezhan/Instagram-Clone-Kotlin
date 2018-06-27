@@ -1,15 +1,19 @@
 package com.alexbezhan.instagram.screens.share
 
+import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import android.util.Log
+import com.alexbezhan.instagram.data.Repository
 import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.screens.common.CommonLiveDataComponent
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 import com.google.android.gms.tasks.Tasks
 
-class ShareViewModel(repository: Repository) : BaseViewModel(repository) {
+class ShareViewModel(private val repository: Repository, liveData: CommonLiveDataComponent)
+    : ViewModel(), CommonLiveData by liveData {
+
     private val TAG = "ShareViewModel"
     val openProfileUiCmd = SingleLiveEvent<Unit>()
 

@@ -3,15 +3,17 @@ package com.alexbezhan.instagram.screens.home
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.data.Repository
-import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.screens.common.BaseViewModel
-import com.alexbezhan.instagram.screens.common.managers.LikeManager
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.live.zip
+import com.alexbezhan.instagram.models.FeedPost
+import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.CommonLiveData
+import com.alexbezhan.instagram.screens.common.managers.LikeManager
 
-abstract class BaseFeedViewModel(repository: Repository) : BaseViewModel(repository) {
+abstract class BaseFeedViewModel(protected val repository: Repository, liveData: CommonLiveData) :
+        ViewModel(), CommonLiveData by liveData {
     private var postStats = mapOf<String, LiveData<FeedPostStats>>()
     private val likeManager = LikeManager(repository)
 

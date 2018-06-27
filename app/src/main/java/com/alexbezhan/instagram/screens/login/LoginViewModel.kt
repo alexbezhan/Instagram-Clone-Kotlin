@@ -1,11 +1,13 @@
 package com.alexbezhan.instagram.screens.login
 
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.data.live.SingleLiveEvent
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 
-class LoginViewModel(repository: Repository) : BaseViewModel(repository) {
+class LoginViewModel(private val repository: Repository, liveData: CommonLiveData) : ViewModel(),
+        CommonLiveData by liveData {
 
     val openHomeUiCmd = SingleLiveEvent<Unit>()
     val openRegisterUiCmd = SingleLiveEvent<Unit>()

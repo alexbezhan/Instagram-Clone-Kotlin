@@ -2,13 +2,15 @@ package com.alexbezhan.instagram.screens.register
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 
-class RegisterViewModel(repository: Repository) : BaseViewModel(repository) {
+class RegisterViewModel(private val repository: Repository, liveData: CommonLiveData)
+    : ViewModel(), CommonLiveData by liveData {
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
 

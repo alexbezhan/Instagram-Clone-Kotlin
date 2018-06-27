@@ -1,14 +1,16 @@
 package com.alexbezhan.instagram.screens.profile
 
 import android.arch.lifecycle.LiveData
-import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
-import com.alexbezhan.instagram.screens.common.managers.FollowManager
-import com.alexbezhan.instagram.models.User
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.data.live.SingleLiveEvent
+import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.CommonLiveData
+import com.alexbezhan.instagram.screens.common.managers.FollowManager
 
 class ProfileViewModel(private val anotherUid: String?,
-                       repository: Repository) : BaseViewModel(repository) {
+                       private val repository: Repository, liveData: CommonLiveData)
+    : ViewModel(), CommonLiveData by liveData {
     var anotherUser: LiveData<User>? = null
     val openEditProfileUiCmd = SingleLiveEvent<Unit>()
     val openProfileSettingsUiCmd = SingleLiveEvent<Unit>()

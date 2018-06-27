@@ -1,12 +1,14 @@
 package com.alexbezhan.instagram.screens.notifications
 
+import android.arch.lifecycle.ViewModel
+import com.alexbezhan.instagram.data.Repository
 import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.NotificationType
-import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 
-class NotificationsViewModel(repository: Repository) : BaseViewModel(repository) {
+class NotificationsViewModel(private val repository: Repository, liveData: CommonLiveData) : ViewModel(),
+        CommonLiveData by liveData {
 
     val openPostUiCmd = SingleLiveEvent<String>()
     val openProfileUiCmd = SingleLiveEvent<String>()

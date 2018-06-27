@@ -1,15 +1,17 @@
 package com.alexbezhan.instagram.screens.home.comments
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.data.Repository
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.screens.common.BaseViewModel
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 import com.alexbezhan.instagram.screens.common.managers.CommentManager
 
 
-class CommentsViewModel(repository: Repository) : BaseViewModel(repository) {
+class CommentsViewModel(private val repository: Repository, liveData: CommonLiveData) : ViewModel(),
+        CommonLiveData by liveData {
     private lateinit var commentManager: CommentManager
 
     lateinit var comments: LiveData<List<Comment>>

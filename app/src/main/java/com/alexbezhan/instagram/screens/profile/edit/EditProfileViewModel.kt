@@ -1,14 +1,16 @@
 package com.alexbezhan.instagram.screens.profile.edit
 
+import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.data.live.SingleLiveEvent
-import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.screens.common.CommonLiveData
 import com.google.android.gms.tasks.Task
 
-class EditProfileViewModel(repository: Repository) : BaseViewModel(repository) {
+class EditProfileViewModel(private val repository: Repository, liveData: CommonLiveData)
+    : ViewModel(), CommonLiveData by liveData {
 
     val openPasswordConfirmDialogCmd = SingleLiveEvent<String>()
     private var pendingUser: User? = null

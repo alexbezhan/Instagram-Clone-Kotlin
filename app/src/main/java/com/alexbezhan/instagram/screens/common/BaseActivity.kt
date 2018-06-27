@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.screens.common
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -22,8 +23,8 @@ abstract class BaseActivity(val isAuthProtected: Boolean = true)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
-    protected inline fun <reified T : BaseViewModel> initModel(
-            factory: ViewModelProvider.Factory): T {
+    protected inline fun <reified T> initModel(
+            factory: ViewModelProvider.Factory): T where T : ViewModel, T : CommonLiveData {
         val model = ViewModelProviders.of(this, factory).get(T::class.java)
         model.error.observe(this, Observer {
             it?.let {
