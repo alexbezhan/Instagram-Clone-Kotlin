@@ -47,7 +47,7 @@ interface Repository {
     fun currentUid(): String?
     fun authState(): LiveData<String>
     fun getCurrentUserFeedPost(postId: String): LiveData<FeedPost>
-    fun getUserFollows(uid: String, toUid: String): Task<String?>
+    fun getUserFollowsValue(uid: String, toUid: String): Task<String?>
     fun addNotification(toUid: String, notification: Notification): Task<String>
     fun removeNotification(toUid: String, id: String): Task<Void>
     fun getLikeValue(postId: String, uid: String): Task<String?>
@@ -56,7 +56,7 @@ interface Repository {
     fun setUserFollowsValue(uid: String, toUid: String, notificationId: String): Task<Void>
     fun deleteUserFollows(uid: String, toUid: String): Task<Void>
     fun setUserFollowersValue(uid: String, fromUid: String, notificationId: String): Task<Void>
-    fun getUserFollowers(uid: String, fromUid: String): Task<String?>
+    fun getUserFollowersValue(uid: String, fromUid: String): Task<String?>
     fun deleteUserFollowers(uid: String, fromUid: String): Task<Void>
     fun copyFeedPosts(postsAuthorUid: String, uid: String): Task<Void>
     fun deleteFeedPosts(postsAuthorUid: String, uid: String): Task<Void>
@@ -99,14 +99,14 @@ class FirebaseRepository : Repository {
             getRefValue(getLikeRef(postId, uid))
                     .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
 
-    override fun getUserFollows(uid: String, toUid: String): Task<String?> =
+    override fun getUserFollowsValue(uid: String, toUid: String): Task<String?> =
             getRefValue(getUserFollowsRef(uid, toUid))
                     .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
 
     override fun setUserFollowsValue(uid: String, toUid: String, notificationId: String): Task<Void> =
             getUserFollowsRef(uid, toUid).setValue(notificationId)
 
-    override fun getUserFollowers(uid: String, fromUid: String): Task<String?> =
+    override fun getUserFollowersValue(uid: String, fromUid: String): Task<String?> =
             getRefValue(getUserFollowersRef(uid, fromUid))
                     .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
 

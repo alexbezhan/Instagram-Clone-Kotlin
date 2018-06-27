@@ -2,8 +2,12 @@ package com.alexbezhan.instagram.activities.home.comments
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.activities.BaseViewModel
-import com.alexbezhan.instagram.models.*
+import com.alexbezhan.instagram.models.Comment
+import com.alexbezhan.instagram.models.FeedPost
+import com.alexbezhan.instagram.models.Notification
+import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
+import com.google.android.gms.tasks.Tasks
 
 
 class CommentsViewModel(repository: Repository) : BaseViewModel(repository) {
@@ -31,19 +35,11 @@ class CommentsViewModel(repository: Repository) : BaseViewModel(repository) {
         if (comment.isNotEmpty()) {
             val commentObj = Comment(uid = user.uid, photo = user.photo, username = user.username,
                     text = comment)
-            repository.createComment(postId, commentObj)
-                    .onSuccessTask {
-                        val notification = Notification(
-                                uid = user.uid,
-                                photo = user.photo,
-                                username = user.username,
-                                type = NotificationType.COMMENT,
-                                postId = post.id,
-                                postImage = post.image,
-                                commentText = comment
-                        )
-                        repository.addNotification(postAuthor.uid, notification)
-                    }.addOnFailureListener(setErrorOnFailureListener)
+            val notification = Notification.comment(user, post, comment)
+            Tasks.whenAll(
+                    repository.createComment(postId, commentObj),
+                    repository.addNotification(postAuthor.uid, notification)
+            ).addOnFailureListener(setErrorOnFailureListener)
         }
     }
 }

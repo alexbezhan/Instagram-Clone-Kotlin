@@ -1,10 +1,7 @@
 package com.alexbezhan.instagram.activities.home
 
-import com.alexbezhan.instagram.models.ToggleNotificationResult
-import com.alexbezhan.instagram.models.ToggleType
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.Notification
-import com.alexbezhan.instagram.models.NotificationType
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.repository.Repository
 import com.google.android.gms.tasks.OnFailureListener
@@ -18,26 +15,14 @@ class FirebaseLikeManager(private val repository: Repository) : LikeManager {
     override fun toggleLike(currentUser: User, post: FeedPost, onFailureListener: OnFailureListener) {
         repository.getLikeValue(post.id, currentUser.uid).onSuccessTask { notificationId ->
             if (notificationId != null) {
-                repository.removeNotification(post.uid, notificationId).onSuccessTask {
-                    Tasks.forResult(ToggleNotificationResult(notificationId, ToggleType.REMOVED))
-                }
+                Tasks.whenAll(
+                        repository.removeNotification(post.uid, notificationId),
+                        repository.deleteLikeValue(post.id, currentUser.uid))
             } else {
-                val notification = Notification(
-                        uid = currentUser.uid,
-                        photo = currentUser.photo,
-                        username = currentUser.username,
-                        type = NotificationType.LIKE,
-                        postId = post.id,
-                        postImage = post.image
-                )
-                repository.addNotification(post.uid, notification).onSuccessTask { id ->
-                    Tasks.forResult(ToggleNotificationResult(id!!, ToggleType.ADDED))
+                val notification = Notification.like(currentUser, post)
+                repository.addNotification(post.uid, notification).onSuccessTask { newNotificationId ->
+                    repository.setLikeValue(post.id, currentUser.uid, newNotificationId!!)
                 }
-            }
-        }.onSuccessTask { result ->
-            when (result!!.toggleType) {
-                ToggleType.ADDED -> repository.setLikeValue(post.id, currentUser.uid, result.notificationId)
-                ToggleType.REMOVED -> repository.deleteLikeValue(post.id, currentUser.uid)
             }
         }.addOnFailureListener(onFailureListener)
     }
