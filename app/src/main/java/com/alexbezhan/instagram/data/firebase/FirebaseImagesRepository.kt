@@ -3,8 +3,9 @@ package com.alexbezhan.instagram.data.firebase
 import android.arch.lifecycle.LiveData
 import android.net.Uri
 import com.alexbezhan.instagram.data.ImagesRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper.currentUid
+import com.alexbezhan.instagram.data.firebase.utils.currentUid
+import com.alexbezhan.instagram.data.firebase.utils.database
+import com.alexbezhan.instagram.data.firebase.utils.storage
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.task
@@ -24,13 +25,13 @@ class FirebaseImagesRepository : ImagesRepository {
             }
 
     override fun uploadUserPhoto(photo: Uri): Task<Uri> =
-            FirebaseHelper.storage.child("users/${currentUid()}/photo").uploadFile(photo)
+            storage.child("users/${currentUid()}/photo").uploadFile(photo)
 
     override fun setUserPhotoUrl(photoUrl: Uri): Task<Unit> =
-            FirebaseHelper.database.child("users/${currentUid()}/photo").setValue(photoUrl.toString()).toUnit()
+            database.child("users/${currentUid()}/photo").setValue(photoUrl.toString()).toUnit()
 
     override fun uploadUserImage(imageUri: Uri): Task<Uri> =
-            FirebaseHelper.storage.child("users/${currentUid()}/images/${imageUri.lastPathSegment}")
+            storage.child("users/${currentUid()}/images/${imageUri.lastPathSegment}")
                     .uploadFile(imageUri)
 
     private fun StorageReference.uploadFile(file: Uri): Task<Uri> =
@@ -45,6 +46,6 @@ class FirebaseImagesRepository : ImagesRepository {
             }
 
     override fun addUserImageUrl(imageUri: Uri): Task<Unit> =
-            FirebaseHelper.database.child("images/${currentUid()}").push().setValue(imageUri.toString()).toUnit()
+            database.child("images/${currentUid()}").push().setValue(imageUri.toString()).toUnit()
 
 }

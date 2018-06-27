@@ -2,8 +2,8 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.data.NotificationsRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper.currentUid
+import com.alexbezhan.instagram.data.firebase.utils.currentUid
+import com.alexbezhan.instagram.data.firebase.utils.database
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.toUnit
@@ -24,7 +24,7 @@ class FirebaseNotificationsRepository : NotificationsRepository {
     }
 
     private fun getNotificationsRef(uid: String) =
-            FirebaseHelper.database.child("notifications").child(uid)
+            database.child("notifications").child(uid)
 
     override fun notifications(): LiveData<List<Notification>> =
             FirebaseLiveData { "notifications/$it" }.map {
@@ -34,7 +34,7 @@ class FirebaseNotificationsRepository : NotificationsRepository {
     override fun setNotificationsRead(notificationsIds: List<String>,
                                       read: Boolean): Task<Unit> {
         val updatesMap = notificationsIds.map { "/$it/read" to read }.toMap()
-        return FirebaseHelper.database.child("notifications/${currentUid()}")
+        return database.child("notifications/${currentUid()}")
                 .updateChildren(updatesMap)
                 .toUnit()
     }

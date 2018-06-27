@@ -2,8 +2,7 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.data.UsersRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper.currentUid
+import com.alexbezhan.instagram.data.firebase.utils.*
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.toUnit
@@ -35,20 +34,20 @@ class FirebaseUsersRepository : UsersRepository {
             getUserFollowersRef(uid, fromUid).removeValue()
 
     private fun getUserFollowsRef(uid: String, toUid: String) =
-            FirebaseHelper.database.child("users/$uid/follows/$toUid")
+            database.child("users/$uid/follows/$toUid")
 
     private fun getUserFollowersRef(uid: String, fromUid: String) =
-            FirebaseHelper.database.child("users/$uid/followers/$fromUid")
+            database.child("users/$uid/followers/$fromUid")
 
     override fun createUser(user: User, password: String): Task<Unit> =
-            FirebaseHelper.auth.createUserWithEmailAndPassword(user.email, password)
+            auth.createUserWithEmailAndPassword(user.email, password)
                     .onSuccessTask {
-                        FirebaseHelper.database.child("users").child(it!!.user.uid).setValue(user)
+                        database.child("users").child(it!!.user.uid).setValue(user)
                                 .toUnit()
                     }
 
     override fun isUserExistsByEmail(email: String): Task<Boolean> =
-            FirebaseHelper.auth.fetchSignInMethodsForEmail(email).onSuccessTask {
+            auth.fetchSignInMethodsForEmail(email).onSuccessTask {
                 val signInMethods = it?.signInMethods ?: emptyList()
                 Tasks.forResult(signInMethods.isEmpty())
             }
@@ -77,13 +76,13 @@ class FirebaseUsersRepository : UsersRepository {
         if (newUser.email != existingUser.email) updatesMap["email"] = newUser.email
         if (newUser.phone != existingUser.phone) updatesMap["phone"] = newUser.phone
 
-        return FirebaseHelper.database.child("users/${currentUid()}").updateChildren(updatesMap).toUnit()
+        return database.child("users/${currentUid()}").updateChildren(updatesMap).toUnit()
     }
 
     override fun updateUserEmail(currentEmail: String, newEmail: String,
                                  password: String): Task<Unit> {
         val credential = EmailAuthProvider.getCredential(currentEmail, password)
-        with(FirebaseHelper.auth.currentUser) {
+        with(auth.currentUser) {
             return this?.reauthenticate(credential)?.onSuccessTask {
                 this.updateEmail(newEmail).toUnit()
             } ?: Tasks.forException(IllegalStateException("User is unauthenticated"))

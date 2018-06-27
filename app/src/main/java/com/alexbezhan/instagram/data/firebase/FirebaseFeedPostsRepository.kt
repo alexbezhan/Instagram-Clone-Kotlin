@@ -2,9 +2,9 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.data.FeedPostsRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
 import com.alexbezhan.instagram.data.firebase.utils.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.data.firebase.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.data.firebase.utils.database
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.task
@@ -16,12 +16,12 @@ import com.google.firebase.database.DataSnapshot
 class FirebaseFeedPostsRepository : FeedPostsRepository {
     override fun copyFeedPosts(postsAuthorUid: String, uid: String): Task<Void> =
             task { taskSource ->
-                FirebaseHelper.database.child("feed-posts").child(postsAuthorUid)
+                database.child("feed-posts").child(postsAuthorUid)
                         .orderByChild("uid")
                         .equalTo(postsAuthorUid)
                         .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                             val postsMap = it.children.map { it.key to it.value }.toMap()
-                            FirebaseHelper.database.child("feed-posts")
+                            database.child("feed-posts")
                                     .child(uid).updateChildren(postsMap)
                                     .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                         })
@@ -29,12 +29,12 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
 
     override fun deleteFeedPosts(postsAuthorUid: String, uid: String): Task<Void> =
             task { taskSource ->
-                FirebaseHelper.database.child("feed-posts").child(uid)
+                database.child("feed-posts").child(uid)
                         .orderByChild("uid")
                         .equalTo(postsAuthorUid)
                         .addListenerForSingleValueEvent(ValueEventListenerAdapter {
                             val postsMap = it.children.map { it.key to null }.toMap()
-                            FirebaseHelper.database.child("feed-posts")
+                            database.child("feed-posts")
                                     .child(uid).updateChildren(postsMap)
                                     .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
                         })
@@ -51,7 +51,7 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
             }
 
     override fun addFeedPost(uid: String, post: FeedPost): Task<Unit> =
-            FirebaseHelper.database.child("feed-posts/$uid").push().setValue(post).toUnit()
+            database.child("feed-posts/$uid").push().setValue(post).toUnit()
 
     override fun getCurrentUserFeedPost(postId: String): LiveData<FeedPost> =
             FirebaseLiveData { "feed-posts/$it/$postId" }.map {

@@ -2,7 +2,9 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.data.LikesRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
+import com.alexbezhan.instagram.data.firebase.utils.asString
+import com.alexbezhan.instagram.data.firebase.utils.database
+import com.alexbezhan.instagram.data.firebase.utils.getRefValue
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.models.FeedPostLike
@@ -30,6 +32,6 @@ class FirebaseLikesRepository : LikesRepository {
             }
 
     private fun getLikeRef(postId: String, uid: String) =
-            FirebaseHelper.database.child("likes").child(postId).child(uid)
+            database.child("likes").child(postId).child(uid)
 
 }

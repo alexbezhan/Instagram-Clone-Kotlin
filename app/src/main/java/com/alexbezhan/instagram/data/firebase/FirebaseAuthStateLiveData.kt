@@ -1,7 +1,7 @@
 package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
+import com.alexbezhan.instagram.data.firebase.utils.auth
 import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseAuthStateLiveData : LiveData<String>() {
@@ -11,11 +11,11 @@ class FirebaseAuthStateLiveData : LiveData<String>() {
 
     override fun onActive() {
         super.onActive()
-        FirebaseHelper.auth.addAuthStateListener(listener)
+        auth.addAuthStateListener(listener)
     }
 
     override fun onInactive() {
         super.onInactive()
-        FirebaseHelper.auth.removeAuthStateListener(listener)
+        auth.removeAuthStateListener(listener)
     }
 }

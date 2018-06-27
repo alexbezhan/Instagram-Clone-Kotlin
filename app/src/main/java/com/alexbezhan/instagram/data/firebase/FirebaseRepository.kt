@@ -2,19 +2,19 @@ package com.alexbezhan.instagram.data.firebase
 
 import com.alexbezhan.instagram.data.*
 
-private val auth = FirebaseAuthRepository()
-private val comments = FirebaseCommentsRepository()
-private val feedPosts = FirebaseFeedPostsRepository()
-private val images = FirebaseImagesRepository()
-private val likes = FirebaseLikesRepository()
-private val notifications = FirebaseNotificationsRepository()
-private val users = FirebaseUsersRepository()
+private val authRepo = FirebaseAuthRepository()
+private val commentsRepo = FirebaseCommentsRepository()
+private val feedPostsRepo = FirebaseFeedPostsRepository()
+private val imagesRepo = FirebaseImagesRepository()
+private val likesRepo = FirebaseLikesRepository()
+private val notificationsRepo = FirebaseNotificationsRepository()
+private val usersRepo = FirebaseUsersRepository()
 
 object FirebaseRepository :
-        AuthRepository by auth,
-        CommentsRepository by comments,
-        FeedPostsRepository by feedPosts,
-        ImagesRepository by images,
-        LikesRepository by likes,
-        NotificationsRepository by notifications,
-        UsersRepository by users, Repository
+        AuthRepository by authRepo,
+        CommentsRepository by commentsRepo,
+        FeedPostsRepository by feedPostsRepo,
+        ImagesRepository by imagesRepo,
+        LikesRepository by likesRepo,
+        NotificationsRepository by notificationsRepo,
+        UsersRepository by usersRepo, Repository

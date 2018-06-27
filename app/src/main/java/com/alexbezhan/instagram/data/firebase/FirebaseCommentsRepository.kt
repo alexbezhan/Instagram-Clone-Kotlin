@@ -2,8 +2,8 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.data.CommentsRepository
-import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper
 import com.alexbezhan.instagram.data.firebase.utils.TaskSourceOnCompleteListener
+import com.alexbezhan.instagram.data.firebase.utils.database
 import com.alexbezhan.instagram.data.live.FirebaseLiveData
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.data.task
@@ -24,7 +24,7 @@ class FirebaseCommentsRepository : CommentsRepository {
 
     override fun createComment(postId: String, comment: Comment): Task<String> =
             task { taskSource ->
-                val commentRef = FirebaseHelper.database.child("comments").child(postId).push()
+                val commentRef = database.child("comments").child(postId).push()
                 commentRef.setValue(comment)
                         .onSuccessTask { Tasks.forResult(commentRef.key) }
                         .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
