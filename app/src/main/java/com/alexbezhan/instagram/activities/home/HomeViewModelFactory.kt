@@ -7,6 +7,7 @@ import com.alexbezhan.instagram.repository.FirebaseRepository
 @Suppress("UNCHECKED_CAST")
 class HomeViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return HomeViewModel(FirebaseRepository(), FirebaseLikeManager()) as T
+        val repository = FirebaseRepository()
+        return HomeViewModel(repository, FirebaseLikeManager(repository)) as T
     }
 }

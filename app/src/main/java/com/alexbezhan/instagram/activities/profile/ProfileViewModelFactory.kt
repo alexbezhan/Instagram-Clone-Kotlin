@@ -8,7 +8,7 @@ import com.alexbezhan.instagram.repository.FirebaseRepository
 @Suppress("UNCHECKED_CAST")
 class ProfileViewModelFactory(private val anotherUid: String?) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ProfileViewModel(anotherUid, FirebaseRepository(),
-                FirebaseFollowManager()) as T
+        val repository = FirebaseRepository()
+        return ProfileViewModel(anotherUid, repository, FirebaseFollowManager(repository)) as T
     }
 }

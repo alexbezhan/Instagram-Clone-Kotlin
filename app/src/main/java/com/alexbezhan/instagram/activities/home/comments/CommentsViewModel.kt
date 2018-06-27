@@ -2,11 +2,7 @@ package com.alexbezhan.instagram.activities.home.comments
 
 import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.activities.BaseViewModel
-import com.alexbezhan.instagram.domain.Notifications
-import com.alexbezhan.instagram.models.Comment
-import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.models.NotificationType
-import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.models.*
 import com.alexbezhan.instagram.repository.Repository
 
 
@@ -37,10 +33,17 @@ class CommentsViewModel(repository: Repository) : BaseViewModel(repository) {
                     text = comment)
             repository.createComment(postId, commentObj)
                     .onSuccessTask {
-                        Notifications.addNotification(user, postAuthor.uid, NotificationType.COMMENT,
-                                post, comment)
-                    }
-                    .addOnFailureListener(setErrorOnFailureListener)
+                        val notification = Notification(
+                                uid = user.uid,
+                                photo = user.photo,
+                                username = user.username,
+                                type = NotificationType.COMMENT,
+                                postId = post.id,
+                                postImage = post.image,
+                                commentText = comment
+                        )
+                        repository.addNotification(postAuthor.uid, notification)
+                    }.addOnFailureListener(setErrorOnFailureListener)
         }
     }
 }

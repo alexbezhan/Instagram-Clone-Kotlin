@@ -10,10 +10,13 @@ import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.auth
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.database
 import com.alexbezhan.instagram.utils.firebase.FirebaseHelper.storage
 import com.alexbezhan.instagram.utils.firebase.TaskSourceOnCompleteListener
+import com.alexbezhan.instagram.utils.firebase.ValueEventListenerAdapter
 import com.alexbezhan.instagram.utils.livedata.FirebaseLiveData
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
 
 interface Repository {
@@ -44,9 +47,106 @@ interface Repository {
     fun currentUid(): String?
     fun authState(): LiveData<String>
     fun getCurrentUserFeedPost(postId: String): LiveData<FeedPost>
+    fun getUserFollows(uid: String, toUid: String): Task<String?>
+    fun addNotification(toUid: String, notification: Notification): Task<String>
+    fun removeNotification(toUid: String, id: String): Task<Void>
+    fun getLikeValue(postId: String, uid: String): Task<String?>
+    fun setLikeValue(postId: String, uid: String, notificationId: String): Task<Void>
+    fun deleteLikeValue(postId: String, uid: String): Task<Void>
+    fun setUserFollowsValue(uid: String, toUid: String, notificationId: String): Task<Void>
+    fun deleteUserFollows(uid: String, toUid: String): Task<Void>
+    fun setUserFollowersValue(uid: String, fromUid: String, notificationId: String): Task<Void>
+    fun getUserFollowers(uid: String, fromUid: String): Task<String?>
+    fun deleteUserFollowers(uid: String, fromUid: String): Task<Void>
+    fun copyFeedPosts(postsAuthorUid: String, uid: String): Task<Void>
+    fun deleteFeedPosts(postsAuthorUid: String, uid: String): Task<Void>
 }
 
 class FirebaseRepository : Repository {
+    override fun copyFeedPosts(postsAuthorUid: String, uid: String): Task<Void> =
+            task { taskSource ->
+                database.child("feed-posts").child(postsAuthorUid)
+                        .orderByChild("uid")
+                        .equalTo(postsAuthorUid)
+                        .addListenerForSingleValueEvent(ValueEventListenerAdapter {
+                            val postsMap = it.children.map { it.key to it.value }.toMap()
+                            FirebaseHelper.database.child("feed-posts")
+                                    .child(uid).updateChildren(postsMap)
+                                    .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
+                        })
+            }
+
+    override fun deleteFeedPosts(postsAuthorUid: String, uid: String): Task<Void> =
+            task { taskSource ->
+                database.child("feed-posts").child(uid)
+                        .orderByChild("uid")
+                        .equalTo(postsAuthorUid)
+                        .addListenerForSingleValueEvent(ValueEventListenerAdapter {
+                            val postsMap = it.children.map { it.key to null }.toMap()
+                            FirebaseHelper.database.child("feed-posts")
+                                    .child(uid).updateChildren(postsMap)
+                                    .addOnCompleteListener(TaskSourceOnCompleteListener(taskSource))
+                        })
+            }
+
+    override fun setLikeValue(postId: String, uid: String, notificationId: String): Task<Void> =
+            getLikeRef(postId, uid).setValue(notificationId)
+
+    override fun deleteLikeValue(postId: String, uid: String): Task<Void> =
+            getLikeRef(postId, uid).removeValue()
+
+    override fun getLikeValue(postId: String, uid: String): Task<String?> =
+            getRefValue(getLikeRef(postId, uid))
+                    .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
+
+    override fun getUserFollows(uid: String, toUid: String): Task<String?> =
+            getRefValue(getUserFollowsRef(uid, toUid))
+                    .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
+
+    override fun setUserFollowsValue(uid: String, toUid: String, notificationId: String): Task<Void> =
+            getUserFollowsRef(uid, toUid).setValue(notificationId)
+
+    override fun getUserFollowers(uid: String, fromUid: String): Task<String?> =
+            getRefValue(getUserFollowersRef(uid, fromUid))
+                    .onSuccessTask { Tasks.forResult(it?.getValue(String::class.java)) }
+
+    override fun setUserFollowersValue(uid: String, fromUid: String, notificationId: String): Task<Void> =
+            getUserFollowersRef(uid, fromUid).setValue(notificationId)
+
+    override fun deleteUserFollows(uid: String, toUid: String): Task<Void> =
+            getUserFollowsRef(uid, toUid).removeValue()
+
+    override fun deleteUserFollowers(uid: String, fromUid: String): Task<Void> =
+            getUserFollowersRef(uid, fromUid).removeValue()
+
+    private fun getUserFollowsRef(uid: String, toUid: String) =
+            database.child("users/$uid/follows/$toUid")
+
+    private fun getUserFollowersRef(uid: String, fromUid: String) =
+            database.child("users/$uid/followers/$fromUid")
+
+    private fun getLikeRef(postId: String, uid: String) =
+            database.child("likes").child(postId).child(uid)
+
+    private fun getRefValue(ref: DatabaseReference): Task<DataSnapshot> = task { taskSource ->
+        ref.addListenerForSingleValueEvent(ValueEventListenerAdapter {
+            taskSource.setResult(it)
+        })
+    }
+
+    override fun removeNotification(toUid: String, id: String): Task<Void> =
+            getNotificationsRef(toUid).child(id).removeValue()
+
+    override fun addNotification(toUid: String, notification: Notification): Task<String> {
+        val ref = getNotificationsRef(toUid).push()
+        return ref.setValue(notification).onSuccessTask {
+            Tasks.forResult(ref.key)
+        }
+    }
+
+    private fun getNotificationsRef(uid: String) =
+            FirebaseHelper.database.child("notifications").child(uid)
+
     override fun authState(): LiveData<String> = FirebaseAuthStateLiveData()
 
     override fun currentUid(): String? = FirebaseHelper.currentUid()

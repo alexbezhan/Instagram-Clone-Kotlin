@@ -18,3 +18,9 @@ data class Notification(val uid: String = "", val photo: String? = null,
 enum class NotificationType {
     LIKE, COMMENT, FOLLOW
 }
+
+data class ToggleNotificationResult(val notificationId: String, val toggleType: ToggleType)
+
+enum class ToggleType {
+    REMOVED, ADDED
+}
