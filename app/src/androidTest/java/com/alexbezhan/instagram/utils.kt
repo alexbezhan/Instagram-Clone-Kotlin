@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram
 
-import com.alexbezhan.instagram.data.firebase.ValueEventListenerAdapter
+import com.alexbezhan.instagram.data.firebase.utils.ValueEventListenerAdapter
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.Query

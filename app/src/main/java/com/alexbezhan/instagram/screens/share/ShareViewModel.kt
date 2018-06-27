@@ -7,11 +7,10 @@ import com.alexbezhan.instagram.data.Repository
 import com.alexbezhan.instagram.data.live.SingleLiveEvent
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.screens.common.CommonLiveDataComponent
 import com.alexbezhan.instagram.screens.common.CommonLiveData
 import com.google.android.gms.tasks.Tasks
 
-class ShareViewModel(private val repository: Repository, liveData: CommonLiveDataComponent)
+class ShareViewModel(private val repository: Repository, liveData: CommonLiveData)
     : ViewModel(), CommonLiveData by liveData {
 
     private val TAG = "ShareViewModel"

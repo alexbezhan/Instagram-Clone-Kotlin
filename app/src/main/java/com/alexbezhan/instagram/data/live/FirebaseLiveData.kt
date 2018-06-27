@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.data.live
 
 import android.arch.lifecycle.LiveData
-import com.alexbezhan.instagram.data.firebase.FirebaseHelper.database
-import com.alexbezhan.instagram.data.firebase.ValueEventListenerAdapter
+import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper.database
+import com.alexbezhan.instagram.data.firebase.utils.ValueEventListenerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference

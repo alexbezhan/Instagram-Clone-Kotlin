@@ -3,13 +3,18 @@ package com.alexbezhan.instagram.screens.common
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.support.annotation.StringRes
+import com.alexbezhan.instagram.data.AuthRepository
+import com.alexbezhan.instagram.data.NotificationsRepository
 import com.alexbezhan.instagram.data.Repository
+import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.data.live.map
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.User
 import com.google.android.gms.tasks.OnFailureListener
 
-class CommonLiveDataComponent(repository: Repository) : CommonLiveData {
+class CommonLiveDataComponent<Repo>(repository: Repo) : CommonLiveData
+        where Repo : AuthRepository, Repo : UsersRepository, Repo : NotificationsRepository {
+
     private val _errorMessage = MutableLiveData<ErrorMessage>()
     override val setErrorOnFailureListener = OnFailureListener { setErrorMessage(it.message!!) }
 

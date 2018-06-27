@@ -12,7 +12,8 @@ import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.CommonLiveData
 import com.alexbezhan.instagram.screens.common.managers.LikeManager
 
-abstract class BaseFeedViewModel(protected val repository: Repository, liveData: CommonLiveData) :
+abstract class BaseFeedViewModel(protected val repository: Repository,
+                                 liveData: CommonLiveData) :
         ViewModel(), CommonLiveData by liveData {
     private var postStats = mapOf<String, LiveData<FeedPostStats>>()
     private val likeManager = LikeManager(repository)

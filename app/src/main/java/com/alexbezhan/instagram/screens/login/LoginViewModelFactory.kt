@@ -8,8 +8,7 @@ import com.alexbezhan.instagram.screens.common.CommonLiveDataComponent
 @Suppress("UNCHECKED_CAST")
 class LoginViewModelFactory : ViewModelProvider.Factory  {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val repository = FirebaseRepository()
-        val liveData = CommonLiveDataComponent(repository)
-        return LoginViewModel(repository, liveData) as T
+        val liveData = CommonLiveDataComponent(FirebaseRepository)
+        return LoginViewModel(FirebaseRepository, liveData) as T
     }
 }

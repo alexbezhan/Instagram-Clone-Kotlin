@@ -2,7 +2,7 @@ package com.alexbezhan.instagram
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.alexbezhan.instagram.data.firebase.FirebaseHelper.database
+import com.alexbezhan.instagram.data.firebase.utils.FirebaseHelper.database
 import com.alexbezhan.instagram.data.firebase.asFeedPost
 import com.alexbezhan.instagram.data.firebase.asUser
 import com.alexbezhan.instagram.models.FeedPost
