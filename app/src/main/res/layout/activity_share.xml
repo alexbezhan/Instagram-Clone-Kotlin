@@ -25,7 +25,7 @@
             <TextView
                 android:id="@+id/username_text"
                 style="@style/toolbar_title"
-                android:text="Share to"
+                android:text="@string/share_to"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/back_image"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
             <TextView
                 android:id="@+id/share_text"
                 style="@style/toolbar_text"
-                android:text="Share"
+                android:text="@string/share"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +60,7 @@
         app:layout_constraintTop_toTopOf="@id/post_image"
         app:layout_constraintBottom_toBottomOf="@id/post_image"
         app:layout_constraintEnd_toEndOf="parent"
-        android:hint="Enter a caption here ..."
+        android:hint="@string/enter_a_caption_here"
         android:background="@android:color/transparent"/>
 
 </android.support.constraint.ConstraintLayout>

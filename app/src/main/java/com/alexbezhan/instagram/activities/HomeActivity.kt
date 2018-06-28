@@ -124,7 +124,6 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
         notifyItemChanged(position)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = posts[position]
         val likes = postLikes[position] ?: defaultPostLikes
@@ -136,7 +135,9 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
                 likes_text.visibility = View.GONE
             } else {
                 likes_text.visibility = View.VISIBLE
-                likes_text.text = "${likes.likesCount} likes"
+                val likesCountText = holder.view.context.resources.getQuantityString(
+                        R.plurals.likes_count, likes.likesCount)
+                likes_text.text = likes.likesCount.toString() + " " + likesCountText
             }
             caption_text.setCaptionText(post.username, post.caption)
             like_image.setOnClickListener { listener.toggleLike(post.id) }
@@ -153,7 +154,7 @@ class FeedAdapter(private val listener: Listener, private val posts: List<FeedPo
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         usernameSpannable.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                widget.context.showToast("Username is clicked")
+                widget.context.showToast(context.getString(R.string.username_is_clicked))
             }
 
             override fun updateDrawState(ds: TextPaint?) {}
