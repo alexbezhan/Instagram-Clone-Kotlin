@@ -1,6 +1,8 @@
 package com.alexbezhan.instagram.activities
 
 import android.app.Activity
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Transformations
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
@@ -72,3 +74,6 @@ fun DataSnapshot.asFeedPost(): FeedPost? =
 
 fun DatabaseReference.setValueTrueOrRemove(value: Boolean) =
         if (value) setValue(true) else removeValue()
+
+fun <A, B> LiveData<A>.map(f: (A) -> B): LiveData<B> =
+        Transformations.map(this, f)

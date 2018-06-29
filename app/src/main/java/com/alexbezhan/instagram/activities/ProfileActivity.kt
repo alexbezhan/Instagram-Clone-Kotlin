@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.activities.addfriends.AddFriendsActivity
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.GlideApp
