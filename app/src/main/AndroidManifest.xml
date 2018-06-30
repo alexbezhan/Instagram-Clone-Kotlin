@@ -24,7 +24,7 @@
         <activity android:name=".activities.ShareActivity" />
         <activity android:name=".activities.LikesActivity" />
         <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.EditProfileActivity" />
+        <activity android:name=".activities.editprofile.EditProfileActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />

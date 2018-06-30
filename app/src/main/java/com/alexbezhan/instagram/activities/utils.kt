@@ -20,8 +20,8 @@ import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 
-fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, text, duration).show()
+fun Context.showToast(text: String?, duration: Int = Toast.LENGTH_SHORT) {
+    text?.let { Toast.makeText(this, it, duration).show() }
 }
 
 fun coordinateBtnAndInputs(btn: Button, vararg inputs: EditText) {
