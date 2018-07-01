@@ -16,9 +16,10 @@ import com.alexbezhan.instagram.activities.editprofile.EditProfileActivity
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.views.setupBottomNavigation
 import kotlinx.android.synthetic.main.activity_profile.*
 
-class ProfileActivity : BaseActivity(4) {
+class ProfileActivity : BaseActivity() {
     private val TAG = "ProfileActivity"
     private lateinit var mFirebase: FirebaseHelper
     private lateinit var mUser: User
@@ -26,7 +27,7 @@ class ProfileActivity : BaseActivity(4) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        setupBottomNavigation()
+        setupBottomNavigation(4)
         Log.d(TAG, "onCreate")
 
         edit_profile_btn.setOnClickListener {
@@ -37,7 +38,7 @@ class ProfileActivity : BaseActivity(4) {
             val intent = Intent(this, ProfileSettingsActivity::class.java)
             startActivity(intent)
         }
-        add_friends_image.setOnClickListener{
+        add_friends_image.setOnClickListener {
             val intent = Intent(this, AddFriendsActivity::class.java)
             startActivity(intent)
         }

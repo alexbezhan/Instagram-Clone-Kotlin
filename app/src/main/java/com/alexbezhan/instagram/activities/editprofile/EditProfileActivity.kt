@@ -1,13 +1,11 @@
 package com.alexbezhan.instagram.activities.editprofile
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.activities.ViewModelFactory
+import com.alexbezhan.instagram.activities.BaseActivity
 import com.alexbezhan.instagram.activities.loadUserPhoto
 import com.alexbezhan.instagram.activities.showToast
 import com.alexbezhan.instagram.activities.toStringOrNull
@@ -16,7 +14,7 @@ import com.alexbezhan.instagram.utils.CameraHelper
 import com.alexbezhan.instagram.views.PasswordDialog
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
-class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
+class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     private lateinit var mUser: User
     private lateinit var mPendingUser: User
     private lateinit var mCamera: CameraHelper
@@ -33,8 +31,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mViewModel = ViewModelProviders.of(this, ViewModelFactory())
-                .get(EditProfileViewModel::class.java)
+        mViewModel = initViewModel()
 
         mViewModel.user.observe(this, Observer {
             it?.let {
@@ -53,9 +50,7 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
-            mViewModel.uploadAndSetUserPhoto(mCamera.imageUri!!).addOnFailureListener {
-                showToast(it.message)
-            }
+            mViewModel.uploadAndSetUserPhoto(mCamera.imageUri!!)
         }
     }
 
@@ -90,7 +85,6 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
                     currentEmail = mUser.email,
                     newEmail = mPendingUser.email,
                     password = password)
-                    .addOnFailureListener { showToast(it.message) }
                     .addOnSuccessListener { updateUser(mPendingUser) }
         } else {
             showToast(getString(R.string.you_should_enter_your_password))
@@ -99,7 +93,6 @@ class EditProfileActivity : AppCompatActivity(), PasswordDialog.Listener {
 
     private fun updateUser(user: User) {
         mViewModel.updateUserProfile(currentUser = mUser, newUser = user)
-                .addOnFailureListener { showToast(it.message) }
                 .addOnSuccessListener {
                     showToast(getString(R.string.profile_saved))
                     finish()

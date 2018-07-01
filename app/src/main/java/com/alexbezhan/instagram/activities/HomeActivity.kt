@@ -1,6 +1,5 @@
 package com.alexbezhan.instagram.activities
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -22,11 +21,12 @@ import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.utils.FirebaseHelper
 import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
+import com.alexbezhan.instagram.views.setupBottomNavigation
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.feed_item.view.*
 
-class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
+class HomeActivity : BaseActivity(), FeedAdapter.Listener {
     private val TAG = "HomeActivity"
     private lateinit var mFirebase: FirebaseHelper
     private lateinit var mAdapter: FeedAdapter
@@ -36,7 +36,7 @@ class HomeActivity : BaseActivity(0), FeedAdapter.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         Log.d(TAG, "onCreate")
-        setupBottomNavigation()
+        setupBottomNavigation(0)
 
         mFirebase = FirebaseHelper(this)
         mFirebase.auth.addAuthStateListener {
