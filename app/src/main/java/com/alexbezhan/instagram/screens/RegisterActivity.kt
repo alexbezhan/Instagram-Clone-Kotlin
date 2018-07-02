@@ -13,6 +13,7 @@ import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
 import com.alexbezhan.instagram.screens.common.showToast
+import com.alexbezhan.instagram.screens.home.HomeActivity
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth

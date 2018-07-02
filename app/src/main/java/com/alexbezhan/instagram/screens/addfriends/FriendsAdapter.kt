@@ -1,11 +1,13 @@
 package com.alexbezhan.instagram.screens.addfriends
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.SimpleCallback
 import com.alexbezhan.instagram.screens.common.loadUserPhoto
 import kotlinx.android.synthetic.main.add_friends_item.view.*
 
@@ -30,21 +32,21 @@ class FriendsAdapter(private val listener: Listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder) {
+        with(holder.view) {
             val user = mUsers[position]
-            view.photo_image.loadUserPhoto(user.photo)
-            view.username_text.text = user.username
-            view.name_text.text = user.name
-            view.follow_btn.setOnClickListener { listener.follow(user.uid) }
-            view.unfollow_btn.setOnClickListener { listener.unfollow(user.uid) }
+            photo_image.loadUserPhoto(user.photo)
+            username_text.text = user.username
+            name_text.text = user.name
+            follow_btn.setOnClickListener { listener.follow(user.uid) }
+            unfollow_btn.setOnClickListener { listener.unfollow(user.uid) }
 
             val follows = mFollows[user.uid] ?: false
             if (follows) {
-                view.follow_btn.visibility = View.GONE
-                view.unfollow_btn.visibility = View.VISIBLE
+                follow_btn.visibility = View.GONE
+                unfollow_btn.visibility = View.VISIBLE
             } else {
-                view.follow_btn.visibility = View.VISIBLE
-                view.unfollow_btn.visibility = View.GONE
+                follow_btn.visibility = View.VISIBLE
+                unfollow_btn.visibility = View.GONE
             }
         }
     }
@@ -52,10 +54,11 @@ class FriendsAdapter(private val listener: Listener)
     override fun getItemCount() = mUsers.size
 
     fun update(users: List<User>, follows: Map<String, Boolean>) {
+        val diffResult = DiffUtil.calculateDiff(SimpleCallback(mUsers, users) { it.uid })
         mUsers = users
         mPositions = users.withIndex().map { (idx, user) -> user.uid to idx }.toMap()
         mFollows = follows
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun followed(uid: String) {

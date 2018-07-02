@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screens.HomeActivity">
+        <activity android:name=".screens.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +31,7 @@
         <activity
             android:name=".screens.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
-        <activity android:name=".screens.ProfileSettingsActivity" />
+        <activity android:name=".screens.profilesettings.ProfileSettingsActivity" />
         <activity android:name=".screens.addfriends.AddFriendsActivity" />
 
         <provider

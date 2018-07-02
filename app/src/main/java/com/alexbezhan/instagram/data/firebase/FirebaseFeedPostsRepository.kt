@@ -1,14 +1,41 @@
 package com.alexbezhan.instagram.data.firebase
 
-import com.alexbezhan.instagram.common.task
-import com.alexbezhan.instagram.data.FeedPostsRepository
+import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.common.TaskSourceOnCompleteListener
 import com.alexbezhan.instagram.common.ValueEventListenerAdapter
-import com.alexbezhan.instagram.data.firebase.common.database
+import com.alexbezhan.instagram.common.task
 import com.alexbezhan.instagram.common.toUnit
+import com.alexbezhan.instagram.data.FeedPostLike
+import com.alexbezhan.instagram.data.FeedPostsRepository
+import com.alexbezhan.instagram.data.common.map
+import com.alexbezhan.instagram.data.firebase.common.FirebaseLiveData
+import com.alexbezhan.instagram.data.firebase.common.asFeedPost
+import com.alexbezhan.instagram.data.firebase.common.database
+import com.alexbezhan.instagram.data.firebase.common.setValueTrueOrRemove
+import com.alexbezhan.instagram.models.FeedPost
 import com.google.android.gms.tasks.Task
 
 class FirebaseFeedPostsRepository : FeedPostsRepository {
+    override fun getLikes(postId: String): LiveData<List<FeedPostLike>> =
+            FirebaseLiveData(database.child("likes").child(postId)).map {
+                it.children.map { FeedPostLike(it.key) }
+            }
+
+    override fun toggleLike(postId: String, uid: String): Task<Unit> {
+        val reference = database.child("likes").child(postId).child(uid)
+        return task { taskSource ->
+            reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {
+                reference.setValueTrueOrRemove(!it.exists())
+                taskSource.setResult(Unit)
+            })
+        }
+    }
+
+    override fun getFeedPosts(uid: String): LiveData<List<FeedPost>> =
+            FirebaseLiveData(database.child("feed-posts").child(uid)).map {
+                it.children.map { it.asFeedPost()!! }
+            }
+
     override fun copyFeedPosts(postsAuthorUid: String, uid: String): Task<Unit> =
             task { taskSource ->
                 database.child("feed-posts").child(postsAuthorUid)

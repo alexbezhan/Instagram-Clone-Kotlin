@@ -21,6 +21,7 @@ import com.alexbezhan.instagram.screens.editprofile.EditProfileActivity
 import com.alexbezhan.instagram.data.firebase.common.FirebaseHelper
 import com.alexbezhan.instagram.common.ValueEventListenerAdapter
 import com.alexbezhan.instagram.screens.common.setupBottomNavigation
+import com.alexbezhan.instagram.screens.profilesettings.ProfileSettingsActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
