@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alexbezhan.instagram.views.KeyboardAwareScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.alexbezhan.instagram.screens.common.KeyboardAwareScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scroll_view"
@@ -9,7 +9,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.LoginActivity">
+        tools:context=".screens.LoginActivity">
 
         <ImageView
             android:id="@+id/instagram_image"
@@ -53,4 +53,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</com.alexbezhan.instagram.views.KeyboardAwareScrollView>
+</com.alexbezhan.instagram.screens.common.KeyboardAwareScrollView>

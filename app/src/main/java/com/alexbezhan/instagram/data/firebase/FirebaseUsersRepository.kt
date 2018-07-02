@@ -2,12 +2,12 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import android.net.Uri
-import com.alexbezhan.instagram.activities.asUser
-import com.alexbezhan.instagram.activities.map
-import com.alexbezhan.instagram.activities.task
+import com.alexbezhan.instagram.common.task
+import com.alexbezhan.instagram.common.toUnit
 import com.alexbezhan.instagram.data.UsersRepository
+import com.alexbezhan.instagram.data.common.map
+import com.alexbezhan.instagram.data.firebase.common.*
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.utils.*
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.EmailAuthProvider

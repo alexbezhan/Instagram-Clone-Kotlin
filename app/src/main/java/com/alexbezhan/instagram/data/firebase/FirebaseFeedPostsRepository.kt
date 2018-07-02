@@ -1,11 +1,11 @@
 package com.alexbezhan.instagram.data.firebase
 
-import com.alexbezhan.instagram.activities.task
+import com.alexbezhan.instagram.common.task
 import com.alexbezhan.instagram.data.FeedPostsRepository
-import com.alexbezhan.instagram.utils.TaskSourceOnCompleteListener
-import com.alexbezhan.instagram.utils.ValueEventListenerAdapter
-import com.alexbezhan.instagram.utils.database
-import com.alexbezhan.instagram.utils.toUnit
+import com.alexbezhan.instagram.common.TaskSourceOnCompleteListener
+import com.alexbezhan.instagram.common.ValueEventListenerAdapter
+import com.alexbezhan.instagram.data.firebase.common.database
+import com.alexbezhan.instagram.common.toUnit
 import com.google.android.gms.tasks.Task
 
 class FirebaseFeedPostsRepository : FeedPostsRepository {
