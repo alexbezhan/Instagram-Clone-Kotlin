@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.search
 
 import android.os.Bundle
 import android.util.Log

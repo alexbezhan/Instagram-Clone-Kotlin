@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.login
 
 import android.app.Application
 import android.arch.lifecycle.LiveData

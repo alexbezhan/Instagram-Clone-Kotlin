@@ -6,10 +6,10 @@ import android.arch.lifecycle.ViewModelProvider
 import com.alexbezhan.instagram.common.firebase.FirebaseAuthManager
 import com.alexbezhan.instagram.data.firebase.FirebaseFeedPostsRepository
 import com.alexbezhan.instagram.data.firebase.FirebaseUsersRepository
-import com.alexbezhan.instagram.screens.LoginViewModel
-import com.alexbezhan.instagram.screens.ProfileViewModel
-import com.alexbezhan.instagram.screens.RegisterViewModel
-import com.alexbezhan.instagram.screens.ShareViewModel
+import com.alexbezhan.instagram.screens.login.LoginViewModel
+import com.alexbezhan.instagram.screens.profile.ProfileViewModel
+import com.alexbezhan.instagram.screens.register.RegisterViewModel
+import com.alexbezhan.instagram.screens.share.ShareViewModel
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsViewModel
 import com.alexbezhan.instagram.screens.editprofile.EditProfileViewModel
 import com.alexbezhan.instagram.screens.home.HomeViewModel

@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.login
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.alexbezhan.instagram.R
+import com.alexbezhan.instagram.screens.register.RegisterActivity
 import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
 import com.alexbezhan.instagram.screens.common.setupAuthGuard

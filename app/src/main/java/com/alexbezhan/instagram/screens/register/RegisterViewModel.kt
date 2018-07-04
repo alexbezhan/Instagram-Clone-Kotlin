@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.register
 
 import android.app.Application
 import android.arch.lifecycle.ViewModel

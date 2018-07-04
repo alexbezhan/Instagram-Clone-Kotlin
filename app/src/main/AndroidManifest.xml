@@ -20,16 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screens.SearchActivity" />
-        <activity android:name=".screens.ShareActivity" />
-        <activity android:name=".screens.LikesActivity" />
-        <activity android:name=".screens.ProfileActivity" />
+        <activity android:name=".screens.search.SearchActivity" />
+        <activity android:name=".screens.share.ShareActivity" />
+        <activity android:name=".screens.likes.LikesActivity" />
+        <activity android:name=".screens.profile.ProfileActivity" />
         <activity android:name=".screens.editprofile.EditProfileActivity" />
         <activity
-            android:name=".screens.LoginActivity"
+            android:name=".screens.login.LoginActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".screens.RegisterActivity"
+            android:name=".screens.register.RegisterActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".screens.profilesettings.ProfileSettingsActivity" />
         <activity android:name=".screens.addfriends.AddFriendsActivity" />

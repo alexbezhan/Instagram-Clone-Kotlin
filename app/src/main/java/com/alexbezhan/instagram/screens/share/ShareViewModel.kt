@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.share
 
 import android.arch.lifecycle.ViewModel
 import android.net.Uri

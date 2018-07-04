@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens
+package com.alexbezhan.instagram.screens.share
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
