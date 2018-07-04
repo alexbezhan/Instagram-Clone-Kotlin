@@ -4,13 +4,8 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.screens.common.BaseActivity
-import com.alexbezhan.instagram.screens.common.showToast
 import com.alexbezhan.instagram.models.User
-import com.alexbezhan.instagram.screens.common.loadUserPhoto
-import com.alexbezhan.instagram.screens.common.toStringOrNull
-import com.alexbezhan.instagram.screens.common.CameraHelper
-import com.alexbezhan.instagram.screens.common.PasswordDialog
+import com.alexbezhan.instagram.screens.common.*
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
@@ -29,20 +24,22 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
         save_image.setOnClickListener { updateProfile() }
         change_photo_text.setOnClickListener { mCamera.takeCameraPicture() }
 
-        mViewModel = initViewModel()
+        setupAuthGuard {
+            mViewModel = initViewModel()
 
-        mViewModel.user.observe(this, Observer {
-            it?.let {
-                mUser = it
-                name_input.setText(mUser.name)
-                username_input.setText(mUser.username)
-                website_input.setText(mUser.website)
-                bio_input.setText(mUser.bio)
-                email_input.setText(mUser.email)
-                phone_input.setText(mUser.phone?.toString())
-                profile_image.loadUserPhoto(mUser.photo)
-            }
-        })
+            mViewModel.user.observe(this, Observer {
+                it?.let {
+                    mUser = it
+                    name_input.setText(mUser.name)
+                    username_input.setText(mUser.username)
+                    website_input.setText(mUser.website)
+                    bio_input.setText(mUser.bio)
+                    email_input.setText(mUser.email)
+                    phone_input.setText(mUser.phone?.toString())
+                    profile_image.loadUserPhoto(mUser.photo)
+                }
+            })
+        }
 
     }
 

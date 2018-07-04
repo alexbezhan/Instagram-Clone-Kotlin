@@ -1,40 +1,39 @@
 package com.alexbezhan.instagram.screens
 
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
-import com.alexbezhan.instagram.screens.common.showToast
 import com.alexbezhan.instagram.screens.home.HomeActivity
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_register_email.*
 import kotlinx.android.synthetic.main.fragment_register_namepass.*
 
-class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFragment.Listener {
-    private val TAG = "RegisterActivity"
+class RegisterActivity : BaseActivity(), EmailFragment.Listener, NamePassFragment.Listener {
+    private lateinit var mViewModel: RegisterViewModel
 
-    private var mEmail: String? = null
-
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDatabase: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        mAuth = FirebaseAuth.getInstance()
-        mDatabase = FirebaseDatabase.getInstance().reference
+        mViewModel = initViewModel()
+        mViewModel.goToNamePassScreen.observe(this, Observer {
+            supportFragmentManager.beginTransaction().replace(R.id.frame_layout, NamePassFragment())
+                    .addToBackStack(null)
+                    .commit()
+        })
+        mViewModel.goToHomeScreen.observe(this, Observer {
+            startHomeActivity()
+        })
+        mViewModel.goBackToEmailScreen.observe(this, Observer {
+            supportFragmentManager.popBackStack()
+        })
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(R.id.frame_layout, EmailFragment())
@@ -43,44 +42,11 @@ class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFr
     }
 
     override fun onNext(email: String) {
-        if (email.isNotEmpty()) {
-            mEmail = email
-            mAuth.fetchSignInMethodsForEmail(email) { signInMethods ->
-                if (signInMethods.isEmpty()) {
-                    supportFragmentManager.beginTransaction().replace(R.id.frame_layout, NamePassFragment())
-                            .addToBackStack(null)
-                            .commit()
-                } else {
-                    showToast(getString(R.string.this_email_already_exists))
-                }
-            }
-        } else {
-            showToast(getString(R.string.please_enter_email))
-        }
+        mViewModel.onEmailEntered(email)
     }
 
     override fun onRegister(fullName: String, password: String) {
-        if (fullName.isNotEmpty() && password.isNotEmpty()) {
-            val email = mEmail
-            if (email != null) {
-                mAuth.createUserWithEmailAndPassword(email, password) {
-                    mDatabase.createUser(it.user.uid, mkUser(fullName, email)) {
-                        startHomeActivity()
-                    }
-                }
-            } else {
-                Log.e(TAG, "onRegister: email is null")
-                showToast(getString(R.string.please_enter_email))
-                supportFragmentManager.popBackStack()
-            }
-        } else {
-            showToast(getString(R.string.please_enter_fullname_and_password))
-        }
-    }
-
-    private fun unknownRegisterError(it: Task<*>) {
-        Log.e(TAG, "failed to create user profile", it.exception)
-        showToast(getString(R.string.something_wrong_happened))
+        mViewModel.onRegister(fullName, password)
     }
 
     private fun startHomeActivity() {
@@ -88,46 +54,8 @@ class RegisterActivity : AppCompatActivity(), EmailFragment.Listener, NamePassFr
         finish()
     }
 
-    private fun mkUser(fullName: String, email: String): User {
-        val username = mkUsername(fullName)
-        return User(name = fullName, username = username, email = email)
-    }
-
-    private fun mkUsername(fullName: String) =
-            fullName.toLowerCase().replace(" ", ".")
-
-    private fun FirebaseAuth.fetchSignInMethodsForEmail(email: String,
-                                                        onSuccess: (List<String>) -> Unit) {
-        fetchSignInMethodsForEmail(email).addOnCompleteListener {
-            if (it.isSuccessful) {
-                onSuccess(it.result.signInMethods ?: emptyList<String>())
-            } else {
-                showToast(it.exception!!.message!!)
-            }
-        }
-    }
-
-    private fun DatabaseReference.createUser(uid: String, user: User, onSuccess: () -> Unit) {
-        val reference = child("users").child(uid)
-        reference.setValue(user).addOnCompleteListener {
-            if (it.isSuccessful) {
-                onSuccess()
-            } else {
-                unknownRegisterError(it)
-            }
-        }
-    }
-
-    private fun FirebaseAuth.createUserWithEmailAndPassword(email: String, password: String,
-                                                            onSuccess: (AuthResult) -> Unit) {
-        createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        onSuccess(it.result)
-                    } else {
-                        unknownRegisterError(it)
-                    }
-                }
+    companion object {
+        const val TAG = "RegisterActivity"
     }
 }
 

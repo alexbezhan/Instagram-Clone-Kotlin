@@ -1,33 +1,24 @@
 package com.alexbezhan.instagram.screens
 
-import android.content.Context
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.data.firebase.common.asUser
-import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsActivity
-import com.alexbezhan.instagram.screens.common.BaseActivity
-import com.alexbezhan.instagram.screens.common.loadImage
-import com.alexbezhan.instagram.screens.common.loadUserPhoto
+import com.alexbezhan.instagram.screens.common.*
 import com.alexbezhan.instagram.screens.editprofile.EditProfileActivity
-import com.alexbezhan.instagram.data.firebase.common.FirebaseHelper
-import com.alexbezhan.instagram.common.ValueEventListenerAdapter
-import com.alexbezhan.instagram.screens.common.setupBottomNavigation
 import com.alexbezhan.instagram.screens.profilesettings.ProfileSettingsActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : BaseActivity() {
-    private val TAG = "ProfileActivity"
-    private lateinit var mFirebase: FirebaseHelper
-    private lateinit var mUser: User
+    private lateinit var mAdapter: ImagesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,27 +38,43 @@ class ProfileActivity : BaseActivity() {
             val intent = Intent(this, AddFriendsActivity::class.java)
             startActivity(intent)
         }
-
-        mFirebase = FirebaseHelper(this)
-        mFirebase.currentUserReference().addValueEventListener(ValueEventListenerAdapter {
-            mUser = it.asUser()!!
-            profile_image.loadUserPhoto(mUser.photo)
-            username_text.text = mUser.username
-        })
-
         images_recycler.layoutManager = GridLayoutManager(this, 3)
-        mFirebase.database.child("images").child(mFirebase.currentUid()!!)
-                .addValueEventListener(ValueEventListenerAdapter {
-                    val images = it.children.map { it.getValue(String::class.java)!! }
-                    images_recycler.adapter = ImagesAdapter(images + images + images + images)
-                })
+        mAdapter = ImagesAdapter()
+        images_recycler.adapter = mAdapter
+
+        setupAuthGuard { uid ->
+            val viewModel = initViewModel<ProfileViewModel>()
+            viewModel.init(uid)
+            viewModel.user.observe(this, Observer {
+                it?.let {
+                    profile_image.loadUserPhoto(it.photo)
+                    username_text.text = it.username
+                }
+            })
+            viewModel.images.observe(this, Observer {
+                it?.let { images ->
+                    mAdapter.updateImages(images)
+                }
+            })
+        }
+    }
+
+    companion object {
+        const val TAG = "ProfileActivity"
     }
 }
 
-class ImagesAdapter(private val images: List<String>) :
-        RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
+class ImagesAdapter() : RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 
     class ViewHolder(val image: ImageView) : RecyclerView.ViewHolder(image)
+
+    private var images = listOf<String>()
+
+    fun updateImages(newImages: List<String>) {
+        val diffResult = DiffUtil.calculateDiff(SimpleCallback(images, newImages) {it})
+        this.images = newImages
+        diffResult.dispatchUpdatesTo(this)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val image = LayoutInflater.from(parent.context)
@@ -80,10 +87,4 @@ class ImagesAdapter(private val images: List<String>) :
     }
 
     override fun getItemCount(): Int = images.size
-}
-
-class SquareImageView(context: Context, attrs: AttributeSet) : ImageView(context, attrs) {
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec)
-    }
 }

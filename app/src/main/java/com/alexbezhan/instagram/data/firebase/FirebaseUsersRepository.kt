@@ -7,6 +7,7 @@ import com.alexbezhan.instagram.common.toUnit
 import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.data.common.map
 import com.alexbezhan.instagram.data.firebase.common.*
+import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -14,6 +15,42 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseUsersRepository : UsersRepository {
+    override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> =
+        database.child("feed-posts").child(uid)
+                .push().setValue(feedPost).toUnit()
+
+    override fun setUserImage(uid: String, downloadUri: Uri): Task<Unit> =
+        database.child("images").child(uid).push()
+                .setValue(downloadUri.toString()).toUnit()
+
+    override fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri> =
+            task { taskSource ->
+                storage.child("users").child(uid).child("images")
+                        .child(imageUri.lastPathSegment).putFile(imageUri).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                taskSource.setResult(it.result.downloadUrl)
+                            } else {
+                                taskSource.setException(it.exception!!)
+                            }
+                        }
+            }
+
+    override fun createUser(user: User, password: String): Task<Unit> =
+            auth.createUserWithEmailAndPassword(user.email, password).onSuccessTask {
+                database.child("users").child(it!!.user.uid).setValue(user)
+            }.toUnit()
+
+    override fun isUserExistsForEmail(email: String): Task<Boolean> =
+            auth.fetchSignInMethodsForEmail(email).onSuccessTask {
+                val signInMethods = it?.signInMethods ?: emptyList<String>()
+                Tasks.forResult(signInMethods.isNotEmpty())
+            }
+
+    override fun getImages(uid: String): LiveData<List<String>> =
+            FirebaseLiveData(database.child("images").child(uid)).map {
+                it.children.map { it.getValue(String::class.java)!! }
+            }
+
     override fun getUsers(): LiveData<List<User>> =
             database.child("users").liveData().map {
                 it.children.map { it.asUser()!! }

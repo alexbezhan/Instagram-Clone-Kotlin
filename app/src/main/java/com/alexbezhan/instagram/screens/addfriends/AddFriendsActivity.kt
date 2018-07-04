@@ -4,13 +4,13 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.BaseActivity
+import com.alexbezhan.instagram.screens.common.setupAuthGuard
 import kotlinx.android.synthetic.main.activity_add_friends.*
 
 class AddFriendsActivity : BaseActivity(), FriendsAdapter.Listener {
     private lateinit var mUser: User
-    private lateinit var mUsers: List<User>
     private lateinit var mAdapter: FriendsAdapter
     private lateinit var mViewModel: AddFriendsViewModel
 
@@ -20,21 +20,21 @@ class AddFriendsActivity : BaseActivity(), FriendsAdapter.Listener {
 
         mAdapter = FriendsAdapter(this)
 
-        mViewModel = initViewModel()
+        setupAuthGuard {
+            mViewModel = initViewModel()
 
-        back_image.setOnClickListener { finish() }
+            back_image.setOnClickListener { finish() }
 
-        add_friends_recycler.adapter = mAdapter
-        add_friends_recycler.layoutManager = LinearLayoutManager(this)
+            add_friends_recycler.adapter = mAdapter
+            add_friends_recycler.layoutManager = LinearLayoutManager(this)
 
-        mViewModel.userAndFriends.observe(this, Observer {
-            it?.let { (user, otherUsers) ->
-                mUser = user
-                mUsers = otherUsers
-
-                mAdapter.update(mUsers, mUser.follows)
-            }
-        })
+            mViewModel.userAndFriends.observe(this, Observer {
+                it?.let { (user, otherUsers) ->
+                    mUser = user
+                    mAdapter.update(otherUsers, mUser.follows)
+                }
+            })
+        }
     }
 
     override fun follow(uid: String) {

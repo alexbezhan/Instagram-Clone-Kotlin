@@ -10,5 +10,5 @@ fun <T> task(block: (TaskCompletionSource<T>) -> Unit): Task<T> {
     return taskSource.task
 }
 
-fun Task<Void>.toUnit(): Task<Unit> =
+fun Task<*>.toUnit(): Task<Unit> =
         onSuccessTask { Tasks.forResult(Unit) }
