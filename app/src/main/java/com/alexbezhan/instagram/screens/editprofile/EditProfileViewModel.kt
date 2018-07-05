@@ -5,11 +5,12 @@ import android.arch.lifecycle.ViewModel
 import android.net.Uri
 import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 
-class EditProfileViewModel(private val onFailureListener: OnFailureListener,
-                           private val usersRepo: UsersRepository) : ViewModel() {
+class EditProfileViewModel(onFailureListener: OnFailureListener,
+                           private val usersRepo: UsersRepository) : BaseViewModel(onFailureListener) {
     val user: LiveData<User> = usersRepo.getUser()
 
     fun uploadAndSetUserPhoto(localImage: Uri): Task<Unit> =

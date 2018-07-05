@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.data.firebase.common
 
 import android.arch.lifecycle.LiveData
+import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
 import com.alexbezhan.instagram.models.User
 import com.google.android.gms.tasks.Task
@@ -16,6 +17,9 @@ fun DataSnapshot.asUser(): User? =
 
 fun DataSnapshot.asFeedPost(): FeedPost? =
         getValue(FeedPost::class.java)?.copy(id = key)
+
+fun DataSnapshot.asComment(): Comment? =
+        getValue(Comment::class.java)?.copy(id = key)
 
 fun DatabaseReference.setValueTrueOrRemove(value: Boolean): Task<Void> =
         if (value) setValue(true) else removeValue()

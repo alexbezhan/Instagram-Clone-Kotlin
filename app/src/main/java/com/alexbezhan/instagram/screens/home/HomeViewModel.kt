@@ -2,16 +2,20 @@ package com.alexbezhan.instagram.screens.home
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
+import com.alexbezhan.instagram.common.SingleLiveEvent
 import com.alexbezhan.instagram.data.FeedPostsRepository
 import com.alexbezhan.instagram.data.common.map
 import com.alexbezhan.instagram.models.FeedPost
+import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.google.android.gms.tasks.OnFailureListener
 
-class HomeViewModel(private val onFailureListener: OnFailureListener,
-                    private val feedPostsRepo: FeedPostsRepository) : ViewModel() {
+class HomeViewModel(onFailureListener: OnFailureListener,
+                    private val feedPostsRepo: FeedPostsRepository) : BaseViewModel(onFailureListener) {
     lateinit var uid: String
     lateinit var feedPosts: LiveData<List<FeedPost>>
     private var loadedLikes = mapOf<String, LiveData<FeedPostLikes>>()
+    private val _goToCommentsScreen = SingleLiveEvent<String>()
+    val goToCommentsScreen = _goToCommentsScreen
 
     fun init(uid: String) {
         this.uid = uid
@@ -39,5 +43,9 @@ class HomeViewModel(private val onFailureListener: OnFailureListener,
         } else {
             return existingLoadedLikes
         }
+    }
+
+    fun openComments(postId: String) {
+        _goToCommentsScreen.value = postId
     }
 }

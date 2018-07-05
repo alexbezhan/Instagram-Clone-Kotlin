@@ -6,13 +6,15 @@ import com.alexbezhan.instagram.data.FeedPostsRepository
 import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.data.common.map
 import com.alexbezhan.instagram.models.User
+import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 
-class AddFriendsViewModel(private val onFailureListener: OnFailureListener,
+class AddFriendsViewModel(onFailureListener: OnFailureListener,
                           private val usersRepo: UsersRepository,
-                          private val feedPostsRepo: FeedPostsRepository) : ViewModel() {
+                          private val feedPostsRepo: FeedPostsRepository)
+    : BaseViewModel(onFailureListener) {
     val userAndFriends: LiveData<Pair<User, List<User>>> =
             usersRepo.getUsers().map { allUsers ->
                 val (userList, otherUsersList) = allUsers.partition {

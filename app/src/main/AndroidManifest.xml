@@ -33,6 +33,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".screens.profilesettings.ProfileSettingsActivity" />
         <activity android:name=".screens.addfriends.AddFriendsActivity" />
+        <activity android:name=".screens.comments.CommentsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

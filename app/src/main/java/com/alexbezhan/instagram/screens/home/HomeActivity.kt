@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.data.firebase.common.FirebaseHelper
+import com.alexbezhan.instagram.screens.comments.CommentsActivity
 import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.setupAuthGuard
 import com.alexbezhan.instagram.screens.common.setupBottomNavigation
@@ -33,6 +34,11 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
                     mAdapter.updatePosts(it)
                 }
             })
+            mViewModel.goToCommentsScreen.observe(this, Observer {
+                it?.let { postId ->
+                    CommentsActivity.start(this, postId)
+                }
+            })
         }
     }
 
@@ -49,6 +55,10 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
                 }
             })
         }
+    }
+
+    override fun openComments(postId: String) {
+        mViewModel.openComments(postId)
     }
 
     companion object {

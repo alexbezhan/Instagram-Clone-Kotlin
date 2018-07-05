@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
+import kotlinx.android.synthetic.main.fragment_register_email.*
 
 class EmailFragment : Fragment() {
     private lateinit var mListener: Listener

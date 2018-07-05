@@ -6,14 +6,15 @@ import android.arch.lifecycle.ViewModelProvider
 import com.alexbezhan.instagram.common.firebase.FirebaseAuthManager
 import com.alexbezhan.instagram.data.firebase.FirebaseFeedPostsRepository
 import com.alexbezhan.instagram.data.firebase.FirebaseUsersRepository
-import com.alexbezhan.instagram.screens.login.LoginViewModel
-import com.alexbezhan.instagram.screens.profile.ProfileViewModel
-import com.alexbezhan.instagram.screens.register.RegisterViewModel
-import com.alexbezhan.instagram.screens.share.ShareViewModel
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsViewModel
+import com.alexbezhan.instagram.screens.comments.CommentsViewModel
 import com.alexbezhan.instagram.screens.editprofile.EditProfileViewModel
 import com.alexbezhan.instagram.screens.home.HomeViewModel
+import com.alexbezhan.instagram.screens.login.LoginViewModel
+import com.alexbezhan.instagram.screens.profile.ProfileViewModel
 import com.alexbezhan.instagram.screens.profilesettings.ProfileSettingsViewModel
+import com.alexbezhan.instagram.screens.register.RegisterViewModel
+import com.alexbezhan.instagram.screens.share.ShareViewModel
 import com.google.android.gms.tasks.OnFailureListener
 
 @Suppress("UNCHECKED_CAST")
@@ -32,15 +33,17 @@ class ViewModelFactory(private val app: Application,
         } else if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             return HomeViewModel(onFailureListener, feedPostsRepo) as T
         } else if (modelClass.isAssignableFrom(ProfileSettingsViewModel::class.java)) {
-            return ProfileSettingsViewModel(authManager) as T
+            return ProfileSettingsViewModel(authManager, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(authManager, app, commonViewModel, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(usersRepo) as T
+            return ProfileViewModel(usersRepo, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
-            return RegisterViewModel(commonViewModel, app, usersRepo) as T
+            return RegisterViewModel(commonViewModel, app, onFailureListener, usersRepo) as T
         } else if (modelClass.isAssignableFrom(ShareViewModel::class.java)) {
             return ShareViewModel(usersRepo, onFailureListener) as T
+        } else if (modelClass.isAssignableFrom(CommentsViewModel::class.java)) {
+            return CommentsViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
         } else {
             error("Unknown view model class $modelClass")
         }
