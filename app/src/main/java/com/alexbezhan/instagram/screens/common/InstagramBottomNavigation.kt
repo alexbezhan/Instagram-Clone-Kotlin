@@ -8,7 +8,7 @@ import android.content.Intent
 import android.util.Log
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.home.HomeActivity
-import com.alexbezhan.instagram.screens.likes.LikesActivity
+import com.alexbezhan.instagram.screens.notifications.NotificationsActivity
 import com.alexbezhan.instagram.screens.profile.ProfileActivity
 import com.alexbezhan.instagram.screens.search.SearchActivity
 import com.alexbezhan.instagram.screens.share.ShareActivity
@@ -39,7 +39,7 @@ class InstagramBottomNavigation(private val bnv: BottomNavigationViewEx,
                         R.id.nav_item_home -> HomeActivity::class.java
                         R.id.nav_item_search -> SearchActivity::class.java
                         R.id.nav_item_share -> ShareActivity::class.java
-                        R.id.nav_item_likes -> LikesActivity::class.java
+                        R.id.nav_item_likes -> NotificationsActivity::class.java
                         R.id.nav_item_profile -> ProfileActivity::class.java
                         else -> {
                             Log.e(BaseActivity.TAG, "unknown nav item clicked $it")

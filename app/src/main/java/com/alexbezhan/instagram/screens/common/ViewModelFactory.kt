@@ -8,6 +8,7 @@ import com.alexbezhan.instagram.screens.comments.CommentsViewModel
 import com.alexbezhan.instagram.screens.editprofile.EditProfileViewModel
 import com.alexbezhan.instagram.screens.home.HomeViewModel
 import com.alexbezhan.instagram.screens.login.LoginViewModel
+import com.alexbezhan.instagram.screens.notifications.NotificationsViewModel
 import com.alexbezhan.instagram.screens.profile.ProfileViewModel
 import com.alexbezhan.instagram.screens.profilesettings.ProfileSettingsViewModel
 import com.alexbezhan.instagram.screens.register.RegisterViewModel
@@ -22,6 +23,7 @@ class ViewModelFactory(private val app: InstagramApp,
         val usersRepo = app.usersRepo
         val feedPostsRepo = app.feedPostsRepo
         val authManager = app.authManager
+        val notificationsRepo = app.notificationsRepo
 
         if (modelClass.isAssignableFrom(AddFriendsViewModel::class.java)) {
             return AddFriendsViewModel(onFailureListener, usersRepo, feedPostsRepo) as T
@@ -41,6 +43,8 @@ class ViewModelFactory(private val app: InstagramApp,
             return ShareViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(CommentsViewModel::class.java)) {
             return CommentsViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
+        } else if (modelClass.isAssignableFrom(NotificationsViewModel::class.java)) {
+            return NotificationsViewModel(notificationsRepo, onFailureListener) as T
         } else {
             error("Unknown view model class $modelClass")
         }

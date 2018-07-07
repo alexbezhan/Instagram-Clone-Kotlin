@@ -2,6 +2,8 @@ package com.alexbezhan.instagram.data.firebase
 
 import android.arch.lifecycle.LiveData
 import android.net.Uri
+import com.alexbezhan.instagram.common.Event
+import com.alexbezhan.instagram.common.EventBus
 import com.alexbezhan.instagram.common.task
 import com.alexbezhan.instagram.common.toUnit
 import com.alexbezhan.instagram.data.UsersRepository
@@ -13,6 +15,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
 
 class FirebaseUsersRepository : UsersRepository {
     override fun setUserImage(uid: String, downloadUri: Uri): Task<Unit> =
@@ -54,6 +57,9 @@ class FirebaseUsersRepository : UsersRepository {
 
     override fun addFollow(fromUid: String, toUid: String): Task<Unit> =
             getFollowsRef(fromUid, toUid).setValue(true).toUnit()
+                    .addOnSuccessListener {
+                        EventBus.publish(Event.CreateFollow(fromUid, toUid))
+                    }
 
     override fun deleteFollow(fromUid: String, toUid: String): Task<Unit> =
             getFollowsRef(fromUid, toUid).removeValue().toUnit()
@@ -107,9 +113,13 @@ class FirebaseUsersRepository : UsersRepository {
     override fun updateUserPhoto(downloadUrl: Uri): Task<Unit> =
             database.child("users/${currentUid()!!}/photo").setValue(downloadUrl.toString()).toUnit()
 
-    override fun getUser(): LiveData<User> =
-            database.child("users").child(currentUid()!!).liveData().map {
+    override fun getUser(): LiveData<User> = getUser(currentUid()!!)
+
+    override fun getUser(uid: String): LiveData<User> =
+            database.child("users").child(uid).liveData().map {
                 it.asUser()!!
             }
 
+    private fun DataSnapshot.asUser(): User? =
+            getValue(User::class.java)?.copy(uid = key)
 }

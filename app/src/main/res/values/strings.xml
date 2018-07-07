@@ -40,6 +40,10 @@
     <string name="comments">Comments</string>
     <string name="post">Post</string>
     <string name="add_a_comment">Add a comment…</string>
+    <string name="notifications">Notifications</string>
+    <string name="liked_your_post">Liked your post</string>
+    <string name="started_following_you">Started following you</string>
+    <string name="commented">Commented: %s</string>
 
     <plurals name="likes_count">
         <item quantity="one">%d like</item>
