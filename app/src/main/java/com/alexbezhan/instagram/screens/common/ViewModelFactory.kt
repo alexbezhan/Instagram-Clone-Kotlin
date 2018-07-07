@@ -1,11 +1,8 @@
 package com.alexbezhan.instagram.screens.common
 
-import android.app.Application
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.alexbezhan.instagram.common.firebase.FirebaseAuthManager
-import com.alexbezhan.instagram.data.firebase.FirebaseFeedPostsRepository
-import com.alexbezhan.instagram.data.firebase.FirebaseUsersRepository
+import com.alexbezhan.instagram.screens.InstagramApp
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsViewModel
 import com.alexbezhan.instagram.screens.comments.CommentsViewModel
 import com.alexbezhan.instagram.screens.editprofile.EditProfileViewModel
@@ -18,13 +15,13 @@ import com.alexbezhan.instagram.screens.share.ShareViewModel
 import com.google.android.gms.tasks.OnFailureListener
 
 @Suppress("UNCHECKED_CAST")
-class ViewModelFactory(private val app: Application,
+class ViewModelFactory(private val app: InstagramApp,
                        private val commonViewModel: CommonViewModel,
                        private val onFailureListener: OnFailureListener) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        val usersRepo by lazy { FirebaseUsersRepository() }
-        val feedPostsRepo by lazy { FirebaseFeedPostsRepository() }
-        val authManager by lazy { FirebaseAuthManager() }
+        val usersRepo = app.usersRepo
+        val feedPostsRepo = app.feedPostsRepo
+        val authManager = app.authManager
 
         if (modelClass.isAssignableFrom(AddFriendsViewModel::class.java)) {
             return AddFriendsViewModel(onFailureListener, usersRepo, feedPostsRepo) as T
@@ -41,7 +38,7 @@ class ViewModelFactory(private val app: Application,
         } else if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
             return RegisterViewModel(commonViewModel, app, onFailureListener, usersRepo) as T
         } else if (modelClass.isAssignableFrom(ShareViewModel::class.java)) {
-            return ShareViewModel(usersRepo, onFailureListener) as T
+            return ShareViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(CommentsViewModel::class.java)) {
             return CommentsViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
         } else {

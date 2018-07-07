@@ -15,10 +15,6 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseUsersRepository : UsersRepository {
-    override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> =
-        database.child("feed-posts").child(uid)
-                .push().setValue(feedPost).toUnit()
-
     override fun setUserImage(uid: String, downloadUri: Uri): Task<Unit> =
         database.child("images").child(uid).push()
                 .setValue(downloadUri.toString()).toUnit()

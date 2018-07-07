@@ -1,12 +1,12 @@
 package com.alexbezhan.instagram.screens.common
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.alexbezhan.instagram.screens.InstagramApp
 import com.alexbezhan.instagram.screens.login.LoginActivity
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -24,7 +24,9 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected inline fun <reified T : BaseViewModel> initViewModel(): T =
-            ViewModelProviders.of(this, ViewModelFactory(application, commonViewModel,
+            ViewModelProviders.of(this, ViewModelFactory(
+                    application as InstagramApp,
+                    commonViewModel,
                     commonViewModel)).get(T::class.java)
 
     fun goToLogin() {

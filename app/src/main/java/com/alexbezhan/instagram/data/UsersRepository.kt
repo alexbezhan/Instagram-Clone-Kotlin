@@ -23,5 +23,4 @@ interface UsersRepository {
     fun createUser(user: User, password: String): Task<Unit>
     fun uploadUserImage(uid: String, imageUri: Uri): Task<Uri>
     fun setUserImage(uid: String, downloadUri: Uri): Task<Unit>
-    fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit>
 }

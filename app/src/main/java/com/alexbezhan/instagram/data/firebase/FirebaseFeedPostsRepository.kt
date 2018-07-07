@@ -14,6 +14,10 @@ import com.alexbezhan.instagram.models.FeedPost
 import com.google.android.gms.tasks.Task
 
 class FirebaseFeedPostsRepository : FeedPostsRepository {
+    override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> =
+            database.child("feed-posts").child(uid)
+                    .push().setValue(feedPost).toUnit()
+
     override fun createComment(postId: String, comment: Comment): Task<Unit> =
             database.child("comments").child(postId).push().setValue(comment).toUnit()
 

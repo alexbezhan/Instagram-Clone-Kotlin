@@ -6,11 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.screens.register.RegisterActivity
 import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
-import com.alexbezhan.instagram.screens.common.setupAuthGuard
 import com.alexbezhan.instagram.screens.home.HomeActivity
+import com.alexbezhan.instagram.screens.register.RegisterActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
@@ -30,17 +29,15 @@ class LoginActivity : BaseActivity(), KeyboardVisibilityEventListener, View.OnCl
         login_btn.setOnClickListener(this)
         create_account_text.setOnClickListener(this)
 
-        setupAuthGuard {
-            mViewModel = initViewModel()
-            mViewModel.goToHomeScreen.observe(this, Observer {
-                startActivity(Intent(this, HomeActivity::class.java))
-                finish()
-            })
-            mViewModel.goToRegisterScreen.observe(this, Observer {
-                startActivity(Intent(this, RegisterActivity::class.java))
-            })
-            mAuth = FirebaseAuth.getInstance()
-        }
+        mViewModel = initViewModel()
+        mViewModel.goToHomeScreen.observe(this, Observer {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        })
+        mViewModel.goToRegisterScreen.observe(this, Observer {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        })
+        mAuth = FirebaseAuth.getInstance()
     }
 
     override fun onClick(view: View) {
