@@ -5,16 +5,20 @@ import com.alexbezhan.instagram.common.*
 import com.alexbezhan.instagram.data.FeedPostLike
 import com.alexbezhan.instagram.data.FeedPostsRepository
 import com.alexbezhan.instagram.data.common.map
-import com.alexbezhan.instagram.data.firebase.common.*
+import com.alexbezhan.instagram.data.firebase.common.FirebaseLiveData
+import com.alexbezhan.instagram.data.firebase.common.database
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 
 class FirebaseFeedPostsRepository : FeedPostsRepository {
-    override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> =
-            database.child("feed-posts").child(uid)
-                    .push().setValue(feedPost).toUnit()
+    override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> {
+        val reference = database.child("feed-posts").child(uid).push()
+        return reference.setValue(feedPost).toUnit().addOnSuccessListener {
+            EventBus.publish(Event.CreateFeedPost(feedPost.copy(id = reference.key)))
+        }
+    }
 
     override fun createComment(postId: String, comment: Comment): Task<Unit> =
             database.child("comments").child(postId).push().setValue(comment).toUnit()
@@ -35,7 +39,7 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
     override fun toggleLike(postId: String, uid: String): Task<Unit> {
         val reference = database.child("likes").child(postId).child(uid)
         return task { taskSource ->
-            reference.addListenerForSingleValueEvent(ValueEventListenerAdapter {like ->
+            reference.addListenerForSingleValueEvent(ValueEventListenerAdapter { like ->
                 if (!like.exists()) {
                     reference.setValue(true).addOnSuccessListener {
                         EventBus.publish(Event.CreateLike(postId, uid))

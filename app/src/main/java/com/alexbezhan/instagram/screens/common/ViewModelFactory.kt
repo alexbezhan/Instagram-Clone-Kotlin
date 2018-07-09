@@ -12,6 +12,7 @@ import com.alexbezhan.instagram.screens.notifications.NotificationsViewModel
 import com.alexbezhan.instagram.screens.profile.ProfileViewModel
 import com.alexbezhan.instagram.screens.profilesettings.ProfileSettingsViewModel
 import com.alexbezhan.instagram.screens.register.RegisterViewModel
+import com.alexbezhan.instagram.screens.search.SearchViewModel
 import com.alexbezhan.instagram.screens.share.ShareViewModel
 import com.google.android.gms.tasks.OnFailureListener
 
@@ -24,6 +25,7 @@ class ViewModelFactory(private val app: InstagramApp,
         val feedPostsRepo = app.feedPostsRepo
         val authManager = app.authManager
         val notificationsRepo = app.notificationsRepo
+        val searchRepo = app.searchRepo
 
         if (modelClass.isAssignableFrom(AddFriendsViewModel::class.java)) {
             return AddFriendsViewModel(onFailureListener, usersRepo, feedPostsRepo) as T
@@ -45,6 +47,8 @@ class ViewModelFactory(private val app: InstagramApp,
             return CommentsViewModel(feedPostsRepo, usersRepo, onFailureListener) as T
         } else if (modelClass.isAssignableFrom(NotificationsViewModel::class.java)) {
             return NotificationsViewModel(notificationsRepo, onFailureListener) as T
+        } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+            return SearchViewModel(searchRepo, onFailureListener) as T
         } else {
             error("Unknown view model class $modelClass")
         }

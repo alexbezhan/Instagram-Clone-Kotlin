@@ -39,6 +39,9 @@ class ShareActivity : BaseActivity() {
                     mUser = it
                 }
             })
+            mViewModel.shareCompletedEvent.observe(this, Observer {
+                finish()
+            })
         }
     }
 

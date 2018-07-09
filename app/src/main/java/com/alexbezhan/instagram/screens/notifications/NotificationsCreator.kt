@@ -1,10 +1,8 @@
 package com.alexbezhan.instagram.screens.notifications
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.Observer
 import android.util.Log
+import com.alexbezhan.instagram.common.BaseEventListener
 import com.alexbezhan.instagram.common.Event
 import com.alexbezhan.instagram.common.EventBus
 import com.alexbezhan.instagram.data.FeedPostsRepository
@@ -17,13 +15,8 @@ import com.alexbezhan.instagram.models.NotificationType
 
 class NotificationsCreator(private val notificationsRepo: NotificationsRepository,
                            private val usersRepo: UsersRepository,
-                           private val feedPostsRepo: FeedPostsRepository) : LifecycleOwner {
-    private val lifecycleRegistry = LifecycleRegistry(this)
-
+                           private val feedPostsRepo: FeedPostsRepository) : BaseEventListener() {
     init {
-        lifecycleRegistry.markState(Lifecycle.State.CREATED);
-        lifecycleRegistry.markState(Lifecycle.State.STARTED);
-
         EventBus.events.observe(this, Observer {
             it?.let { event ->
                 when (event) {
@@ -81,8 +74,6 @@ class NotificationsCreator(private val notificationsRepo: NotificationsRepositor
     }
 
     private fun getUser(uid: String) = usersRepo.getUser(uid)
-
-    override fun getLifecycle(): Lifecycle = lifecycleRegistry
 
     companion object {
         const val TAG = "NotificationsCreator"

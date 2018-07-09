@@ -15,7 +15,7 @@ import java.util.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class TestUtilsTest {
+class TextUtilsTest {
     private val calendar = Calendar.getInstance().apply {
         set(Calendar.YEAR, 2018)
         set(Calendar.MONTH, 0)

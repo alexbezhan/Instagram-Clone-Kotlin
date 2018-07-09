@@ -44,6 +44,7 @@
     <string name="liked_your_post">Liked your post</string>
     <string name="started_following_you">Started following you</string>
     <string name="commented">Commented: %s</string>
+    <string name="search">Search</string>
 
     <plurals name="likes_count">
         <item quantity="one">%d like</item>

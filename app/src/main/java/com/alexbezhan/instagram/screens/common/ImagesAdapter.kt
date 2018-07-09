@@ -1,4 +1,4 @@
-package com.alexbezhan.instagram.screens.profile
+package com.alexbezhan.instagram.screens.common
 
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.alexbezhan.instagram.R
-import com.alexbezhan.instagram.screens.common.SimpleCallback
-import com.alexbezhan.instagram.screens.common.loadImage
 
 class ImagesAdapter : RecyclerView.Adapter<ImagesAdapter.ViewHolder>() {
 

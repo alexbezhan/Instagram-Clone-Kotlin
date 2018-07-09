@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.BaseActivity
+import com.alexbezhan.instagram.screens.common.loadUserPhoto
 import com.alexbezhan.instagram.screens.common.setupAuthGuard
 import kotlinx.android.synthetic.main.activity_comments.*
 
@@ -33,6 +34,7 @@ class CommentsActivity : BaseActivity() {
             viewModel.user.observe(this, Observer {
                 it?.let {
                     mUser = it
+                    user_photo.loadUserPhoto(mUser.photo)
                 }
             })
             viewModel.comments.observe(this, Observer {
