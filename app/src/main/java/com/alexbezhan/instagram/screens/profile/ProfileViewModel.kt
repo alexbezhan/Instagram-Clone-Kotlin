@@ -12,6 +12,8 @@ class ProfileViewModel(private val usersRepo: UsersRepository, onFailureListener
     lateinit var images: LiveData<List<String>>
 
     fun init(uid: String) {
-        images = usersRepo.getImages(uid)
+        if (!this::images.isInitialized) {
+            images = usersRepo.getImages(uid)
+        }
     }
 }

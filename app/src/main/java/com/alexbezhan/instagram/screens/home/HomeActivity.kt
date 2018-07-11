@@ -20,13 +20,13 @@ class HomeActivity : BaseActivity(), FeedAdapter.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         Log.d(TAG, "onCreate")
-        setupBottomNavigation(0)
 
         mAdapter = FeedAdapter(this)
         feed_recycler.adapter = mAdapter
         feed_recycler.layoutManager = LinearLayoutManager(this)
 
         setupAuthGuard { uid ->
+            setupBottomNavigation(uid, 0)
             mViewModel = initViewModel()
             mViewModel.init(uid)
             mViewModel.feedPosts.observe(this, Observer {
