@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.data
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.models.SearchPost
 import com.google.android.gms.tasks.Task
 

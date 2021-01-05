@@ -1,16 +1,15 @@
 package com.alexbezhan.instagram.screens.common
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Intent
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.NotificationType
@@ -21,7 +20,6 @@ import com.alexbezhan.instagram.screens.profile.ProfileActivity
 import com.alexbezhan.instagram.screens.search.SearchActivity
 import com.alexbezhan.instagram.screens.share.ShareActivity
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-import com.nhaarman.supertooltips.ToolTip
 import com.nhaarman.supertooltips.ToolTipRelativeLayout
 import com.nhaarman.supertooltips.ToolTipView
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
@@ -83,18 +81,18 @@ class InstagramBottomNavigation(private val uid: String,
             setCount(comments_image, comments_count_text, NotificationType.Comment)
         }
 
-        if (newNotifications.isNotEmpty()) {
-            val tooltip = ToolTip()
-                    .withColor(ContextCompat.getColor(activity, R.color.red))
-                    .withContentView(mNotificationsContentView)
-                    .withAnimationType(ToolTip.AnimationType.FROM_TOP)
-                    .withShadow()
-            lastTooltipView = tooltipLayout.showToolTipForView(tooltip, bnv.getIconAt(NOTIFICATIONS_ICON_POS))
-            lastTooltipView?.setOnToolTipViewClickedListener {
-                mViewModel.setNotificationsRead(newNotifications)
-                bnv.getBottomNavigationItemView(NOTIFICATIONS_ICON_POS).callOnClick()
-            }
-        }
+//        if (newNotifications.isNotEmpty()) {
+//            val tooltip = ToolTip()
+//                    .withColor(ContextCompat.getColor(activity, R.color.red))
+//                    .withContentView(mNotificationsContentView)
+//                    .withAnimationType(ToolTip.AnimationType.FROM_TOP)
+//                    .withShadow()
+//            lastTooltipView = tooltipLayout.showToolTipForView(tooltip, bnv.getIconAt(NOTIFICATIONS_ICON_POS)) // todo Fix null pointer exception
+//            lastTooltipView?.setOnToolTipViewClickedListener {
+//                mViewModel.setNotificationsRead(newNotifications)
+//                bnv.getBottomNavigationItemView(NOTIFICATIONS_ICON_POS).callOnClick()
+//            }
+//        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -103,14 +101,14 @@ class InstagramBottomNavigation(private val uid: String,
     }
 
     init {
-        bnv.setIconSize(29f, 29f)
-        bnv.setTextVisibility(false)
-        bnv.enableItemShiftingMode(false)
-        bnv.enableShiftingMode(false)
-        bnv.enableAnimation(false)
-        for (i in 0 until bnv.menu.size()) {
-            bnv.setIconTintList(i, null)
-        }
+//        bnv.setIconSize(29f, 29f) // todo Fix null pointer exception
+//        bnv.setTextVisibility(false)
+//        bnv.enableItemShiftingMode(false)
+//        bnv.enableShiftingMode(false)
+//        bnv.enableAnimation(false)
+//        for (i in 0 until bnv.menu.size()) {
+//            bnv.setIconTintList(i, null)
+//        }
         bnv.setOnNavigationItemSelectedListener {
             val nextActivity =
                     when (it.itemId) {

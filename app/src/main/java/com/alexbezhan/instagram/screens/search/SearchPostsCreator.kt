@@ -1,7 +1,7 @@
 package com.alexbezhan.instagram.screens.search
 
-import android.arch.lifecycle.Observer
 import android.util.Log
+import androidx.lifecycle.Observer
 import com.alexbezhan.instagram.common.BaseEventListener
 import com.alexbezhan.instagram.common.Event
 import com.alexbezhan.instagram.common.EventBus

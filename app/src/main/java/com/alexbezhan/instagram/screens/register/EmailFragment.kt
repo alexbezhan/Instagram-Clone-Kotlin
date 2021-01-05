@@ -2,10 +2,10 @@ package com.alexbezhan.instagram.screens.register
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.common.coordinateBtnAndInputs
 import kotlinx.android.synthetic.main.fragment_register_email.*
