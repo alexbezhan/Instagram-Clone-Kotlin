@@ -1,7 +1,7 @@
 package com.alexbezhan.instagram.screens.login
 
 import android.app.Application
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.common.AuthManager
 import com.alexbezhan.instagram.common.SingleLiveEvent

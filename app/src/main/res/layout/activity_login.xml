@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".screens.login.LoginActivity">
@@ -27,6 +27,7 @@
             android:layout_marginTop="40dp"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/instagram_image" />
 
         <EditText
@@ -34,12 +35,14 @@
             style="@style/big_input"
             android:hint="@string/password"
             android:inputType="textPassword"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/email_input" />
 
         <Button
             android:id="@+id/login_btn"
             style="@style/big_btn"
             android:text="@string/log_in"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/password_input" />
 
         <TextView
@@ -51,6 +54,6 @@
             android:text="@string/create_account"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.alexbezhan.instagram.screens.common.KeyboardAwareScrollView>

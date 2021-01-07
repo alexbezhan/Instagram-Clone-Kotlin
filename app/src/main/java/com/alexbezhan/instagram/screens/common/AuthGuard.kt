@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.screens.common
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.alexbezhan.instagram.data.firebase.common.auth
 import com.google.firebase.auth.FirebaseAuth
 

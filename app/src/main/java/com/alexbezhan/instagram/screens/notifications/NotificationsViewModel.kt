@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.screens.notifications
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.data.NotificationsRepository
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.screens.common.BaseViewModel

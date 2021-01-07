@@ -1,11 +1,11 @@
 package com.alexbezhan.instagram.screens.common
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.alexbezhan.instagram.screens.InstagramApp
 import com.alexbezhan.instagram.screens.login.LoginActivity
 

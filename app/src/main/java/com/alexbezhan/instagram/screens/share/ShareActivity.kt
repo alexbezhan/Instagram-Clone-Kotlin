@@ -1,9 +1,9 @@
 package com.alexbezhan.instagram.screens.share
 
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.Observer
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.data.firebase.common.FirebaseHelper
 import com.alexbezhan.instagram.models.User
@@ -46,6 +46,7 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == mCamera.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 post_image.loadImage(mCamera.imageUri?.toString())

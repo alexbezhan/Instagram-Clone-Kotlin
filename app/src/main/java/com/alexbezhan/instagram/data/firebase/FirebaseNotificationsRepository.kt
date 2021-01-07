@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.data.firebase
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.common.toUnit
 import com.alexbezhan.instagram.data.NotificationsRepository
 import com.alexbezhan.instagram.data.common.map
@@ -28,5 +28,5 @@ class FirebaseNotificationsRepository : NotificationsRepository {
             database.child("notifications").child(uid)
 
     private fun DataSnapshot.asNotification() =
-            getValue(Notification::class.java)?.copy(id = key)
+            getValue(Notification::class.java)?.copy(id = key!!)
 }
