@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.common
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 
 abstract class BaseEventListener : LifecycleOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)

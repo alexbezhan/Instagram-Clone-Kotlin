@@ -1,7 +1,7 @@
 package com.alexbezhan.instagram.screens.common
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.alexbezhan.instagram.screens.InstagramApp
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsViewModel
 import com.alexbezhan.instagram.screens.comments.CommentsViewModel

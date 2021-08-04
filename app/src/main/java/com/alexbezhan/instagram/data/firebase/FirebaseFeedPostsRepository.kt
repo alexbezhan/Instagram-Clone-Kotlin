@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.data.firebase
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.common.*
 import com.alexbezhan.instagram.data.FeedPostLike
 import com.alexbezhan.instagram.data.FeedPostsRepository
@@ -16,7 +16,7 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
     override fun createFeedPost(uid: String, feedPost: FeedPost): Task<Unit> {
         val reference = database.child("feed-posts").child(uid).push()
         return reference.setValue(feedPost).toUnit().addOnSuccessListener {
-            EventBus.publish(Event.CreateFeedPost(feedPost.copy(id = reference.key)))
+            EventBus.publish(Event.CreateFeedPost(feedPost.copy(id = reference.key!!)))
         }
     }
 
@@ -33,7 +33,7 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
 
     override fun getLikes(postId: String): LiveData<List<FeedPostLike>> =
             FirebaseLiveData(database.child("likes").child(postId)).map {
-                it.children.map { FeedPostLike(it.key) }
+                it.children.map { FeedPostLike(it.key!!) }
             }
 
     override fun toggleLike(postId: String, uid: String): Task<Unit> {
@@ -89,9 +89,9 @@ class FirebaseFeedPostsRepository : FeedPostsRepository {
             }
 
     private fun DataSnapshot.asFeedPost(): FeedPost? =
-            getValue(FeedPost::class.java)?.copy(id = key)
+            getValue(FeedPost::class.java)?.copy(id = key!!)
 
     private fun DataSnapshot.asComment(): Comment? =
-            getValue(Comment::class.java)?.copy(id = key)
+            getValue(Comment::class.java)?.copy(id = key!!)
 
 }

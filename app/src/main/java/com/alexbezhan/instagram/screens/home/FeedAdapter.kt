@@ -1,22 +1,16 @@
 package com.alexbezhan.instagram.screens.home
 
-import android.graphics.Typeface
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.FeedPost
-import com.alexbezhan.instagram.screens.common.*
+import com.alexbezhan.instagram.screens.common.SimpleCallback
+import com.alexbezhan.instagram.screens.common.loadImage
+import com.alexbezhan.instagram.screens.common.loadUserPhoto
+import com.alexbezhan.instagram.screens.common.setCaptionText
 import kotlinx.android.synthetic.main.feed_item.view.*
 
 class FeedAdapter(private val listener: Listener)

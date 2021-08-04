@@ -1,8 +1,7 @@
 package com.alexbezhan.instagram.data
 
-import android.arch.lifecycle.LiveData
 import android.net.Uri
-import com.alexbezhan.instagram.models.FeedPost
+import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.models.User
 import com.google.android.gms.tasks.Task
 
