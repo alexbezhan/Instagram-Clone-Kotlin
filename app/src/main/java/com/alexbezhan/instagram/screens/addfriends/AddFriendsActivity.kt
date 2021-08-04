@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.screens.addfriends
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.BaseActivity

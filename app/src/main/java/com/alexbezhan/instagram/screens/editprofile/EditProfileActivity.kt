@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.screens.editprofile
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.Observer
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.*
@@ -44,7 +44,6 @@ class EditProfileActivity : BaseActivity(), PasswordDialog.Listener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == mCamera.REQUEST_CODE && resultCode == RESULT_OK) {
             mViewModel.uploadAndSetUserPhoto(mCamera.imageUri!!)
         }

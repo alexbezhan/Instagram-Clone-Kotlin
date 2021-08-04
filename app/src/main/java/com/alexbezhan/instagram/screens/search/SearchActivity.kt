@@ -1,12 +1,12 @@
 package com.alexbezhan.instagram.screens.search
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.ImagesAdapter

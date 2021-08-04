@@ -1,17 +1,14 @@
 package com.alexbezhan.instagram.screens.notifications
 
+import android.support.v7.util.DiffUtil
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.models.Notification
 import com.alexbezhan.instagram.models.NotificationType
-import com.alexbezhan.instagram.screens.common.SimpleCallback
-import com.alexbezhan.instagram.screens.common.loadImageOrHide
-import com.alexbezhan.instagram.screens.common.loadUserPhoto
-import com.alexbezhan.instagram.screens.common.setCaptionText
+import com.alexbezhan.instagram.screens.common.*
 import kotlinx.android.synthetic.main.notification_item.view.*
 
 class NotificationsAdapter : RecyclerView.Adapter<NotificationsAdapter.ViewHolder>() {

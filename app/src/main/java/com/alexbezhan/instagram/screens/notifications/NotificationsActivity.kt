@@ -1,9 +1,9 @@
 package com.alexbezhan.instagram.screens.notifications
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.common.BaseActivity
 import com.alexbezhan.instagram.screens.common.setupAuthGuard

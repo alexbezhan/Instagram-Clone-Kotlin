@@ -8,12 +8,11 @@
         android:layout_height="match_parent"
         android:elevation="30dp"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/whiteish"
-        app:labelVisibilityMode="unlabeled"
         android:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation_menu" />

@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.screens.common
 
-import androidx.recyclerview.widget.DiffUtil
+import android.support.v7.util.DiffUtil
 
 class SimpleCallback<T>(private val oldItems: List<T>, private val newItems: List<T>,
                         private val itemIdGetter: (T) -> Any) : DiffUtil.Callback() {

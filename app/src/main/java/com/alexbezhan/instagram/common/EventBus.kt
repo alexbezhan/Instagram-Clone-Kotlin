@@ -1,7 +1,7 @@
 package com.alexbezhan.instagram.common
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import com.alexbezhan.instagram.models.Comment
 import com.alexbezhan.instagram.models.FeedPost
 

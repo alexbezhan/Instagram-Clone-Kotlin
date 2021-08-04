@@ -1,8 +1,8 @@
 package com.alexbezhan.instagram.screens.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
 import com.alexbezhan.instagram.data.SearchRepository
 import com.alexbezhan.instagram.models.SearchPost
 import com.alexbezhan.instagram.screens.common.BaseViewModel

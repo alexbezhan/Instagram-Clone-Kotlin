@@ -1,7 +1,8 @@
 package com.alexbezhan.instagram.screens.editprofile
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.ViewModel
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.models.User
 import com.alexbezhan.instagram.screens.common.BaseViewModel

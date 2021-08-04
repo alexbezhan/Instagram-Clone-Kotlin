@@ -1,6 +1,7 @@
 package com.alexbezhan.instagram.screens.profile
 
-import androidx.lifecycle.LiveData
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.ViewModel
 import com.alexbezhan.instagram.data.UsersRepository
 import com.alexbezhan.instagram.screens.common.BaseViewModel
 import com.google.android.gms.tasks.OnFailureListener

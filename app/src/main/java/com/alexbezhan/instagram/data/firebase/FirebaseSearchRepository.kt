@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.data.firebase
 
-import androidx.lifecycle.LiveData
+import android.arch.lifecycle.LiveData
 import com.alexbezhan.instagram.common.toUnit
 import com.alexbezhan.instagram.data.SearchRepository
 import com.alexbezhan.instagram.data.common.map
@@ -30,4 +30,4 @@ class FirebaseSearchRepository : SearchRepository {
 }
 
 private fun DataSnapshot.asSearchPost(): SearchPost? =
-        getValue(SearchPost::class.java)?.copy(id = key!!)
+        getValue(SearchPost::class.java)?.copy(id = key)

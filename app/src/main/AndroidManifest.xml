@@ -31,19 +31,19 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".screens.register.RegisterActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".screens.profilesettings.ProfileSettingsActivity" />
         <activity android:name=".screens.addfriends.AddFriendsActivity" />
         <activity android:name=".screens.comments.CommentsActivity" />
 
         <provider
-            android:name="androidx.core.content.FileProvider"
+            android:name="android.support.v4.content.FileProvider"
             android:authorities="com.alexbezhan.instagram.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
     </application>
 

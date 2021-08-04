@@ -3,8 +3,8 @@ package com.alexbezhan.instagram.screens.common
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import com.alexbezhan.instagram.R
 import kotlinx.android.synthetic.main.dialog_password.view.*
 
@@ -15,7 +15,7 @@ class PasswordDialog : DialogFragment() {
         fun onPasswordConfirm(password: String)
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         mListener = context as Listener
     }

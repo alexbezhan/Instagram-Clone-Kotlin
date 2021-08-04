@@ -1,6 +1,6 @@
 package com.alexbezhan.instagram.data.common
 
-import androidx.lifecycle.*
+import android.arch.lifecycle.*
 
 fun <A, B> LiveData<A>.map(f: (A) -> B): LiveData<B> =
         Transformations.map(this, f)

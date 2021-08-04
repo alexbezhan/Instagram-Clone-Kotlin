@@ -1,10 +1,10 @@
 package com.alexbezhan.instagram.screens.profile
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.util.Log
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.screens.addfriends.AddFriendsActivity
 import com.alexbezhan.instagram.screens.common.*

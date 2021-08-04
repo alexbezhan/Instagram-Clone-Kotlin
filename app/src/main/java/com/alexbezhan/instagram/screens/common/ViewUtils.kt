@@ -3,6 +3,7 @@ package com.alexbezhan.instagram.screens.common
 import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -10,10 +11,8 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.*
-import androidx.core.content.ContextCompat
 import com.alexbezhan.instagram.R
 import com.alexbezhan.instagram.common.formatRelativeTimestamp
-import com.bumptech.glide.Glide
 import java.util.*
 
 fun Context.showToast(text: String?, duration: Int = Toast.LENGTH_SHORT) {
@@ -44,7 +43,7 @@ fun TextView.setCaptionText(username: String, caption: String, date: Date? = nul
             widget.context.showToast(context.getString(R.string.username_is_clicked))
         }
 
-        override fun updateDrawState(ds: TextPaint) {}
+        override fun updateDrawState(ds: TextPaint?) {}
     }, 0, usernameSpannable.length,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -75,12 +74,12 @@ fun Editable.toStringOrNull(): String? {
 
 fun ImageView.loadUserPhoto(photoUrl: String?) =
         ifNotDestroyed {
-            Glide.with(this).load(photoUrl).fallback(R.drawable.person).into(this)
+            GlideApp.with(this).load(photoUrl).fallback(R.drawable.person).into(this)
         }
 
 fun ImageView.loadImage(image: String?) =
         ifNotDestroyed {
-            Glide.with(this).load(image).centerCrop().into(this)
+            GlideApp.with(this).load(image).centerCrop().into(this)
         }
 
 fun ImageView.loadImageOrHide(image: String?) =
